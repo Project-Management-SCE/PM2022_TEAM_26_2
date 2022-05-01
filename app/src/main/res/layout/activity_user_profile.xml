@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@color/app_bg"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="30dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -16,11 +17,18 @@
             android:background="@color/app_bg"
             android:orientation="vertical">
 
+            <ImageView
+                android:id="@+id/profile_backBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:src="@drawable/ic_back" />
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/setting_profile_image"
                 android:layout_width="130dp"
                 android:layout_height="130dp"
-                android:layout_marginStart="140dp"
+                android:layout_marginStart="100dp"
                 android:layout_marginTop="40dp"
                 android:src="@drawable/ic_id" />
 
@@ -29,10 +37,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="1dp"
                 android:text="user name"
-                android:textColor="#fff"
-                android:textSize="21sp"
+                android:textColor="@color/black"
+                android:textSize="25sp"
+                android:fontFamily="@font/aldrich"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -59,15 +68,17 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Accounts"
+                        android:text="@string/accounts"
                         android:textColor="@color/black"
+                        android:fontFamily="@font/aldrich"
                         android:textSize="20sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingTop="10dp"
-                        android:text="4"
+                        android:fontFamily="@font/aldrich"
+                        android:text="@string/_4"
                         android:textColor="@color/black"
                         android:textSize="20sp"
                         android:id="@+id/disp_accounts_counter"
@@ -86,7 +97,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Balance"
+                        android:text="@string/balance"
+                        android:fontFamily="@font/aldrich"
                         android:textColor="@color/black"
                         android:textSize="20sp" />
                     <TextView
@@ -94,7 +106,8 @@
                         android:layout_height="wrap_content"
                         android:paddingTop="10dp"
                         android:id="@+id/disp_balance"
-                        android:text="360"
+                        android:fontFamily="@font/aldrich"
+                        android:text="@string/_360"
                         android:textColor="@color/black"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -111,15 +124,17 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Messages"
+                        android:text="@string/messages"
                         android:textColor="@color/black"
+                        android:fontFamily="@font/aldrich"
                         android:textSize="20sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingTop="10dp"
-                        android:text="0"
+                        android:text="@string/_0"
+                        android:fontFamily="@font/aldrich"
                         android:id="@+id/disp_msg_counter"
                         android:textColor="@color/black"
                         android:textSize="20sp"
@@ -148,12 +163,12 @@
                 android:src="@drawable/mail"/>
             <TextView
                 android:textStyle="bold"
-                android:id="@+id/disp_email"
+                android:id="@+id/profile_email"
                 android:layout_gravity="center_vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="20dp"
-                android:text="xxsas@gmail.com"/>
+                android:paddingStart="20dp"
+                android:text="@string/xxsas_gmail_com"/>
         </LinearLayout>
         <LinearLayout
             android:layout_marginTop="25dp"
@@ -168,7 +183,7 @@
                />
             <TextView
                 android:textStyle="bold"
-                android:id="@+id/display_phone"
+                android:id="@+id/profile_phone"
                 android:layout_gravity="center_vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

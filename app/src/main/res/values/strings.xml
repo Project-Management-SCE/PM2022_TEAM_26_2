@@ -40,5 +40,17 @@
     <string name="add_clerks">Add Clerks</string>
     <string name="create_nclerk">Create\nClerk</string>
     <string name="add_clerk">Add Clerk</string>
+    <string name="navigation_drawer_open">onDrawerOpened</string>
+    <string name="navigation_drawer_close">onDrawerClosed</string>
+    <string name="xxsas_gmail_com">xxsas@gmail.com</string>
+    <string name="_4">4</string>
+    <string name="balance">Balance</string>
+    <string name="_360">360</string>
+    <string name="messages">Messages</string>
+    <string name="_0">0</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="select_an_account">Select an Account</string>
+    <string name="swipe_on_an_account_to_remove_or_view_details">Swipe on an Account to remove or view details</string>
 
 </resources>

@@ -13,8 +13,10 @@ public class SessionManager {
     Context context;
 
     //Session names
-    public static final String SESSION_USER_SESSION = "userLoginSession";
-    public static final String SESSION_REMEMBER_ME= "rememberMe";
+    public static final String USER_SESSION = "userLoginSession";
+    public static final String REMEMBER_ME_SESSION = "rememberMe";
+    public static final String CLERK_SESSION = "ClerkLoginSession";
+
 
 
 
@@ -32,6 +34,13 @@ public class SessionManager {
     public static final String KEY_SESSION_ID = "id";
     public static final String KEY_SESSION_EMAIL = "email";
     public static final String KEY_SESSION_PASSWORD = "password";
+
+    //Clerk session variables
+    private static final String IS_CLERK = "IsClerk";
+    public static final String KEY_CLERK_USERNAME = "username";
+    public static final String KEY_CLERK_EMAIL = "email";
+    public static final String KEY_CLERK_PASSWORD = "password";
+    public static final String KEY_CLERK_PHONE = "phone";
 
 
 
@@ -108,6 +117,10 @@ public class SessionManager {
         return userSession.getBoolean(IS_REMEMBER_ME, true);
 
     }
+
+    /*
+    Clerk -> Session functions
+     */
 
 
 }

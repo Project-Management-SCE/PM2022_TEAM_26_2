@@ -1,6 +1,5 @@
 package com.example.ymdbanking;
 
-import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,16 +15,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
-import java.util.Locale;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -67,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         //check if id,email,password is already saved in Shared Preferences or not
-        SessionManager sessionManager = new SessionManager(LoginActivity.this,SessionManager.SESSION_REMEMBER_ME);
+        SessionManager sessionManager = new SessionManager(LoginActivity.this,SessionManager.REMEMBER_ME_SESSION);
         if(sessionManager.checkRememberMeLogin()) {
 
             HashMap<String, String> rememberMeDetails = sessionManager.getRememberMeDetailFromSession();
@@ -93,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                 String id_login = inputId.getText().toString().trim();
 
                 if(rememberMe.isChecked()) {
-                    SessionManager sessionManager = new SessionManager(LoginActivity.this,SessionManager.SESSION_REMEMBER_ME);
+                    SessionManager sessionManager = new SessionManager(LoginActivity.this,SessionManager.REMEMBER_ME_SESSION);
                     sessionManager.createRememberMeSession(mail,id_login,pass);
                 }
                 Query checkUser = FirebaseDatabase.getInstance().getReference("Users").orderByChild("id").equalTo(id_login);
@@ -117,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
                                 String phone = snapshot.child(id_login).child("phone").getValue(String.class);
 
                                 //Create a User Session
-                                SessionManager sessionManager = new SessionManager(LoginActivity.this,SessionManager.SESSION_USER_SESSION);
+                                SessionManager sessionManager = new SessionManager(LoginActivity.this,SessionManager.USER_SESSION);
                                 sessionManager.createLoginSession(fullName,id,username,email,password,phone);
                                 startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
                             }

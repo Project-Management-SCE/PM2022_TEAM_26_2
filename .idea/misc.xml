@@ -3,10 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/vimik/AndroidStudioProjects/YMDBanking/app/src/main/res/drawable/ic_dashboard.xml" value="0.1" />
         <entry key="..\:/Users/vimik/AndroidStudioProjects/YMDBanking/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
         <entry key="..\:/Users/vimik/AndroidStudioProjects/YMDBanking/app/src/main/res/drawable/ic_security.xml" value="0.1" />
+        <entry key="..\:/Users/vimik/AndroidStudioProjects/YMDBanking/app/src/main/res/layout/account_dialog.xml" value="0.14990942028985507" />
+        <entry key="..\:/Users/vimik/AndroidStudioProjects/YMDBanking/app/src/main/res/layout/activity_accounts_over_view.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/vimik/AndroidStudioProjects/YMDBanking/app/src/main/res/layout/activity_add_clerk.xml" value="0.14945652173913043" />
-        <entry key="..\:/Users/vimik/AndroidStudioProjects/YMDBanking/app/src/main/res/layout/activity_dashbord.xml" value="0.1" />
+        <entry key="..\:/Users/vimik/AndroidStudioProjects/YMDBanking/app/src/main/res/layout/activity_dashbord.xml" value="0.12" />
         <entry key="..\:/Users/vimik/AndroidStudioProjects/YMDBanking/app/src/main/res/layout/activity_forget_password_success_message.xml" value="0.1" />
         <entry key="..\:/Users/vimik/AndroidStudioProjects/YMDBanking/app/src/main/res/layout/activity_forgot_pass.xml" value="0.1796875" />
         <entry key="..\:/Users/vimik/AndroidStudioProjects/YMDBanking/app/src/main/res/layout/activity_home.xml" value="0.1796875" />
@@ -16,8 +19,9 @@
         <entry key="..\:/Users/vimik/AndroidStudioProjects/YMDBanking/app/src/main/res/layout/activity_set_new_password.xml" value="0.13179347826086957" />
         <entry key="..\:/Users/vimik/AndroidStudioProjects/YMDBanking/app/src/main/res/layout/activity_signup.xml" value="0.103125" />
         <entry key="..\:/Users/vimik/AndroidStudioProjects/YMDBanking/app/src/main/res/layout/activity_user_profile.xml" value="0.14447463768115942" />
+        <entry key="..\:/Users/vimik/AndroidStudioProjects/YMDBanking/app/src/main/res/layout/conent_home.xml" value="0.1" />
         <entry key="..\:/Users/vimik/AndroidStudioProjects/YMDBanking/app/src/main/res/layout/main_menu.xml" value="0.1796875" />
-        <entry key="..\:/Users/vimik/AndroidStudioProjects/YMDBanking/app/src/main/res/layout/menu_header.xml" value="0.1" />
+        <entry key="..\:/Users/vimik/AndroidStudioProjects/YMDBanking/app/src/main/res/layout/menu_header.xml" value="0.12" />
         <entry key="..\:/Users/vimik/AndroidStudioProjects/YMDBanking/app/src/main/res/menu/main_menu.xml" value="0.1796875" />
       </map>
     </option>
