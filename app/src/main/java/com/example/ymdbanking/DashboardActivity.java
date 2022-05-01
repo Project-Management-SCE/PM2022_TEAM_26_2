@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,6 +29,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     ImageView menuIcon;
     LinearLayout contentView;
     TextView disp_email,disp_phone;
+    Button addB;
 
 
     @Override
@@ -59,6 +61,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
         disp_email = findViewById(R.id.disp_email);
         disp_phone = findViewById(R.id.display_phone);
+        addB = findViewById(R.id.button_add);
 
         //User Session Details
         SessionManager sessionManager = new SessionManager(DashboardActivity.this,SessionManager.SESSION_USER_SESSION);
@@ -70,7 +73,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         disp_email.setText(email);
         disp_phone.setText(phone);
 
+        addB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                startActivity(new Intent(getApplicationContext(),AddClerkActivity.class));
+            }
+        });
 
 
         menuIcon.setOnClickListener(new View.OnClickListener() {
