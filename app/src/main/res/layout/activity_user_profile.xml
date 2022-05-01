@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/app_bg"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="405dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:background="@color/app_bg"
+            android:orientation="vertical">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/setting_profile_image"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_marginStart="140dp"
+                android:layout_marginTop="40dp"
+                android:src="@drawable/ic_id" />
+
+            <TextView
+                android:id="@+id/profile_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:text="user name"
+                android:textColor="#fff"
+                android:textSize="21sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="400dp"
+            android:layout_height="120dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="275dp"
+            android:background="@color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Accounts"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="10dp"
+                        android:text="4"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:id="@+id/disp_accounts_counter"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Balance"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="10dp"
+                        android:id="@+id/disp_balance"
+                        android:text="360"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Messages"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="10dp"
+                        android:text="0"
+                        android:id="@+id/disp_msg_counter"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="360dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:layout_marginTop="45dp">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:paddingLeft="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/mail"/>
+            <TextView
+                android:textStyle="bold"
+                android:id="@+id/disp_email"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:text="xxsas@gmail.com"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginTop="25dp"
+            android:orientation="horizontal"
+            android:paddingStart="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_black_phone"
+               />
+            <TextView
+                android:textStyle="bold"
+                android:id="@+id/display_phone"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:text="@string/_266_225_225"
+                tools:ignore="RtlSymmetry" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="25dp"
+            android:orientation="horizontal"
+            android:paddingLeft="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/add_account_b"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/ic_profile"/>
+
+            <!--<ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_add_account_black"/>-->
+            <TextView
+                android:textStyle="bold"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:text="@string/add_account"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
+
+
+
+
+
+    <!--/
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.constraint.ConstraintLayout>
+    -->

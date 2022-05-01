@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">DMY_Banking</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="forgot_password">Forgot Password?</string>
+
+    <string name="confirm_password">Confirm Password</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="user_name">User Name</string>
+    <string name="profile">Profile</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="show_users">Show Users</string>
+    <string name="accounts">Accounts</string>
+    <string name="transaction">Transaction</string>
+    <string name="make_a_payment">Make a Payment</string>
+    <string name="make_a_deposit">Make a Deposit</string>
+    <string name="make_a_transfer">Make a Transfer</string>
+    <string name="apply_for_loan">Apply For Loan</string>
+    <string name="logout">Logout</string>
+    <string name="enter_user_name">Enter User Name</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="remember_me">Remember Me</string>
+    <string name="sign_in">Sign In</string>
+    <string name="create_account">Create Account</string>
+    <string name="full_name">Full Name</string>
+
+    <string name="next">next</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="forgot_password_title">Forgot Password</string>
+    <string name="forgot_pass_detail">Enter Your Account\'s Email for which you want to reset your password</string>
+    <string name="new_credentials">New Credentials</string>
+    <string name="your_identity_has_been_verified_set_your_new_password">Your identity has been verified set your new password</string>
+    <string name="new_password">New Password</string>
+    <string name="save">Save</string>
+    <string name="password_updated">Password Updated</string>
+    <string name="your_password_has_been_updated">Your password has been updated</string>
+    <string name="enter_your_id">Enter Id</string>
+    <string name="add_account">Add account</string>
+    <string name="_266_225_225">+266 225 225</string>
+    <string name="add_clerks">Add Clerks</string>
+    <string name="create_nclerk">Create\nClerk</string>
+    <string name="add_clerk">Add Clerk</string>
+
+</resources>
