@@ -19,5 +19,10 @@ agent {
 	    	sh 'git --version'
              }
 	}
+	stage('Unit Test') {
+			steps {
+			// Execute your Unit Test
+			sh './gradlew testStagingDebug'
+			 }	
 	}
 }
