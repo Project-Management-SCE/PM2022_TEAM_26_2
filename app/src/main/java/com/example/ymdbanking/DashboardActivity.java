@@ -1,5 +1,7 @@
 package com.example.ymdbanking;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,10 +9,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -33,10 +39,38 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     LinearLayout contentView;
     TextView disp_username,disp_phone;
     Button addB;
+
     HashMap<String,String> userDetails;
+
+    //Dialogs
+    private Dialog depositDialog;
+    private EditText edtDepositAmount;
+    private Button btnCancel;
+    private Button btnSuccess;
+    private Spinner accounts;
+
+    private String accountName,depositAmount;
+
+
 
     private String TAG = "DashboardActivity";
 
+    private View.OnClickListener depositClickListener = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View view)
+        {
+            if (view.getId() == btnCancel.getId())
+            {
+                depositDialog.dismiss();
+                Toast.makeText(DashboardActivity.this, "Deposit Cancelled", Toast.LENGTH_SHORT).show();
+            }
+            else if (view.getId() == btnSuccess.getId()) {
+
+//                makeDeposit();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,6 +217,56 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             startActivity(new Intent(getApplicationContext(),UserProfileActivity.class));
         else if(id == R.id.nav_accounts)
             startActivity(new Intent(getApplicationContext(),AccountsOverViewActivity.class));
+        else if(id == R.id.nav_deposit)
+           displayDepositDialog();
         return true;
+    }
+
+    private void displayDepositDialog()
+    {
+        depositDialog = new Dialog(this);
+        depositDialog.setContentView(R.layout.deposit_dialog);
+
+        depositDialog.setCanceledOnTouchOutside(true);
+        depositDialog.setOnCancelListener(new DialogInterface.OnCancelListener()
+        {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                Toast.makeText(DashboardActivity.this, "Deposit Cancelled", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        accounts = depositDialog.findViewById(R.id.dep_spn_accounts);
+//        accountAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, userProfile.getAccounts());
+//        accountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        topSpinner.setAdapter(accountAdapter);
+//        topSpinner.setSelection(0);
+
+        edtDepositAmount = depositDialog.findViewById(R.id.edt_deposit_amount);
+
+        btnCancel = depositDialog.findViewById(R.id.btn_cancel_deposit);
+        btnSuccess = depositDialog.findViewById(R.id.btn_deposit);
+
+        btnCancel.setOnClickListener(depositClickListener);
+        btnSuccess.setOnClickListener(depositClickListener);
+
+        depositDialog.show();
+
+    }
+
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
+    }
+
+    public String getDepositAmount() {
+        return depositAmount;
+    }
+
+    public void setDepositAmount(String depositAmount) {
+        this.depositAmount = depositAmount;
     }
 }
