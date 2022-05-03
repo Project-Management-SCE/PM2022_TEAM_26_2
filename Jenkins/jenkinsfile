@@ -29,7 +29,7 @@ pipeline
 		{
 			steps
 			{
-				sh 'cd src/ ; java -jar ../lib/junit-platform-console-standalone-1.7.0-all.jar -cp "." --select-class ExampleUnitTest --reports-dir="report"' 
+				sh './gradlew test' 
 		 	}
 		}
 	}
