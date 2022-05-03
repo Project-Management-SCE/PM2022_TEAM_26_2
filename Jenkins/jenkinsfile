@@ -1,27 +1,36 @@
-pipeline {
-agent {
-	docker {
-        image 'androidsdk/android-31:latest'
-         reuseNode true            
-          }
-	 }
-
-    stages { 
-        stage('Build') {
-                        steps {
-			sh "echo 123"
-			 }
-			}
-	    
-	 stage('Log the Jenkins Docker Ant Git and Java version info') {
-            steps {
-	    	sh 'java -version'
-	    	sh 'git --version'
-             }
+pipeline
+{
+	agent 
+	{
+		docker
+		{
+			image 'androidsdk/android-31:latest'
+			 reuseNode true            
+	  	}
 	}
-	stage('Unit Test') {
-			steps {
-			sh './gradlew testStagingDebug'
-			 }	
+    	stages
+	{ 
+		stage('Build')
+		{
+				steps 
+				{
+					sh "echo 123"
+				}
+		}
+	 	stage('Log the Jenkins Docker Ant Git and Java version info')
+		{
+	    		steps 
+			{
+				sh 'java -version'
+				sh 'git --version'
+		     	}
+		}
+		stage('Unit Test') 
+		{
+			steps
+			{
+				sh './gradlew testStagingDebug'
+		 	}	
+		}
 	}
 }
