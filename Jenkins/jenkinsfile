@@ -25,14 +25,20 @@ pipeline
 			sh 'git --version'
 			}
 		}
-        stage('Test') 
+		stage('Integration') 
 		{
-            steps 
+			junit 'test-results.xml'
+		}
+
+		junit 'more-test-results.xml'
+
+		stage('Ignored') 
+		{
+			withChecks('Integration Tests') 
 			{
-				sh './gradlew build'
-                sh './gradlew check'
-            }
-        }
+				junit 'yet-more-test-results.xml'
+			}
+		}
 	}
 	post 
 	{
