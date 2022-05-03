@@ -29,8 +29,8 @@ pipeline
 		{
 			steps
 			{
-				sh './gradlew junit:junit:4.13.2' 
-		 	}	
+				sh 'cd src/ ; java -jar ../lib/junit-platform-console-standalone-1.7.0-all.jar -cp "." --select-class ExampleUnitTest --reports-dir="report"' 
+		 	}
 		}
 	}
 }
