@@ -5,32 +5,40 @@ pipeline
 		docker
 		{
 			image 'androidsdk/android-31:latest'
-			 reuseNode true            
+			reuseNode true            
 	  	}
 	}
-    	stages
+	stages
 	{ 
 		stage('Build')
 		{
-				steps 
-				{
-					sh "echo 123"
-				}
+			steps 
+			{
+				sh "echo 123"
+			}
 		}
 	 	stage('Log the Jenkins Docker Ant Git and Java version info')
 		{
-	    		steps 
+			steps 
 			{
-				sh 'java -version'
-				sh 'git --version'
-		     	}
+			sh 'java -version'
+			sh 'git --version'
+			}
 		}
-		stage('Unit Test') 
+        stage('Test') 
 		{
-			steps
+            steps 
 			{
-				sh './gradlew test' 
-		 	}
-		}
+                sh './gradlew check'
+            }
+        }
 	}
+	post 
+	{
+        always 
+		{
+            archiveArtifacts artifacts: 'build/libs/**/*.jar', fingerprint: true
+            junit 'build/reports/**/*.xml'
+        }
+    }
 }
