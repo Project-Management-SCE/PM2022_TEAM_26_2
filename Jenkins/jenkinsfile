@@ -29,7 +29,7 @@ pipeline
 		{
 			steps
 			{
-				sh './gradlew ExampleUnitTest'
+				sh './gradlew --no-daemon --debug :app:connectedDevDebugAndroidTest' 
 		 	}	
 		}
 	}
