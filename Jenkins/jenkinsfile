@@ -29,7 +29,7 @@ pipeline
 		{
 			steps
 			{
-				sh './gradlew :app:test' 
+				sh './gradlew junit:junit:4.13.2' 
 		 	}	
 		}
 	}
