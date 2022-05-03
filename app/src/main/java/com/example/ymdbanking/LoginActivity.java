@@ -118,6 +118,7 @@ public class LoginActivity extends AppCompatActivity {
                                 SessionManager sessionManager = new SessionManager(LoginActivity.this,SessionManager.USER_SESSION);
                                 sessionManager.createLoginSession(fullName,id,username,email,password,phone);
 
+                                HashMap<String,Customer> customerHM = snapshot.child(id_login).getValue(Customer.class);
                                 Customer customer = snapshot.child(id_login).getValue(Customer.class);
                                 ApplicationDB applicationDB = new ApplicationDB(getApplicationContext());
                                 customer.setAccounts(applicationDB.getAccountsFromCurrentCustomer(customer.getId()));

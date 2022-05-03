@@ -74,7 +74,7 @@ public class Clerk extends User
 	{
 		String accNo = "A" + (customer.getAccounts().size() + 1);
 		Account account = new Account(accountName, accNo, accountBalance);
-		customer.getAccounts().add(account);
+		customer.getAccounts().put(accNo,account);
 	}
 
 	//TODO: need to implement clerk methods

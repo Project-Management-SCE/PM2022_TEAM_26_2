@@ -203,10 +203,11 @@ public class AccountsOverViewActivity extends AppCompatActivity {
                         txtDetailMessage.setVisibility(View.VISIBLE);
                         lstAccounts.setVisibility(View.VISIBLE);
                     }
-//                    HashMap<String,Object> accounts = customer.getAccounts();
-//                    HashMap<String, Object> listAccounts = new HashMap<>();
+//                    HashMap<String,Account> accounts = customer.getAccounts();
+//                    HashMap<String,Object> listAccounts = new HashMap<>();
 //                    listAccounts.put("accounts",accounts);
-                    AccountAdapter adapter = new AccountAdapter(AccountsOverViewActivity.this, R.layout.lst_accounts, customer.getAccounts());
+                    ArrayList<Account> arrayAccounts = (ArrayList<Account>) customer.getAccounts().values();
+                    AccountAdapter adapter = new AccountAdapter(AccountsOverViewActivity.this, R.layout.lst_accounts, arrayAccounts);
                     lstAccounts.setAdapter(adapter);
                     SessionManager sessionManager = new SessionManager(this,SessionManager.USER_SESSION);
                     Gson gson = new Gson();

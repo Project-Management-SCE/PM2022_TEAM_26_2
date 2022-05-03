@@ -16,6 +16,8 @@ import com.example.ymdbanking.model.Account;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Adapter used for displaying accounts
@@ -29,19 +31,13 @@ public class AccountAdapter extends ArrayAdapter<Account>
     public AccountAdapter(Context context, int resource, ArrayList<Account> accounts)
     {
         super(context, resource, accounts);
-        this.context = context;
-        this.resource = resource;
     }
 
-    /**
-     * function that gets the view from the adapter
-     */
     @Override
-    @NonNull
-    public View getView (int position, View convertView, @NonNull ViewGroup parent) {
-
-        if (convertView == null) {
-
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
+        if (convertView == null)
+        {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             convertView = inflater.inflate(resource, parent, false);
         }

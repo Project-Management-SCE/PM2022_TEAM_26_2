@@ -357,9 +357,9 @@ public class ApplicationDB
 //		return accounts;
 //	}
 
-	public ArrayList<Account> getAccountsFromCurrentCustomer(String customerID)
+	public HashMap<String,Account> getAccountsFromCurrentCustomer(String customerID)
 	{
-		ArrayList<Account> accounts = new ArrayList<>(0);
+		HashMap<String,Account> accounts = new HashMap<>(0);
 		database.getReference(customerID).child(KEY_ACCOUNTS).get()
 				.addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
 				{
@@ -367,7 +367,10 @@ public class ApplicationDB
 					public void onComplete(@NonNull Task<DataSnapshot> task)
 					{
 						for(DataSnapshot ds : task.getResult().getChildren())
-							accounts.add(ds.getValue(Account.class));
+						{
+//							accounts.add(ds.getValue(Account.class));
+							accounts.put(ds.getKey(),ds.getValue(Account.class));
+						}
 					}
 				})
 				.addOnFailureListener(new OnFailureListener()
@@ -383,6 +386,7 @@ public class ApplicationDB
 		return accounts;
 	}
 
+	//Todo: this function doesn't work, find out why
 	public Customer getCustomerByID(String customerID)
 	{
 		final Customer[] customer = new Customer[1];

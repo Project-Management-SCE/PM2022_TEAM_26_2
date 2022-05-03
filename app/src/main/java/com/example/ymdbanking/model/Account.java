@@ -15,7 +15,12 @@ public class Account
     private ArrayList<Transaction> transactions;
     private long dbID;
 
-    public Account (String accountName, String accountNo, double accountBalance)
+    public Account()
+    {
+        //Empty constructor
+    }
+
+    public Account(String accountName, String accountNo, double accountBalance)
     {
         this.accountName = accountName;
         this.accountNo = accountNo;
@@ -23,7 +28,7 @@ public class Account
         transactions = new ArrayList<>();
     }
 
-    public Account (String accountName, String accountNo, double accountBalance, long dbID)
+    public Account(String accountName, String accountNo, double accountBalance, long dbID)
     {
         this(accountName, accountNo, accountBalance);
         this.dbID = dbID;
