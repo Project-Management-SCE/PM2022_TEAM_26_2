@@ -25,20 +25,16 @@ pipeline
 			sh 'git --version'
 			}
 		}
-		stage('Integration') 
-		{
-			junit 'test-results.xml'
-		}
-
-		junit 'more-test-results.xml'
-
-		stage('Ignored') 
-		{
-			withChecks('Integration Tests') 
-			{
-				junit 'yet-more-test-results.xml'
-			}
-		}
+		        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
+        }
 	}
 	post 
 	{
