@@ -10,6 +10,7 @@ public class Clerk extends User
 //	private String country;
 //	private String username;
 //	private String password;
+	private final static int typeID = 2;
 	private ArrayList<Customer> customers;
 	private ArrayList<Transaction> loansToApprove;
 //	private long dbId;
@@ -44,7 +45,9 @@ public class Clerk extends User
 	public ArrayList<Transaction> getLoansToApprove() {return loansToApprove;}
 	public void setLoansToApprove(ArrayList<Transaction> loansToApprove) {this.loansToApprove = loansToApprove;}
 	public void setCustomers(ArrayList<Customer> customers) {this.customers = customers;}
-//	public String getCountry() {return country;}
+	public static int getTypeID() {return typeID;}
+	public ArrayList<Customer> getCustomers() {return customers;}
+	//	public String getCountry() {return country;}
 //	public void setCountry(String country) {this.country = country;}
 //	public long getDbId() {return dbId;}
 //	public void setDbId(long dbId) {this.dbId = dbId;}

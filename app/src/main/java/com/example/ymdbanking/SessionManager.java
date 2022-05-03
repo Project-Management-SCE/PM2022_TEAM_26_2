@@ -3,6 +3,11 @@ package com.example.ymdbanking;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.ymdbanking.model.Customer;
+import com.example.ymdbanking.model.User;
+import com.google.android.gms.common.config.GservicesValue;
+import com.google.gson.Gson;
+
 import java.util.HashMap;
 
 public class SessionManager {
@@ -17,8 +22,8 @@ public class SessionManager {
     public static final String REMEMBER_ME_SESSION = "rememberMe";
     public static final String CLERK_SESSION = "ClerkLoginSession";
 
-
-
+    public static final String SESSION_OBJ = "sessionObj";
+    public static final String CUSTOMER_OBJ = "customerObj";
 
     //User session variables
     private static final String IS_LOGIN = "IsLoggedIn";
@@ -116,6 +121,21 @@ public class SessionManager {
     public boolean checkRememberMeLogin() {
         return userSession.getBoolean(IS_REMEMBER_ME, true);
 
+    }
+
+    public Customer getCustomerObjFromSession()
+    {
+        Gson gson = new Gson();
+        String json = userSession.getString(SESSION_OBJ,"");
+        return gson.fromJson(json, Customer.class);
+    }
+
+    public void saveCustomerObjForSession(Customer customer)
+    {
+        Gson gson = new Gson();
+        String json = gson.toJson(customer);
+        editor.putString(SESSION_OBJ,json);
+        editor.commit();
     }
 
     /*

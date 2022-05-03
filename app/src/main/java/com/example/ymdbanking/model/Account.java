@@ -91,7 +91,7 @@ public class Account
             }
         }
 
-        Transaction deposit = new Transaction("T" + (transactions.size() + 1) + "-D" + (depositsCount+1), amount);
+        Transaction deposit = new Transaction("T" + (transactions.size() + 1) + "-D" + (depositsCount+1),amount,this);
         transactions.add(deposit);
     }
 
@@ -110,7 +110,7 @@ public class Account
             }
         }
 
-        Transaction loan = new Transaction("T" + (transactions.size() + 1) + "-L" + (depositsCount+1), amount);
+        Transaction loan = new Transaction("T" + (transactions.size() + 1) + "-L" + (depositsCount+1),this,amount);
         transactions.add(loan);
 
     }

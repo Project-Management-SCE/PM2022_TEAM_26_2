@@ -19,8 +19,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -88,10 +90,9 @@ public class ApplicationDB
 	/**
 	 * Method to save transaction to database
 	 * @param sendingCustomer - sending customer
-	 * @param sendingAccount - account number
 	 * @param transaction - transaction object to hold all info about the transaction
 	 */
-	public void saveNewTransaction(Customer sendingCustomer, String sendingAccount, Transaction transaction)
+	public void saveNewTransaction(Customer sendingCustomer, Transaction transaction)
 	{
 		HashMap<String,Object> tran = new HashMap<>();
 		tran.put("transaction_id", transaction.getTransactionID());
@@ -119,8 +120,8 @@ public class ApplicationDB
 		tran.put("amount",transaction.getAmount());
 		tran.put("type",transaction.getTransactionType().toString());
 
-		database.getReference("Users").child(String.valueOf(sendingCustomer.getId())).child("accounts")
-				.child(transaction.getSendingAccount()).child("transactions")
+		database.getReference("Users").child(sendingCustomer.getId()).child("accounts")
+				.child(transaction.getDestinationAccount()).child("transactions")
 				.child(transaction.getTransactionID()).setValue(tran);
 	}
 
@@ -134,9 +135,9 @@ public class ApplicationDB
 		HashMap<String,Object> newAccount = new HashMap<>();
 		newAccount.put(KEY_ACCOUNT_NAME,account.getAccountName());
 		newAccount.put(KEY_ACCOUNT_BALANCE,account.getAccountBalance());
-		newAccount.put(KEY_TRANSACTIONS,null);
+		newAccount.put(KEY_TRANSACTIONS,account.getTransactions());
 
-		database.getReference(USERS).child(String.valueOf(customer.getId())).child(KEY_ACCOUNTS)
+		database.getReference(USERS).child(customer.getId()).child(KEY_ACCOUNTS)
 				.child(account.getAccountNo()).setValue(newAccount);
 	}
 
@@ -358,7 +359,7 @@ public class ApplicationDB
 
 	public ArrayList<Account> getAccountsFromCurrentCustomer(String customerID)
 	{
-		ArrayList<Account> accounts = new ArrayList<>();
+		ArrayList<Account> accounts = new ArrayList<>(0);
 		database.getReference(customerID).child(KEY_ACCOUNTS).get()
 				.addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
 				{
@@ -382,28 +383,42 @@ public class ApplicationDB
 		return accounts;
 	}
 
-	public Customer getCustomerByID(long customerID)
+	public Customer getCustomerByID(String customerID)
 	{
 		final Customer[] customer = new Customer[1];
-		database.getReference(USERS).child(String.valueOf(customerID)).get()
-				.addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+		database.getReference(USERS).orderByChild("id").equalTo(customerID)
+				.addListenerForSingleValueEvent(new ValueEventListener()
 				{
 					@Override
-					public void onComplete(@NonNull Task<DataSnapshot> task)
+					public void onDataChange(@NonNull DataSnapshot snapshot)
 					{
-						DataSnapshot ds = task.getResult();
-						customer[0] = ds.getValue(Customer.class);
+						customer[0] = snapshot.child(customerID).getValue(Customer.class);
 					}
-				})
-				.addOnFailureListener(new OnFailureListener()
-				{
 					@Override
-					public void onFailure(@NonNull Exception e)
+					public void onCancelled(@NonNull DatabaseError error)
 					{
 						Toast.makeText(context, "ERROR - Can't get customer from DB", Toast.LENGTH_SHORT).show();
-						Log.d("DB_ERROR",e.toString());
+						Log.d("DB_ERROR",error.toString());
 					}
 				});
+//				.addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+//				{
+//					@Override
+//					public void onComplete(@NonNull Task<DataSnapshot> task)
+//					{
+//						DataSnapshot ds = task.getResult();
+//						customer[0] = ds.getValue(Customer.class);
+//					}
+//				})
+//				.addOnFailureListener(new OnFailureListener()
+//				{
+//					@Override
+//					public void onFailure(@NonNull Exception e)
+//					{
+//						Toast.makeText(context, "ERROR - Can't get customer from DB", Toast.LENGTH_SHORT).show();
+//						Log.d("DB_ERROR",e.toString());
+//					}
+//				});
 		return customer[0];
 	}
 
@@ -446,15 +461,15 @@ public class ApplicationDB
 					transactions.add(ds.getValue(Transaction.class));
 			}
 		})
-				.addOnFailureListener(new OnFailureListener()
-				{
-					@Override
-					public void onFailure(@NonNull Exception e)
-					{
-						Toast.makeText(context, "ERROR - Can't get transactions from DB for this account", Toast.LENGTH_SHORT).show();
-						Log.d("DB_ERROR",e.toString());
-					}
-				});
+		.addOnFailureListener(new OnFailureListener()
+		{
+			@Override
+			public void onFailure(@NonNull Exception e)
+			{
+				Toast.makeText(context, "ERROR - Can't get transactions from DB for this account", Toast.LENGTH_SHORT).show();
+				Log.d("DB_ERROR",e.toString());
+			}
+		});
 
 		return transactions;
 	}

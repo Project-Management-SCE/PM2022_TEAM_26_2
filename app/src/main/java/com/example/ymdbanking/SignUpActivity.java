@@ -13,6 +13,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.ymdbanking.model.Customer;
+import com.example.ymdbanking.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
@@ -135,9 +137,10 @@ public class SignUpActivity extends AppCompatActivity {
         FirebaseDatabase rootNode = FirebaseDatabase.getInstance();
         DatabaseReference reference = rootNode.getReference("Users");
 
-        UserHelperClass addNewUser = new UserHelperClass(name,id,username,email,pass,phone);
+//        UserHelperClass addNewUser = new UserHelperClass(name,id,username,email,pass,phone);
+        Customer newCustomer = new Customer(email,name,id,pass,phone,username);
 
-        reference.child(id).setValue(addNewUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+        reference.child(id).setValue(newCustomer).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Intent intent = new Intent(getApplicationContext(),LoginActivity.class);

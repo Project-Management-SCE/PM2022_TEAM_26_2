@@ -14,6 +14,8 @@ import android.widget.Toolbar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.ymdbanking.db.ApplicationDB;
+import com.example.ymdbanking.model.Customer;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -115,6 +117,12 @@ public class LoginActivity extends AppCompatActivity {
                                 //Create a User Session
                                 SessionManager sessionManager = new SessionManager(LoginActivity.this,SessionManager.USER_SESSION);
                                 sessionManager.createLoginSession(fullName,id,username,email,password,phone);
+
+                                Customer customer = snapshot.child(id_login).getValue(Customer.class);
+                                ApplicationDB applicationDB = new ApplicationDB(getApplicationContext());
+                                customer.setAccounts(applicationDB.getAccountsFromCurrentCustomer(customer.getId()));
+                                sessionManager.saveCustomerObjForSession(customer);
+
                                 startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
                             }
                             else {

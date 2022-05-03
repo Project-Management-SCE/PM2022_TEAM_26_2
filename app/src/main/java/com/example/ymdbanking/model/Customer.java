@@ -1,6 +1,7 @@
 package com.example.ymdbanking.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Class Profile for profile users
@@ -13,7 +14,9 @@ public class Customer extends User
 //    private String country;
 //    private String username;
 //    private String password;
+    private final static int typeID = 3;
     private ArrayList<Account> accounts;
+//    private ArrayList<Account> accounts;
     private ArrayList<Payee> payees;
 //    private long dbId;
 
@@ -66,7 +69,8 @@ public class Customer extends User
     public ArrayList<Account> getAccounts() { return accounts; }
     public void setAccounts(ArrayList<Account> accounts) {this.accounts = accounts;}
     public ArrayList<Payee> getPayees() { return payees; }
-//    public long getDbId() { return dbId; }
+    public static int getTypeID() {return typeID;}
+    //    public long getDbId() { return dbId; }
 //    public void setDbId(long dbId) { this.dbId = dbId; }
 //    public void setFirstName(String firstName) {this.firstName = firstName;}
 //    public void setLastName(String lastName) {this.lastName = lastName;}
@@ -83,11 +87,11 @@ public class Customer extends User
     {
         String accNo = "A" + (accounts.size() + 1);
         Account account = new Account(accountName, accNo, accountBalance);
-        accounts.add(account);
+        accounts.put(account.getAccountNo(),account);
     }
-    public void setAccountsFromDB(ArrayList<Account> accounts) {
-        this.accounts = accounts;
-    }
+//    public void setAccountsFromDB(ArrayList<Account> accounts) {
+//        this.accounts = accounts;
+//    }
 
     /**
      * Method to implement the transfer logic

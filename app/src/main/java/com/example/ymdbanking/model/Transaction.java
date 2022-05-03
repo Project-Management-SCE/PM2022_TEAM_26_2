@@ -55,17 +55,17 @@ public class Transaction
      * @param transactionID - transaction ID
      * @param amount - amount to deposit to account
      */
-    public Transaction(String transactionID, double amount) {
+    public Transaction(String transactionID,double amount,Account destinationAccount) {
         this.transactionID = transactionID;
         timestamp = DATE_FORMAT.format(new Date());
         this.amount = amount;
         transactionType = TRANSACTION_TYPE.DEPOSIT;
+        this.destinationAccount = destinationAccount.getAccountNo();
     }
 
-    public Transaction(String transactionID, String timestamp, double amount, long dbId) {
-        this(transactionID, amount);
+    public Transaction(String transactionID, String timestamp,Account destinationAccount,double amount) {
+        this(transactionID,amount,destinationAccount);
         this.timestamp = timestamp;
-        this.dbId = dbId;
     }
 
     /**

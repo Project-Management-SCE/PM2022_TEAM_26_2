@@ -7,12 +7,13 @@ import java.util.ArrayList;
  */
 public class Admin extends User
 {
-	private String firstName;
-	private String lastName;
-	private String country;
+//	private String firstName;
+//	private String lastName;
+//	private String country;
 	//private String username;
 	//private String password;
 	private ArrayList<User> users;
+	private final static int typeID = 1;
 	//private long dbId;
 
 	public Admin()
@@ -38,7 +39,8 @@ public class Admin extends User
 //	public void setPassword(String password) {this.password = password;}
 	public ArrayList<User> getUsers() {return users;}
 	public void setUsers(ArrayList<User> users) {this.users = users;}
-//	public long getDbId() {return dbId;}
+	public static int getTypeID() {return typeID;}
+	//	public long getDbId() {return dbId;}
 //	public void setDbId(long dbId) {this.dbId = dbId;}
 //
 //	@Override
