@@ -25,16 +25,17 @@ pipeline
 			sh 'git --version'
 			}
 		}
-		        stage('Test') {
-            steps {
-                sh 'mvn test'
-            }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
-                }
-            }
-        }
+		    stage('Test') {
+      steps {
+        sh(script: './mvnw --batch-mode -Dmaven.test.failure.ignore=true test')
+
+      }
+    }
+    stage('Package') {
+      steps {
+        sh(script: './mvnw --batch-mode package -DskipTests')
+      }
+    }
 	}
 	post 
 	{
