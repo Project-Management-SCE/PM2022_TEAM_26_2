@@ -28,7 +28,7 @@ pipeline
         stage('Unit Test') {
           steps {
             // Execute your Unit Test
-            sh './gradlew test'
+            sh './gradlew testStagingDebug'
           }
         }
 	}
