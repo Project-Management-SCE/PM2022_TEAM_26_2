@@ -83,11 +83,11 @@ public class AccountsOverViewActivity extends AppCompatActivity {
 
         SessionManager sessionManager = new SessionManager(this,SessionManager.USER_SESSION);
         Gson gson = new Gson();
-        customer = (Customer) sessionManager.getCustomerObjFromSession();
+        customer = sessionManager.getCustomerObjFromSession();
 //        customer = gson.fromJson(json, Customer.class);
         ApplicationDB applicationDB = new ApplicationDB(this);
 //        customer = applicationDB.getCustomerByID(sessionManager.userSession.getString(SessionManager.KEY_ID,""));
-//        customer.setAccounts(applicationDB.getAccountsFromCurrentCustomer(customer.getId()));
+        customer.setAccounts(applicationDB.getAccountsFromCurrentCustomer(customer.getId()));
 
         fab.setOnClickListener(new View.OnClickListener()
         {
@@ -206,8 +206,8 @@ public class AccountsOverViewActivity extends AppCompatActivity {
 //                    HashMap<String,Account> accounts = customer.getAccounts();
 //                    HashMap<String,Object> listAccounts = new HashMap<>();
 //                    listAccounts.put("accounts",accounts);
-                    ArrayList<Account> arrayAccounts = (ArrayList<Account>) customer.getAccounts().values();
-                    AccountAdapter adapter = new AccountAdapter(AccountsOverViewActivity.this, R.layout.lst_accounts, arrayAccounts);
+                    ArrayList<Account> arrayAccounts = customer.getAccounts();
+                    AccountAdapter adapter = new AccountAdapter(this, R.layout.lst_accounts, arrayAccounts);
                     lstAccounts.setAdapter(adapter);
                     SessionManager sessionManager = new SessionManager(this,SessionManager.USER_SESSION);
                     Gson gson = new Gson();

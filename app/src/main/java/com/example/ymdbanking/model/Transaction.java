@@ -30,6 +30,11 @@ public class Transaction
     private TRANSACTION_TYPE transactionType;
     private long dbId;
 
+    public Transaction()
+    {
+        //Empty constructor
+    }
+
     /**
      * Transaction constructors for payment
      * @param transactionID - transaction ID

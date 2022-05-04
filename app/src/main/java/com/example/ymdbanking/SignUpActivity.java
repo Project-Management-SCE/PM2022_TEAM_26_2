@@ -132,15 +132,16 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
-    private void storeNewUserData() {
-
+    private void storeNewUserData()
+    {
         FirebaseDatabase rootNode = FirebaseDatabase.getInstance();
         DatabaseReference reference = rootNode.getReference("Users");
 
 //        UserHelperClass addNewUser = new UserHelperClass(name,id,username,email,pass,phone);
         Customer newCustomer = new Customer(email,name,id,pass,phone,username);
 
-        reference.child(id).setValue(newCustomer).addOnCompleteListener(new OnCompleteListener<Void>() {
+        reference.child(id).setValue(newCustomer).addOnCompleteListener(new OnCompleteListener<Void>()
+        {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Intent intent = new Intent(getApplicationContext(),LoginActivity.class);

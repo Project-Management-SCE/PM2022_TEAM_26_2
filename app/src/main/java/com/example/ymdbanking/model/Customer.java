@@ -15,7 +15,7 @@ public class Customer extends User
 //    private String username;
 //    private String password;
     private final static int typeID = 3;
-    private HashMap<String,Account> accounts;
+    private ArrayList<Account> accounts;
 //    private ArrayList<Account> accounts;
     private ArrayList<Payee> payees;
 //    private long dbId;
@@ -32,7 +32,7 @@ public class Customer extends User
     public Customer(String email,String fullName,String id,String password,String phone,String username)
     {
         super(email,fullName,id,password,phone,username);
-        accounts = new HashMap<>(0);
+        accounts = new ArrayList<>(0);
         payees = new ArrayList<>(0);
     }
 
@@ -41,7 +41,7 @@ public class Customer extends User
      * dbId field will be set later on
      */
     public Customer(String email,String fullName,String id,String password,String phone,String username,
-                    HashMap<String,Account> accounts,ArrayList<Payee> payees)
+                    ArrayList<Account> accounts,ArrayList<Payee> payees)
     {
         super(email,fullName,id,password,phone,username);
         this.accounts = accounts;
@@ -66,8 +66,8 @@ public class Customer extends User
 //    public String getPassword() {
 //        return password;
 //    }
-    public HashMap<String, Account> getAccounts() { return accounts; }
-    public void setAccounts(HashMap<String,Account> accounts) {this.accounts = accounts;}
+    public ArrayList<Account> getAccounts() { return accounts; }
+    public void setAccounts(ArrayList<Account> accounts) {this.accounts = accounts;}
     public ArrayList<Payee> getPayees() { return payees; }
     public static int getTypeID() {return typeID;}
     //    public long getDbId() { return dbId; }
@@ -87,7 +87,7 @@ public class Customer extends User
     {
         String accNo = "A" + (accounts.size() + 1);
         Account account = new Account(accountName, accNo, accountBalance);
-        accounts.put(account.getAccountNo(),account);
+        accounts.add(account);
     }
 //    public void setAccountsFromDB(ArrayList<Account> accounts) {
 //        this.accounts = accounts;
@@ -119,8 +119,8 @@ public class Customer extends User
             }
         }
 
-        sendingAcc.getTransactions().add(new Transaction("T" + (sendingAcc.getTransactions().size() + 1) + "-T" + (sendingAccTransferCount + 1), sendingAcc.toTransactionString(), receivingAcc.toTransactionString(), transferAmount));
-        receivingAcc.getTransactions().add(new Transaction("T" + (receivingAcc.getTransactions().size() + 1) + "-T" + (receivingAccTransferCount + 1), sendingAcc.toTransactionString(), receivingAcc.toTransactionString(), transferAmount));
+        sendingAcc.getTransactions().add(new Transaction("T" + (sendingAcc.getTransactions().size() + 1) + "-T" + (sendingAccTransferCount+1), sendingAcc.toTransactionString(), receivingAcc.toTransactionString(), transferAmount));
+        receivingAcc.getTransactions().add(new Transaction("T" + (receivingAcc.getTransactions().size() + 1) + "-T" + (receivingAccTransferCount+1), sendingAcc.toTransactionString(), receivingAcc.toTransactionString(), transferAmount));
     }
 
     /**

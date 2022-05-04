@@ -3,6 +3,7 @@ package com.example.ymdbanking;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -16,14 +17,21 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ymdbanking.db.ApplicationDB;
 import com.example.ymdbanking.model.Customer;
+import com.example.ymdbanking.model.Account;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -118,15 +126,16 @@ public class LoginActivity extends AppCompatActivity {
                                 SessionManager sessionManager = new SessionManager(LoginActivity.this,SessionManager.USER_SESSION);
                                 sessionManager.createLoginSession(fullName,id,username,email,password,phone);
 
-                                HashMap<String,Customer> customerHM = snapshot.child(id_login).getValue(Customer.class);
-                                Customer customer = snapshot.child(id_login).getValue(Customer.class);
+//                                Account account = snapshot.child(id_login).child("accounts").getValue(Account.class);
+                                Customer customer = new Customer(email,fullName,id,password,phone,username);
                                 ApplicationDB applicationDB = new ApplicationDB(getApplicationContext());
                                 customer.setAccounts(applicationDB.getAccountsFromCurrentCustomer(customer.getId()));
                                 sessionManager.saveCustomerObjForSession(customer);
 
                                 startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
                             }
-                            else {
+                            else
+                            {
                                 inputPass.setError("Password does not match!");
                                 Toast.makeText(LoginActivity.this, "", Toast.LENGTH_SHORT).show();
                             }
@@ -136,7 +145,8 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                    public void onCancelled(@NonNull DatabaseError error)
+                    {
                         Toast.makeText(LoginActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -144,9 +154,11 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        btnForgot.setOnClickListener(new View.OnClickListener() {
+        btnForgot.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 startActivity(new Intent(getApplicationContext(),ForgotPassActivity.class));
             }
         });

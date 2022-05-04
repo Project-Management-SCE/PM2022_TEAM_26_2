@@ -31,6 +31,8 @@ public class AccountAdapter extends ArrayAdapter<Account>
     public AccountAdapter(Context context, int resource, ArrayList<Account> accounts)
     {
         super(context, resource, accounts);
+        this.context = context;
+        this.resource = resource;
     }
 
     @Override

@@ -10,8 +10,8 @@ import com.google.gson.Gson;
 
 import java.util.HashMap;
 
-public class SessionManager {
-
+public class SessionManager
+{
     //Variables
     SharedPreferences userSession;
     SharedPreferences.Editor editor;
@@ -49,7 +49,8 @@ public class SessionManager {
 
 
 
-    public SessionManager(Context _context,String sessionName) {
+    public SessionManager(Context _context,String sessionName)
+    {
         context = _context;
         userSession = context.getSharedPreferences(sessionName, Context.MODE_PRIVATE);
         editor = userSession.edit();
@@ -70,8 +71,8 @@ public class SessionManager {
         editor.commit();
     }
 
-    public HashMap<String, String> getUserDetailFromSession() {
-
+    public HashMap<String, String> getUserDetailFromSession()
+    {
         HashMap<String, String> userData = new HashMap<String, String>();
 
         userData.put(KEY_FULLNAME, userSession.getString(KEY_FULLNAME, null));

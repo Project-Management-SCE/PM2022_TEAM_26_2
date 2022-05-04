@@ -1,6 +1,10 @@
 package com.example.ymdbanking.model;
 
+import android.icu.text.Edits;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 
 /**
@@ -13,7 +17,7 @@ public class Account
     private String accountNo;
     private double accountBalance;
     private ArrayList<Transaction> transactions;
-    private long dbID;
+//    private long dbID;
 
     public Account()
     {
@@ -28,10 +32,10 @@ public class Account
         transactions = new ArrayList<>();
     }
 
-    public Account(String accountName, String accountNo, double accountBalance, long dbID)
+    public Account(String accountName, String accountNo, double accountBalance,ArrayList<Transaction> transactions)
     {
         this(accountName, accountNo, accountBalance);
-        this.dbID = dbID;
+        this.transactions = transactions;
     }
 
     /**
@@ -46,8 +50,9 @@ public class Account
     public double getAccountBalance() {
         return accountBalance;
     }
-
-    public void setDbID(long dbID) { this.dbID = dbID; }
+    public void setAccountName(String accountName) {this.accountName = accountName;}
+    public void setAccountNo(String accountNo) {this.accountNo = accountNo;}
+    //    public void setDbID(long dbID) { this.dbID = dbID; }
 
     public void setAccountBalance(double accountBalance) { this.accountBalance = accountBalance; }
 
@@ -75,6 +80,7 @@ public class Account
 
         Transaction payment = new Transaction("T" + (transactions.size() + 1) + "-P" + (paymentCount+1), payee, amount);
         transactions.add(payment);
+//        transactions.put(payment.getTransactionID(),payment);
     }
 
     /**
@@ -98,6 +104,7 @@ public class Account
 
         Transaction deposit = new Transaction("T" + (transactions.size() + 1) + "-D" + (depositsCount+1),amount,this);
         transactions.add(deposit);
+//        transactions.put(deposit.getTransactionID(),deposit);
     }
 
     public void addLoanTransaction(double amount)
@@ -117,7 +124,7 @@ public class Account
 
         Transaction loan = new Transaction("T" + (transactions.size() + 1) + "-L" + (depositsCount+1),this,amount);
         transactions.add(loan);
-
+//        transactions.put(loan.getTransactionID(),loan);
     }
 
     /**

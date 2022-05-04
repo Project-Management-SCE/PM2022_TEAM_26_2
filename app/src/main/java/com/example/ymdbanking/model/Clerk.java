@@ -74,7 +74,8 @@ public class Clerk extends User
 	{
 		String accNo = "A" + (customer.getAccounts().size() + 1);
 		Account account = new Account(accountName, accNo, accountBalance);
-		customer.getAccounts().put(accNo,account);
+//		customer.getAccounts().put(accNo,account);
+		customer.getAccounts().add(account);
 	}
 
 	//TODO: need to implement clerk methods
@@ -89,7 +90,9 @@ public class Clerk extends User
 				receivingAccTransferCount++;
 			}
 		}
-		destinationAccount.getTransactions().add(new Transaction("T" + (destinationAccount.getTransactions().size() + 1) + "-L" + (receivingAccTransferCount + 1), destinationAccount, amount));
+//		Transaction transaction = new Transaction("T" + (destinationAccount.getTransactions().size() + 1) + "-L" + (receivingAccTransferCount + 1), destinationAccount, amount);
+//		destinationAccount.getTransactions().put(transaction.getTransactionID(),transaction);
+		destinationAccount.getTransactions().add(new Transaction("T" + (destinationAccount.getTransactions().size() + 1) + "-L" + (receivingAccTransferCount+1), destinationAccount, amount));
 		addLoanForPending(destinationAccount.getTransactions().get(destinationAccount.getTransactions().size()));
 	}
 

@@ -1,7 +1,6 @@
 package com.example.ymdbanking.db;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
@@ -23,6 +22,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,8 +32,9 @@ import java.util.HashMap;
 public class ApplicationDB
 {
 	//Fields
-	private DatabaseReference dbRef;
-	private FirebaseDatabase database;
+//	private DatabaseReference dbRef;
+	private DatabaseReference database;
+	private FirebaseFirestore firestore;
 	private Context context;
 
 	//Users Collection
@@ -45,14 +48,14 @@ public class ApplicationDB
 	private static final String PHONE = "phone";
 	private static final String USERNAME = "username";
 	private static final String KEY_TRANSACTIONS = "transactions";
-	private static final String KEY_ACCOUNTS = "accounts";
+	private static final String ACCOUNTS = "accounts";
 	private static final String KEY_PAYEES = "payees";
 	private static final String KEY_PAYEE_ID = "payee_id";
 	private static final String KEY_PAYEE_NAME = "payee_name";
 
 	//Account Collection Fields
 	private final String KEY_ACCOUNT_NAME = "account_name";
-	private static final String KEY_ACCOUNT_NUM = "account number";
+	private static final String KEY_ACCOUNT_NUM = "account_number";
 	private final String KEY_ACCOUNT_BALANCE = "balance";
 
 	//Clerks Collection
@@ -64,7 +67,8 @@ public class ApplicationDB
 	 */
 	public ApplicationDB(Context context)
 	{
-		this.database = FirebaseDatabase.getInstance();
+		this.database = FirebaseDatabase.getInstance().getReference();
+		firestore = FirebaseFirestore.getInstance();
 		this.context = context;
 	}
 
@@ -83,7 +87,7 @@ public class ApplicationDB
 		cust.put("password",customer.getPassword());
 		cust.put("phone",customer.getPhone());
 		cust.put("username",customer.getUsername());
-		database.getReference("Clerks").child(clerk.getUsername()).child("customers")
+		database.child("Clerks").child(clerk.getUsername()).child("customers")
 				.child(String.valueOf(customer.getId())).setValue(cust);
 	}
 
@@ -94,35 +98,46 @@ public class ApplicationDB
 	 */
 	public void saveNewTransaction(Customer sendingCustomer, Transaction transaction)
 	{
-		HashMap<String,Object> tran = new HashMap<>();
-		tran.put("transaction_id", transaction.getTransactionID());
-		tran.put("transaction_time", transaction.getTimestamp());
+		HashMap<String,Transaction> tran = new HashMap<>();
+//		tran.put("transaction_id", transaction.getTransactionID());
+//		tran.put("transaction_time", transaction.getTimestamp());
+//		tran.put("amount",transaction.getAmount());
+//		tran.put("type",transaction.getTransactionType().toString());
 
-		if (transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.TRANSFER)
+		if (transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.TRANSFER || transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.PAYMENT)
 		{
-			tran.put("sending_account",transaction.getSendingAccount());
-			tran.put("destination_account",transaction.getDestinationAccount());
-		}
-		else if (transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.PAYMENT)
-		{
-			tran.put("sending_account",transaction.getSendingAccount());
-			tran.put("destination_account",transaction.getDestinationAccount());
-			tran.put("payee",transaction.getPayee());
-		}
-		else if (transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.DEPOSIT)
-		{
-			tran.put("destination_account", transaction.getDestinationAccount());
-		}
-		else if(transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.LOAN)
-		{
-			tran.put("destination_account",transaction.getDestinationAccount());
-		}
-		tran.put("amount",transaction.getAmount());
-		tran.put("type",transaction.getTransactionType().toString());
+//			tran.put("sending_account",transaction.getSendingAccount());
+//			tran.put("destination_account",transaction.getDestinationAccount());
+//			database.getReference("Accounts").child(sendingCustomer.getId())
+//					.child(transaction.getSendingAccount()).setValue(tran);
+			tran.put(transaction.getTransactionID(),transaction);
+			database.child("Accounts").child(sendingCustomer.getId())
+					.child(transaction.getSendingAccount()).setValue(tran);
 
-		database.getReference("Users").child(sendingCustomer.getId()).child("accounts")
-				.child(transaction.getDestinationAccount()).child("transactions")
-				.child(transaction.getTransactionID()).setValue(tran);
+		}
+//		else if (transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.PAYMENT)
+//		{
+//			tran.put("sending_account",transaction.getSendingAccount());
+//			tran.put("destination_account",transaction.getDestinationAccount());
+//			tran.put("payee",transaction.getPayee());
+//			database.getReference("Accounts").child(sendingCustomer.getId())
+//					.child(transaction.getSendingAccount()).setValue(tran);
+//			database.getReference("Accounts").child(sendingCustomer.getId())
+//					.child(transaction.getSendingAccount()).setValue(transaction);
+//		}
+		else if (transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.DEPOSIT || transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.LOAN)
+		{
+//			tran.put("destination_account", transaction.getDestinationAccount());
+//			database.getReference("Accounts").child(sendingCustomer.getId())
+//					.child("transactions").child(transaction.getDestinationAccount()).setValue(tran);
+			tran.put(transaction.getTransactionID(),transaction);
+			database.child("Accounts").child(sendingCustomer.getId())
+					.child(transaction.getDestinationAccount()).child("transactions").setValue(tran);
+		}
+
+//		database.getReference("Users").child(sendingCustomer.getId()).child("accounts")
+//				.child(transaction.getDestinationAccount()).child("transactions")
+//				.child(transaction.getTransactionID()).setValue(tran);
 	}
 
 	/**
@@ -132,13 +147,16 @@ public class ApplicationDB
 	 */
 	public void saveNewAccount(Customer customer, Account account)
 	{
-		HashMap<String,Object> newAccount = new HashMap<>();
-		newAccount.put(KEY_ACCOUNT_NAME,account.getAccountName());
-		newAccount.put(KEY_ACCOUNT_BALANCE,account.getAccountBalance());
-		newAccount.put(KEY_TRANSACTIONS,account.getTransactions());
+		HashMap<String,Account> newAccount = new HashMap<>();
+//		newAccount.put(KEY_ACCOUNT_NUM,account.getAccountNo());
+//		newAccount.put(KEY_ACCOUNT_NAME,account.getAccountName());
+//		newAccount.put(KEY_ACCOUNT_BALANCE,account.getAccountBalance());
+//		newAccount.put(KEY_TRANSACTIONS,account.getTransactions());
+		newAccount.put(account.getAccountNo(),account);
 
-		database.getReference(USERS).child(customer.getId()).child(KEY_ACCOUNTS)
-				.child(account.getAccountNo()).setValue(newAccount);
+		database.child("Accounts").child(customer.getId()).setValue(newAccount);
+//		database.getReference(USERS).child(customer.getId()).child(ACCOUNTS)
+//				.child(account.getAccountNo()).setValue(newAccount);
 	}
 
 	/**
@@ -153,7 +171,7 @@ public class ApplicationDB
 		newAccount.put("account_balance",account.getAccountBalance());
 		newAccount.put("transactions",account.getTransactions());
 
-		database.getReference("Users").child(String.valueOf(customer.getId())).child("accounts")
+		database.child("Users").child(customer.getId()).child("accounts")
 				.child(account.getAccountName()).setValue(newAccount);
 	}
 
@@ -162,7 +180,7 @@ public class ApplicationDB
 		final long[] id = new long[1];
 		HashMap<String,Object> newPayee = new HashMap<>();
 
-		database.getReference(USERS).child(KEY_PAYEES).get()
+		database.child(USERS).child(KEY_PAYEES).get()
 				.addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
 				{
 					@Override
@@ -175,7 +193,7 @@ public class ApplicationDB
 								id[0] = Long.parseLong(ds.getValue(Payee.class).getPayeeID()) + 1;
 								newPayee.put(KEY_PAYEE_ID,id[0]);
 								newPayee.put(KEY_PAYEE_NAME,payee.getPayeeName());
-								database.getReference(USERS).child(String.valueOf(customer.getId()))
+								database.child(USERS).child(String.valueOf(customer.getId()))
 										.child(KEY_PAYEES).child(payee.getPayeeID()).setValue(newPayee);
 							}
 						}
@@ -200,7 +218,7 @@ public class ApplicationDB
 	public ArrayList<Admin> getAllAdmins()
 	{
 		final ArrayList<Admin> admins = new ArrayList<>();
-		database.getReference("Admins").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+		database.child("Admins").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
 		{
 			@Override
 			public void onComplete(@NonNull Task<DataSnapshot> task)
@@ -229,7 +247,7 @@ public class ApplicationDB
 	public ArrayList<Clerk> getAllClerks()
 	{
 		ArrayList<Clerk> clerks = new ArrayList<>();
-		database.getReference("Clerks").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+		database.child("Clerks").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
 		{
 			@Override
 			public void onComplete(@NonNull Task<DataSnapshot> task)
@@ -254,7 +272,7 @@ public class ApplicationDB
 	public ArrayList<Customer> getClerkCustomers(Clerk clerk)
 	{
 		ArrayList<Customer> customers = new ArrayList<>();
-		database.getReference("Clerks").child(clerk.getUsername()).child("customers").get()
+		database.child("Clerks").child(clerk.getUsername()).child("customers").get()
 				.addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
 				{
 					@Override
@@ -280,7 +298,7 @@ public class ApplicationDB
 	public ArrayList<Customer> getAllCustomers()
 	{
 		ArrayList<Customer> customers = new ArrayList<>();
-		database.getReference("Users").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+		database.child("Users").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
 		{
 			@Override
 			public void onComplete(@NonNull Task<DataSnapshot> task)
@@ -305,7 +323,7 @@ public class ApplicationDB
 	public ArrayList<Customer> getAllCustomersForTransfer(String customerID)
 	{
 		ArrayList<Customer> customers = new ArrayList<>();
-		database.getReference("Users").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+		database.child("Users").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
 		{
 			@RequiresApi(api = Build.VERSION_CODES.N)
 			@Override
@@ -357,31 +375,47 @@ public class ApplicationDB
 //		return accounts;
 //	}
 
-	public HashMap<String,Account> getAccountsFromCurrentCustomer(String customerID)
+	public ArrayList<Account> getAccountsFromCurrentCustomer(String customerID)
 	{
-		HashMap<String,Account> accounts = new HashMap<>(0);
-		database.getReference(customerID).child(KEY_ACCOUNTS).get()
-				.addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+		ArrayList<Account> accounts = new ArrayList<>();
+		firestore.collection("Users").document(customerID).collection("accounts")
+			.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+		{
+			@Override
+			public void onComplete(@NonNull Task<QuerySnapshot> task)
+			{
+				for(DocumentSnapshot ds : task.getResult().getDocuments())
 				{
-					@Override
-					public void onComplete(@NonNull Task<DataSnapshot> task)
-					{
-						for(DataSnapshot ds : task.getResult().getChildren())
-						{
-//							accounts.add(ds.getValue(Account.class));
-							accounts.put(ds.getKey(),ds.getValue(Account.class));
-						}
-					}
-				})
-				.addOnFailureListener(new OnFailureListener()
-				{
-					@Override
-					public void onFailure(@NonNull Exception e)
-					{
-						Toast.makeText(context, "ERROR - Can't get customer's accounts from DB", Toast.LENGTH_SHORT).show();
-						Log.d("DB_ERROR",e.toString());
-					}
-				});
+					accounts.add(ds.toObject(Account.class));
+				}
+			}
+		})
+		.addOnFailureListener(new OnFailureListener()
+		{
+			@Override
+			public void onFailure(@NonNull Exception e)
+			{
+
+			}
+		});
+//		database = FirebaseDatabase.getInstance().getReference("Accounts");
+//		database.child(customerID).addValueEventListener(new ValueEventListener()
+//		{
+//			@Override
+//			public void onDataChange(@NonNull DataSnapshot snapshot)
+//			{
+//				for(DataSnapshot ds : snapshot.getChildren())
+//				{
+//					accounts.add(ds.getValue(Account.class));
+//				}
+//			}
+//			@Override
+//			public void onCancelled(@NonNull DatabaseError error)
+//			{
+//				Toast.makeText(context, "ERROR - Can't get customer's accounts from DB", Toast.LENGTH_SHORT).show();
+//				Log.d("DB_ERROR",error.toString());
+//			}
+//		});
 
 		return accounts;
 	}
@@ -389,38 +423,42 @@ public class ApplicationDB
 	//Todo: this function doesn't work, find out why
 	public Customer getCustomerByID(String customerID)
 	{
-		final Customer[] customer = new Customer[1];
-		database.getReference(USERS).orderByChild("id").equalTo(customerID)
-				.addListenerForSingleValueEvent(new ValueEventListener()
+		Customer[] customer = new Customer[1];
+
+		database.child(USERS).child(customerID).get()
+				.addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+			{
+				@Override
+				public void onComplete(@NonNull Task<DataSnapshot> task)
 				{
-					@Override
-					public void onDataChange(@NonNull DataSnapshot snapshot)
-					{
-						customer[0] = snapshot.child(customerID).getValue(Customer.class);
-					}
-					@Override
-					public void onCancelled(@NonNull DatabaseError error)
-					{
-						Toast.makeText(context, "ERROR - Can't get customer from DB", Toast.LENGTH_SHORT).show();
-						Log.d("DB_ERROR",error.toString());
-					}
-				});
-//				.addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+					DataSnapshot ds = task.getResult();
+					customer[0] = ds.getValue(Customer.class);
+				}
+			})
+			 .addOnFailureListener(new OnFailureListener()
+			 {
+				 @Override
+				 public void onFailure(@NonNull Exception e)
+				 {
+					 Toast.makeText(context, "ERROR - Can't get customer from DB", Toast.LENGTH_SHORT).show();
+					 Log.d("DB_ERROR",e.toString());
+				 }
+			 });
+
+
+//		database.getReference().child(USERS).child(customerID)
+//				.addListenerForSingleValueEvent(new ValueEventListener()
 //				{
 //					@Override
-//					public void onComplete(@NonNull Task<DataSnapshot> task)
+//					public void onDataChange(@NonNull DataSnapshot snapshot)
 //					{
-//						DataSnapshot ds = task.getResult();
-//						customer[0] = ds.getValue(Customer.class);
+//						customer[0] = snapshot.child(customerID).getValue(Customer.class);
 //					}
-//				})
-//				.addOnFailureListener(new OnFailureListener()
-//				{
 //					@Override
-//					public void onFailure(@NonNull Exception e)
+//					public void onCancelled(@NonNull DatabaseError error)
 //					{
 //						Toast.makeText(context, "ERROR - Can't get customer from DB", Toast.LENGTH_SHORT).show();
-//						Log.d("DB_ERROR",e.toString());
+//						Log.d("DB_ERROR",error.toString());
 //					}
 //				});
 		return customer[0];
@@ -429,7 +467,7 @@ public class ApplicationDB
 	public ArrayList<Payee> getPayeesFromCurrentCustomer(long customerID)
 	{
 		ArrayList<Payee> payees = new ArrayList<>();
-		database.getReference(USERS).child(String.valueOf(customerID)).child(KEY_PAYEES).get()
+		database.child(USERS).child(String.valueOf(customerID)).child(KEY_PAYEES).get()
 				.addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
 				{
 					@Override
@@ -452,10 +490,10 @@ public class ApplicationDB
 		return payees;
 	}
 
-	public ArrayList<Transaction> getTransactionsFromCurrentAccount(long customerID, String accountNo)
+	public ArrayList<Transaction> getTransactionsFromCurrentAccount(String customerID, String accountNo)
 	{
 		ArrayList<Transaction> transactions = new ArrayList<>();
-		database.getReference(USERS).child(String.valueOf(customerID)).child(KEY_ACCOUNTS).child(KEY_ACCOUNT_NUM)
+		database.child(USERS).child(customerID).child(ACCOUNTS).child(KEY_ACCOUNT_NUM)
 				.child(KEY_TRANSACTIONS).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
 		{
 			@Override
