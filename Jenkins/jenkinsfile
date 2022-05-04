@@ -25,17 +25,12 @@ pipeline
 			sh 'git --version'
 			}
 		}
-		    stage('Test') {
-      steps {
-        sh(script: './mvnw --batch-mode -Dmaven.test.failure.ignore=true test')
-
-      }
-    }
-    stage('Package') {
-      steps {
-        sh(script: './mvnw --batch-mode package -DskipTests')
-      }
-    }
+        stage('Unit Test') {
+          steps {
+            // Execute your Unit Test
+            sh './gradlew test'
+          }
+        }
 	}
 	post 
 	{
