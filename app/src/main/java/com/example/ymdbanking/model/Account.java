@@ -29,7 +29,7 @@ public class Account
         this.accountName = accountName;
         this.accountNo = accountNo;
         this.accountBalance = accountBalance;
-        transactions = new ArrayList<>();
+        transactions = new ArrayList<>(0);
     }
 
     public Account(String accountName, String accountNo, double accountBalance,ArrayList<Transaction> transactions)

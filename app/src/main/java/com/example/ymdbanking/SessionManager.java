@@ -47,6 +47,8 @@ public class SessionManager
     public static final String KEY_CLERK_PASSWORD = "password";
     public static final String KEY_CLERK_PHONE = "phone";
 
+    //
+
 
 
     public SessionManager(Context _context,String sessionName)

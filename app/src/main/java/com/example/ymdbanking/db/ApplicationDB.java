@@ -147,16 +147,11 @@ public class ApplicationDB
 	 */
 	public void saveNewAccount(Customer customer, Account account)
 	{
-		HashMap<String,Account> newAccount = new HashMap<>();
-//		newAccount.put(KEY_ACCOUNT_NUM,account.getAccountNo());
-//		newAccount.put(KEY_ACCOUNT_NAME,account.getAccountName());
-//		newAccount.put(KEY_ACCOUNT_BALANCE,account.getAccountBalance());
-//		newAccount.put(KEY_TRANSACTIONS,account.getTransactions());
-		newAccount.put(account.getAccountNo(),account);
+//		HashMap<String,Account> newAccount = new HashMap<>();
+//		newAccount.put(account.getAccountNo(),account);
+		database.getReference("Accounts").child(customer.getId()).child(account.getAccountNo())
+			.setValue(account);
 
-		database.getReference("Accounts").child(customer.getId()).setValue(newAccount);
-//		database.getReference(USERS).child(customer.getId()).child(ACCOUNTS)
-//				.child(account.getAccountNo()).setValue(newAccount);
 	}
 
 	/**
@@ -377,16 +372,25 @@ public class ApplicationDB
 
 	public ArrayList<Account> getAccountsFromCurrentCustomer(String customerID)
 	{
+		HashMap<String,Account> accountHM = new HashMap<>();
 		ArrayList<Account> accounts = new ArrayList<>();
-//		database = FirebaseDatabase.getInstance().getReference("Accounts");
-		database.getReference("Accounts").child(customerID).addValueEventListener(new ValueEventListener()
+		database.getReference("Accounts").child(customerID)
+			.addValueEventListener(new ValueEventListener()
 		{
 			@Override
 			public void onDataChange(@NonNull DataSnapshot snapshot)
 			{
 				for(DataSnapshot ds : snapshot.getChildren())
 				{
-					accounts.add(ds.getValue(Account.class));
+//					accountHM.put(ds.getKey(),ds.getValue(Account.class));
+//					accounts.add(accountHM.get(ds.getKey()));
+					accounts.add(new Account(
+							ds.child("accountName").getValue(String.class),
+							ds.child("accountNo").getValue(String.class),
+							ds.child("accountBalance").getValue(Double.class)
+											));
+					accounts.get(accounts.size() - 1).getTransactions()
+							.addAll(getTransactionsFromCurrentAccount(customerID,accounts.get(accounts.size()-1).getAccountNo()));
 				}
 			}
 			@Override
@@ -473,7 +477,7 @@ public class ApplicationDB
 	public ArrayList<Transaction> getTransactionsFromCurrentAccount(String customerID, String accountNo)
 	{
 		ArrayList<Transaction> transactions = new ArrayList<>();
-		database.getReference(USERS).child(customerID).child(ACCOUNTS).child(KEY_ACCOUNT_NUM)
+		database.getReference("Accounts").child(customerID).child(accountNo)
 				.child(KEY_TRANSACTIONS).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
 		{
 			@Override

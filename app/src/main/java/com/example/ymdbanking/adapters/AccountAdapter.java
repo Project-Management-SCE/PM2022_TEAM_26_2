@@ -40,8 +40,9 @@ public class AccountAdapter extends ArrayAdapter<Account>
     {
         if (convertView == null)
         {
-            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-            convertView = inflater.inflate(resource, parent, false);
+//            LayoutInflater inflater = context.getLayoutInflater();
+            convertView = LayoutInflater.from(context).inflate(resource,parent,false);
+//            convertView = inflater.inflate(resource, parent, false);
         }
 
         Account account = getItem(position);

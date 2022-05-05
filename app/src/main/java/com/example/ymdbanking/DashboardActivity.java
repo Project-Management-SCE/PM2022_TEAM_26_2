@@ -24,7 +24,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.ymdbanking.db.ApplicationDB;
+import com.example.ymdbanking.model.Customer;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
 
 import java.util.HashMap;
 
@@ -48,8 +51,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private Button btnCancel;
     private Button btnSuccess;
     private Spinner accounts;
-
     private String accountName,depositAmount;
+    private Customer customer;
 
 
 
@@ -65,8 +68,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 depositDialog.dismiss();
                 Toast.makeText(DashboardActivity.this, "Deposit Cancelled", Toast.LENGTH_SHORT).show();
             }
-            else if (view.getId() == btnSuccess.getId()) {
-
+            else if (view.getId() == btnSuccess.getId())
+            {
 //                makeDeposit();
             }
         }
@@ -86,6 +89,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
         contentView = findViewById(R.id.content);
+        SessionManager sessionManager = new SessionManager(this,SessionManager.USER_SESSION);
+        Gson gson = new Gson();
+        customer = sessionManager.getCustomerObjFromSession();
+//        ApplicationDB applicationDB = new ApplicationDB(this);
+//        customer.setAccounts(applicationDB.getAccountsFromCurrentCustomer(customer.getId()));
+
 
 
         navigationDrawer();
@@ -145,6 +154,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             disp_username.setText(userDetails.get(SessionManager.KEY_USERNAME));
             navigationView.getMenu().findItem(R.id.nav_add_clerks).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_users).setVisible(false);
+            sessionManager.saveCustomerObjForSession(customer);
         }
         disp_phone.setText(phone);
 

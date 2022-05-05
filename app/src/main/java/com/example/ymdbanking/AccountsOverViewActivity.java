@@ -1,10 +1,12 @@
 package com.example.ymdbanking;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -17,7 +19,15 @@ import com.example.ymdbanking.adapters.AccountAdapter;
 import com.example.ymdbanking.db.ApplicationDB;
 import com.example.ymdbanking.model.Account;
 import com.example.ymdbanking.model.Customer;
+import com.example.ymdbanking.model.Transaction;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -82,12 +92,47 @@ public class AccountsOverViewActivity extends AppCompatActivity {
         selectedAccountIndex = 0;
 
         SessionManager sessionManager = new SessionManager(this,SessionManager.USER_SESSION);
-        Gson gson = new Gson();
         customer = sessionManager.getCustomerObjFromSession();
-//        customer = gson.fromJson(json, Customer.class);
-        ApplicationDB applicationDB = new ApplicationDB(this);
-//        customer = applicationDB.getCustomerByID(sessionManager.userSession.getString(SessionManager.KEY_ID,""));
-        customer.setAccounts(applicationDB.getAccountsFromCurrentCustomer(customer.getId()));
+
+        //Getting customer's accounts from DB if it's not in the session manager
+        if(customer.getAccounts().size() == 0)
+        {
+            FirebaseDatabase.getInstance().getReference("Accounts").child(customer.getId())
+              .addValueEventListener(new ValueEventListener()
+            {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot)
+                {
+                    for (DataSnapshot ds : snapshot.getChildren())
+                    {
+                        customer.getAccounts().add(new Account(
+                                ds.child("accountName").getValue(String.class),
+                                ds.child("accountNo").getValue(String.class),
+                                ds.child("accountBalance").getValue(Double.class)
+                        ));
+                        customer.getAccounts().get(
+                                customer.getAccounts().size() - 1).getTransactions()
+                                .addAll(getTransactionsForAccount(customer.getAccounts().get(
+                                        customer.getAccounts().size() - 1)));
+                    }
+                    sessionManager.saveCustomerObjForSession(customer);
+                    AccountAdapter adapter = new AccountAdapter(getApplicationContext(), R.layout.lst_accounts, customer.getAccounts());
+                    lstAccounts.setAdapter(adapter);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error)
+                {
+                    Toast.makeText(getApplicationContext(), "ERROR - Can't get customer's accounts from DB", Toast.LENGTH_SHORT).show();
+                    Log.d("DB_ERROR", error.toString());
+                }
+            });
+        }
+        else
+        {
+            AccountAdapter adapter = new AccountAdapter(getApplicationContext(), R.layout.lst_accounts, customer.getAccounts());
+            lstAccounts.setAdapter(adapter);
+        }
 
         fab.setOnClickListener(new View.OnClickListener()
         {
@@ -197,18 +242,12 @@ public class AccountsOverViewActivity extends AppCompatActivity {
 //                            customer.getAccounts().size() - 1));
                     Toast.makeText(this, R.string.acc_saved_successfully, Toast.LENGTH_SHORT).show();
 
-                    if (customer.getAccounts().size() == 1)
+                    if (customer.getAccounts().size() >= 1)
                     {
                         //txtTitleMessage.setText("Select an Account to view Transactions");
                         txtDetailMessage.setVisibility(View.VISIBLE);
                         lstAccounts.setVisibility(View.VISIBLE);
                     }
-//                    HashMap<String,Account> accounts = customer.getAccounts();
-//                    HashMap<String,Object> listAccounts = new HashMap<>();
-//                    listAccounts.put("accounts",accounts);
-                    ArrayList<Account> arrayAccounts = customer.getAccounts();
-                    AccountAdapter adapter = new AccountAdapter(this, R.layout.lst_accounts, arrayAccounts);
-                    lstAccounts.setAdapter(adapter);
                     SessionManager sessionManager = new SessionManager(this,SessionManager.USER_SESSION);
                     Gson gson = new Gson();
                     String json = gson.toJson(customer);
@@ -228,6 +267,31 @@ public class AccountsOverViewActivity extends AppCompatActivity {
         {
             Toast.makeText(this, "Please enter an account name", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public ArrayList<Transaction> getTransactionsForAccount(Account account)
+    {
+        ArrayList<Transaction> transactions = new ArrayList<>();
+        FirebaseDatabase.getInstance().getReference("Accounts").child(customer.getId()).child(account.getAccountNo())
+                .child("transactions").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task)
+            {
+                for(DataSnapshot ds : task.getResult().getChildren())
+                    transactions.add(ds.getValue(Transaction.class));
+            }
+        })
+        .addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Toast.makeText(getApplicationContext(), "ERROR - Can't get transactions from DB for this account", Toast.LENGTH_SHORT).show();
+                Log.d("DB_ERROR",e.toString());
+            }
+        });
+        return transactions;
     }
 
     public String getAccountName() {

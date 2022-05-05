@@ -128,8 +128,9 @@ public class LoginActivity extends AppCompatActivity {
 
 //                                Account account = snapshot.child(id_login).child("accounts").getValue(Account.class);
                                 Customer customer = new Customer(email,fullName,id,password,phone,username);
-                                ApplicationDB applicationDB = new ApplicationDB(getApplicationContext());
-                                customer.setAccounts(applicationDB.getAccountsFromCurrentCustomer(customer.getId()));
+//                                ApplicationDB applicationDB = new ApplicationDB(getApplicationContext());
+//                                customer.setAccounts(applicationDB.getAccountsFromCurrentCustomer(customer.getId()));
+//                                customer.getAccounts(applicationDB.getTransactionsFromCurrentAccount());
                                 sessionManager.saveCustomerObjForSession(customer);
 
                                 startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
