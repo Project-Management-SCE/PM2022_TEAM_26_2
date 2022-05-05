@@ -166,8 +166,8 @@ public class ApplicationDB
 		newAccount.put("account_balance",account.getAccountBalance());
 		newAccount.put("transactions",account.getTransactions());
 
-		database.getReference("Users").child(customer.getId()).child("accounts")
-				.child(account.getAccountName()).setValue(newAccount);
+		database.getReference("Accounts").child(customer.getId()).child(account.getAccountNo())
+				.updateChildren(newAccount);
 	}
 
 	public void saveNewPayee(Customer customer, Payee payee)

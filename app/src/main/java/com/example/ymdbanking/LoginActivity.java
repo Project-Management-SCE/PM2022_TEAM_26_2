@@ -50,15 +50,14 @@ public class LoginActivity extends AppCompatActivity {
 //    FirebaseUser mUser;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         //Hooks
-
         signupBtn = findViewById(R.id.login_signinbtn);
         btnLogin = findViewById(R.id.login_btn);
         inputEmail = findViewById(R.id.login_email);
@@ -69,8 +68,6 @@ public class LoginActivity extends AppCompatActivity {
 
         //Variables
         progressDialog = new ProgressDialog(this);
-
-
 
         //check if id,email,password is already saved in Shared Preferences or not
         SessionManager sessionManager = new SessionManager(LoginActivity.this,SessionManager.REMEMBER_ME_SESSION);

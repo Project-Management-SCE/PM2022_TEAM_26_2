@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -47,6 +49,7 @@ public class AccountsOverViewActivity extends AppCompatActivity {
     private String accountName,accountBalance;
     private Customer customer;
     private int selectedAccountIndex;
+    private SessionManager sessionManager;
 
     private View.OnClickListener addAccountClickListener = new View.OnClickListener()
     {
@@ -94,45 +97,64 @@ public class AccountsOverViewActivity extends AppCompatActivity {
         SessionManager sessionManager = new SessionManager(this,SessionManager.USER_SESSION);
         customer = sessionManager.getCustomerObjFromSession();
 
-        //Getting customer's accounts from DB if it's not in the session manager
-        if(customer.getAccounts().size() == 0)
-        {
-            FirebaseDatabase.getInstance().getReference("Accounts").child(customer.getId())
-              .addValueEventListener(new ValueEventListener()
-            {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot)
-                {
-                    for (DataSnapshot ds : snapshot.getChildren())
-                    {
-                        customer.getAccounts().add(new Account(
-                                ds.child("accountName").getValue(String.class),
-                                ds.child("accountNo").getValue(String.class),
-                                ds.child("accountBalance").getValue(Double.class)
-                        ));
-                        customer.getAccounts().get(
-                                customer.getAccounts().size() - 1).getTransactions()
-                                .addAll(getTransactionsForAccount(customer.getAccounts().get(
-                                        customer.getAccounts().size() - 1)));
-                    }
-                    sessionManager.saveCustomerObjForSession(customer);
-                    AccountAdapter adapter = new AccountAdapter(getApplicationContext(), R.layout.lst_accounts, customer.getAccounts());
-                    lstAccounts.setAdapter(adapter);
-                }
+        AccountAdapter adapter = new AccountAdapter(getApplicationContext(), R.layout.lst_accounts, customer.getAccounts());
+        lstAccounts.setAdapter(adapter);
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error)
-                {
-                    Toast.makeText(getApplicationContext(), "ERROR - Can't get customer's accounts from DB", Toast.LENGTH_SHORT).show();
-                    Log.d("DB_ERROR", error.toString());
-                }
-            });
-        }
-        else
+        lstAccounts.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
-            AccountAdapter adapter = new AccountAdapter(getApplicationContext(), R.layout.lst_accounts, customer.getAccounts());
-            lstAccounts.setAdapter(adapter);
-        }
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+            {
+                selectedAccountIndex = i;
+                viewAccount();
+            }
+        });
+
+        //Getting customer's accounts from DB if it's not in the session manager
+//        if(customer.getAccounts().size() == 0)
+//        {
+//            FirebaseDatabase.getInstance().getReference("Accounts").child(customer.getId())
+//              .addValueEventListener(new ValueEventListener()
+//            {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot)
+//                {
+//                    for (DataSnapshot ds : snapshot.getChildren())
+//                    {
+//                        customer.getAccounts().add(new Account(
+//                                ds.child("accountName").getValue(String.class),
+//                                ds.child("accountNo").getValue(String.class),
+//                                ds.child("accountBalance").getValue(Double.class)
+//                        ));
+//                        customer.getAccounts().get(
+//                                customer.getAccounts().size() - 1).getTransactions()
+//                                .addAll(getTransactionsForAccount(customer.getAccounts().get(
+//                                        customer.getAccounts().size() - 1)));
+//                    }
+//                    sessionManager.saveCustomerObjForSession(customer);
+//                    AccountAdapter adapter = new AccountAdapter(getApplicationContext(), R.layout.lst_accounts, customer.getAccounts());
+//                    lstAccounts.setAdapter(adapter);
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error)
+//                {
+//                    Toast.makeText(getApplicationContext(), "ERROR - Can't get customer's accounts from DB", Toast.LENGTH_SHORT).show();
+//                    Log.d("DB_ERROR", error.toString());
+//                }
+//            });
+//        }
+//        AccountAdapter adapter = new AccountAdapter(getApplicationContext(), R.layout.lst_accounts, customer.getAccounts());
+//        lstAccounts.setAdapter(adapter);
+//        lstAccounts.setOnItemClickListener(new AdapterView.OnItemClickListener()
+//        {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+//            {
+//                selectedAccountIndex = i;
+//                viewAccount();
+//            }
+//        });
 
         fab.setOnClickListener(new View.OnClickListener()
         {
@@ -269,30 +291,37 @@ public class AccountsOverViewActivity extends AppCompatActivity {
         }
     }
 
-    public ArrayList<Transaction> getTransactionsForAccount(Account account)
+    public void viewAccount()
     {
-        ArrayList<Transaction> transactions = new ArrayList<>();
-        FirebaseDatabase.getInstance().getReference("Accounts").child(customer.getId()).child(account.getAccountNo())
-                .child("transactions").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task)
-            {
-                for(DataSnapshot ds : task.getResult().getChildren())
-                    transactions.add(ds.getValue(Transaction.class));
-            }
-        })
-        .addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Toast.makeText(getApplicationContext(), "ERROR - Can't get transactions from DB for this account", Toast.LENGTH_SHORT).show();
-                Log.d("DB_ERROR",e.toString());
-            }
-        });
-        return transactions;
+        sessionManager = new SessionManager(getApplicationContext(),"AccountView");
+        sessionManager.editor.putInt("SelectedAccount", selectedAccountIndex);
+        startActivity(new Intent(getApplicationContext(),TransactionActivity.class));
     }
+
+//    public ArrayList<Transaction> getTransactionsForAccount(Account account)
+//    {
+//        ArrayList<Transaction> transactions = new ArrayList<>();
+//        FirebaseDatabase.getInstance().getReference("Accounts").child(customer.getId()).child(account.getAccountNo())
+//                .child("transactions").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+//        {
+//            @Override
+//            public void onComplete(@NonNull Task<DataSnapshot> task)
+//            {
+//                for(DataSnapshot ds : task.getResult().getChildren())
+//                    transactions.add(ds.getValue(Transaction.class));
+//            }
+//        })
+//        .addOnFailureListener(new OnFailureListener()
+//        {
+//            @Override
+//            public void onFailure(@NonNull Exception e)
+//            {
+//                Toast.makeText(getApplicationContext(), "ERROR - Can't get transactions from DB for this account", Toast.LENGTH_SHORT).show();
+//                Log.d("DB_ERROR",e.toString());
+//            }
+//        });
+//        return transactions;
+//    }
 
     public String getAccountName() {
         return accountName;
