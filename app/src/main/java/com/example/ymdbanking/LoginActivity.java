@@ -3,7 +3,6 @@ package com.example.ymdbanking;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -15,23 +14,20 @@ import android.widget.Toolbar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.ymdbanking.db.ApplicationDB;
+import com.example.ymdbanking.model.Admin;
+import com.example.ymdbanking.model.Clerk;
 import com.example.ymdbanking.model.Customer;
-import com.example.ymdbanking.model.Account;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -87,27 +83,31 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), SignUpActivity.class));
             }
         });
-        btnLogin.setOnClickListener(new View.OnClickListener() {
+        btnLogin.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
 
                 String mail = inputEmail.getText().toString().trim();
                 String pass = inputPass.getText().toString().trim();
                 String id_login = inputId.getText().toString().trim();
 
-                if(rememberMe.isChecked()) {
-                    SessionManager sessionManager = new SessionManager(LoginActivity.this,SessionManager.REMEMBER_ME_SESSION);
-                    sessionManager.createRememberMeSession(mail,id_login,pass);
+                if (rememberMe.isChecked())
+                {
+                    SessionManager sessionManager = new SessionManager(LoginActivity.this, SessionManager.REMEMBER_ME_SESSION);
+                    sessionManager.createRememberMeSession(mail, id_login, pass);
                 }
                 Query checkUser = FirebaseDatabase.getInstance().getReference("Users").orderByChild("id").equalTo(id_login);
-                checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                checkUser.addListenerForSingleValueEvent(new ValueEventListener()
+                {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                        if(snapshot.child(id_login).exists())
+                    public void onDataChange(@NonNull DataSnapshot snapshot)
+                    {
+                        if (snapshot.child(id_login).exists())
                         {
                             String systemPassword = snapshot.child(id_login).child("password").getValue(String.class);
-                            if(systemPassword.equals(pass))
+                            if (systemPassword.equals(pass))
                             {
                                 inputPass.setError(null);
 
@@ -120,11 +120,12 @@ public class LoginActivity extends AppCompatActivity {
                                 String phone = snapshot.child(id_login).child("phone").getValue(String.class);
 
                                 //Create a User Session
-                                SessionManager sessionManager = new SessionManager(LoginActivity.this,SessionManager.USER_SESSION);
-                                sessionManager.createLoginSession(fullName,id,username,email,password,phone);
+                                SessionManager sessionManager = new SessionManager(LoginActivity.this, SessionManager.USER_SESSION);
+                                sessionManager.createLoginSession(fullName, id, username, email, password, phone);
 
+                                sessionManager.editor.putString(SessionManager.KEY_SESSION_ID,"3");
 //                                Account account = snapshot.child(id_login).child("accounts").getValue(Account.class);
-                                Customer customer = new Customer(email,fullName,id,password,phone,username);
+                                Customer customer = new Customer(email, fullName, id, password, phone, username);
 //                                ApplicationDB applicationDB = new ApplicationDB(getApplicationContext());
 //                                customer.setAccounts(applicationDB.getAccountsFromCurrentCustomer(customer.getId()));
 //                                customer.getAccounts(applicationDB.getTransactionsFromCurrentAccount());
@@ -139,7 +140,9 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         }
                         else
+                        {
                             Toast.makeText(LoginActivity.this, "No such users exist!", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
@@ -149,19 +152,61 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
 
+//                //Checking if user is admin
+//                FirebaseDatabase.getInstance().getReference("Admins").child(id_login)
+//                    .get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+//                {
+//                    @Override
+//                    public void onComplete(@NonNull Task<DataSnapshot> task)
+//                    {
+//                        DataSnapshot ds = task.getResult();
+//                        Admin admin = ds.getValue(Admin.class);
+//                        sessionManager.saveAdminObjForSession(admin);
+//                        sessionManager.editor.putInt(SessionManager.KEY_SESSION_ID,1);
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener()
+//                {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e)
+//                    {
+//
+//                    }
+//                });
+//
+//                //Checking if user is clerk
+//                FirebaseDatabase.getInstance().getReference("Clerks").child(id_login)
+//                        .get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+//                {
+//                    @Override
+//                    public void onComplete(@NonNull Task<DataSnapshot> task)
+//                    {
+//                        DataSnapshot ds = task.getResult();
+//                        Clerk clerk = ds.getValue(Clerk.class);
+//                        sessionManager.saveClerkObjForSession(clerk);
+//                        sessionManager.editor.putInt(SessionManager.KEY_SESSION_ID,2);
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener()
+//                {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e)
+//                    {
+//
+//                    }
+//                });
+//            }
+//        });
+
+                btnForgot.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        startActivity(new Intent(getApplicationContext(), ForgotPassActivity.class));
+                    }
+                });
             }
         });
-
-        btnForgot.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                startActivity(new Intent(getApplicationContext(),ForgotPassActivity.class));
-            }
-        });
-
-
     }
-
 }

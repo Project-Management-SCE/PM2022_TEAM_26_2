@@ -5,22 +5,18 @@ import com.example.ymdbanking.model.*;
 
 public class Clerk extends User
 {
-//	private String firstName;
-//	private String lastName;
-//	private String country;
-//	private String username;
-//	private String password;
 	private final static int typeID = 2;
 	private ArrayList<Customer> customers;
 	private ArrayList<Transaction> loansToApprove;
-//	private long dbId;
+
+	public Clerk()
+	{
+		//Empty constructor
+	}
 
 	public Clerk(String email,String fullName,String id,String password,String phone,String username)
 	{
 		super(email,fullName,id,password,phone,username);
-//		this.firstName = firstName;
-//		this.lastName = lastName;
-//		this.country = country;
 		this.customers = new ArrayList<>(0);
 		this.loansToApprove = new ArrayList<>(0);
 	}

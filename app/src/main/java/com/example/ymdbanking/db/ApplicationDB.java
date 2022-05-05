@@ -251,16 +251,15 @@ public class ApplicationDB
 					clerks.add(ds.getValue(Clerk.class));
 			}
 		})
-				.addOnFailureListener(new OnFailureListener()
-				{
-					@Override
-					public void onFailure(@NonNull Exception e)
-					{
-						Toast.makeText(context, "ERROR - Can't get all clerks from DB", Toast.LENGTH_SHORT).show();
-						Log.d("DB_ERROR",e.toString());
-					}
-				});
-
+		.addOnFailureListener(new OnFailureListener()
+		{
+			@Override
+			public void onFailure(@NonNull Exception e)
+			{
+				Toast.makeText(context, "ERROR - Can't get all clerks from DB", Toast.LENGTH_SHORT).show();
+				Log.d("DB_ERROR",e.toString());
+			}
+		});
 		return clerks;
 	}
 
