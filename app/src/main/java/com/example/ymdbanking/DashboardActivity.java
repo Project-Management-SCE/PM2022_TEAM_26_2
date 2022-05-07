@@ -141,38 +141,34 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     private void setValues()
     {
-        //Getting customer's accounts from DB if it's not in the session manager
-        if(customer.getAccounts().size() == 0)
+        FirebaseDatabase.getInstance().getReference("Accounts").child(customer.getId())
+            .addValueEventListener(new ValueEventListener()
         {
-            FirebaseDatabase.getInstance().getReference("Accounts").child(customer.getId())
-                .addValueEventListener(new ValueEventListener()
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
             {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot)
+                for (DataSnapshot ds : snapshot.getChildren())
                 {
-                    for (DataSnapshot ds : snapshot.getChildren())
-                    {
-                        customer.getAccounts().add(new Account(
-                                ds.child("accountName").getValue(String.class),
-                                ds.child("accountNo").getValue(String.class),
-                                ds.child("accountBalance").getValue(Double.class)
-                        ));
-                        customer.getAccounts().get(
-                                customer.getAccounts().size() - 1).getTransactions()
-                                .addAll(getTransactionsForAccount(customer.getAccounts().get(
-                                        customer.getAccounts().size() - 1)));
-                    }
-                    sessionManager.saveCustomerObjForSession(customer);
+                    customer.getAccounts().add(new Account(
+                            ds.child("accountName").getValue(String.class),
+                            ds.child("accountNo").getValue(String.class),
+                            ds.child("accountBalance").getValue(Double.class)
+                    ));
+                    customer.getAccounts().get(
+                            customer.getAccounts().size() - 1).getTransactions()
+                            .addAll(getTransactionsForAccount(customer.getAccounts().get(
+                                    customer.getAccounts().size() - 1)));
                 }
+                sessionManager.saveCustomerObjForSession(customer);
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error)
-                {
-                    Toast.makeText(getApplicationContext(), "ERROR - Can't get customer's accounts from DB", Toast.LENGTH_SHORT).show();
-                    Log.d("DB_ERROR", error.toString());
-                }
-            });
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error)
+            {
+                Toast.makeText(getApplicationContext(), "ERROR - Can't get customer's accounts from DB", Toast.LENGTH_SHORT).show();
+                Log.d("DB_ERROR", error.toString());
+            }
+        });
 
         //Getting all clerks from DB
         clerks = new ArrayList<>();

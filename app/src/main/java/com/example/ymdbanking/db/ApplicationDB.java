@@ -162,8 +162,9 @@ public class ApplicationDB
 	public void overwriteAccount(Customer customer,Account account)
 	{
 		HashMap<String,Object> newAccount = new HashMap<>();
-		newAccount.put("account_name",account.getAccountName());
-		newAccount.put("account_balance",account.getAccountBalance());
+		newAccount.put("accountBalance",account.getAccountBalance());
+		newAccount.put("accountName",account.getAccountName());
+		newAccount.put("accountNo",account.getAccountNo());
 		newAccount.put("transactions",account.getTransactions());
 
 		database.getReference("Accounts").child(customer.getId()).child(account.getAccountNo())

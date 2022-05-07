@@ -244,7 +244,7 @@ public class AccountsOverViewActivity extends AppCompatActivity {
                 if (!match)
                 {
                     ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
-                    customer.addAccount(edtAccountName.getText().toString(), 0);
+                    customer.addAccount(edtAccountName.getText().toString(), initDepositAmount);
 
                     if (!balance.equals(""))
                     {
@@ -252,10 +252,10 @@ public class AccountsOverViewActivity extends AppCompatActivity {
                         {
                             if (initDepositAmount >= 0.01)
                             {
-                                customer.getAccounts().get(customer.getAccounts().size() - 1).addDepositTransaction(initDepositAmount);
+//                                customer.getAccounts().get(customer.getAccounts().size() - 1).addDepositTransaction(initDepositAmount);
                                 applicationDb.saveNewAccount(customer, customer.getAccounts().get(customer.getAccounts().size() - 1));
-                                applicationDb.saveNewTransaction(customer,customer.getAccounts().get(customer.getAccounts().size() - 1).getTransactions()
-                                                                                   .get(customer.getAccounts().get(customer.getAccounts().size() - 1).getTransactions().size() - 1));
+//                                applicationDb.saveNewTransaction(customer,customer.getAccounts().get(customer.getAccounts().size() - 1).getTransactions()
+//                                                                                   .get(customer.getAccounts().get(customer.getAccounts().size() - 1).getTransactions().size() - 1));
                             }
                         }
                     }
@@ -267,6 +267,8 @@ public class AccountsOverViewActivity extends AppCompatActivity {
                     if (customer.getAccounts().size() >= 1)
                     {
                         //txtTitleMessage.setText("Select an Account to view Transactions");
+                        AccountAdapter adapter = new AccountAdapter(getApplicationContext(), R.layout.lst_accounts, customer.getAccounts());
+                        lstAccounts.setAdapter(adapter);
                         txtDetailMessage.setVisibility(View.VISIBLE);
                         lstAccounts.setVisibility(View.VISIBLE);
                     }
