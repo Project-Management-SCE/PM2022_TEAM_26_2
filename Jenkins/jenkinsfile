@@ -17,6 +17,7 @@ pipeline
 				sh "echo 123"
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}
 	 	stage('Log the Jenkins Docker Ant Git and Java version info')
 		{
@@ -42,6 +43,8 @@ pipeline
         }
     }
 =======
+=======
+>>>>>>> 1b34581 (BankingApp)
 	    
 	 stage('Log the Jenkins Docker Ant Git and Java version info') {
             steps {
@@ -55,5 +58,34 @@ pipeline
 			 }	
 	}
 
+<<<<<<< HEAD
 >>>>>>> 65b2eb3 (Banking app-ui)
+=======
+=======
+		}
+	 	stage('Log the Jenkins Docker Ant Git and Java version info')
+		{
+			steps 
+			{
+			sh 'java -version'
+			sh 'git --version'
+			}
+		}
+        stage('Unit Test') {
+          steps {
+            // Execute your Unit Test
+            sh './gradlew testStagingDebug'
+          }
+        }
+	}
+	post 
+	{
+        always 
+		{
+            archiveArtifacts artifacts: 'build/libs/**/*.jar', fingerprint: true
+            junit 'build/reports/**/*.xml'
+        }
+    }
+>>>>>>> 5491120231fce5e04f96ae40c96bb19686528655
+>>>>>>> 1b34581 (BankingApp)
 }
