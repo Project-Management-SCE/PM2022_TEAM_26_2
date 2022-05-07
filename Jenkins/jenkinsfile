@@ -21,7 +21,8 @@ agent {
 	}
 	stage('Unit Test') {
 			steps {
-			sh './gradlew testStagingDebug'
+			sh './gradlew test'
 			 }	
 	}
+
 }

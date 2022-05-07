@@ -1,6 +1,7 @@
 package com.example.ymdbanking;
 
 import android.app.Dialog;
+import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,8 +24,12 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.core.Tag;
 
 import java.util.HashMap;
 
@@ -38,8 +43,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     ImageView menuIcon;
     LinearLayout contentView;
     TextView disp_username,disp_phone;
-    Button addB;
-
+    Button testB;
+    FirebaseAuth mAuth;
     HashMap<String,String> userDetails;
 
     //Dialogs
@@ -49,11 +54,27 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private Button btnSuccess;
     private Spinner accounts;
 
-    private String accountName,depositAmount;
+    private Dialog transferDialog;
+    private TextInputEditText transfer_amount;
+    private Button btnApprove, btnAbort;
+    private Spinner sendingAccount,receivingAccount;
 
+    private String accountName,depositAmount;
+    public String mInput;
 
 
     private String TAG = "DashboardActivity";
+
+
+    public void sendInput(String input)
+    {
+        Log.d(TAG, "sendInput: got the input: " + input);
+
+        mInput = input;
+
+        setInputToTextView();
+    }
+
 
     private View.OnClickListener depositClickListener = new View.OnClickListener()
     {
@@ -72,6 +93,20 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         }
     };
 
+    private View.OnClickListener transferClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if(view.getId() == btnAbort.getId()) {
+                transferDialog.dismiss();
+                Toast.makeText(DashboardActivity.this, "Transfer Cancelled", Toast.LENGTH_SHORT).show();
+            }
+            else if (view.getId() == btnSuccess.getId()) {
+
+//                makeTransfer();
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,11 +121,25 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
         contentView = findViewById(R.id.content);
+        testB = findViewById(R.id.test_btn);
+
+        mAuth = FirebaseAuth.getInstance();
+
 
 
         navigationDrawer();
 
+        testB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: opening dialog.");
 
+                DialogFragment dialog
+                        = new DialogFragment();
+                dialog.show(getSupportFragmentManager(),
+                        "MyCustomDialog");
+            }
+        });
 
     }
 
@@ -212,14 +261,45 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         int id = item.getItemId();
 
         if(id == R.id.nav_add_clerks)
-            startActivity(new Intent(getApplicationContext(),AddClerkActivity.class));
+            startActivity(new Intent(DashboardActivity.this,AddClerkActivity.class));
         else if(id == R.id.nav_profile)
-            startActivity(new Intent(getApplicationContext(),UserProfileActivity.class));
+            startActivity(new Intent(DashboardActivity.this,UserProfileActivity.class));
         else if(id == R.id.nav_accounts)
-            startActivity(new Intent(getApplicationContext(),AccountsOverViewActivity.class));
+            startActivity(new Intent(DashboardActivity.this,AccountsOverViewActivity.class));
         else if(id == R.id.nav_deposit)
            displayDepositDialog();
-        return true;
+        else if(id == R.id.nav_transfer)
+            displayTransferDialog();
+        else if(id == R.id.nav_logout) {
+            mAuth.signOut();
+            startActivity(new Intent(DashboardActivity.this,LoginActivity.class));
+        }
+            return true;
+    }
+
+    private void displayTransferDialog() {
+
+        transferDialog = new Dialog(this);
+        transferDialog.setContentView(R.layout.transfer_dialog);
+
+        transferDialog.setCanceledOnTouchOutside(true);
+
+        transferDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                Toast.makeText(DashboardActivity.this, "Transfer Cancelled", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        transfer_amount = transferDialog.findViewById(R.id.transfer_amount);
+
+        btnApprove = transferDialog.findViewById(R.id.transfer_btn);
+
+        btnApprove.setOnClickListener(transferClickListener);
+
+        transferDialog.show();
+
+
     }
 
     private void displayDepositDialog()
@@ -252,6 +332,11 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
         depositDialog.show();
 
+    }
+
+    private void setInputToTextView()
+    {
+//        mInputDisplay.setText(mInput);
     }
 
     public String getAccountName() {
