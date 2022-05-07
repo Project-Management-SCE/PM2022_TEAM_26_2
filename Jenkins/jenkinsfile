@@ -16,6 +16,7 @@ pipeline
 			{
 				sh "echo 123"
 			}
+<<<<<<< HEAD
 		}
 	 	stage('Log the Jenkins Docker Ant Git and Java version info')
 		{
@@ -40,4 +41,19 @@ pipeline
             junit 'build/reports/**/*.xml'
         }
     }
+=======
+	    
+	 stage('Log the Jenkins Docker Ant Git and Java version info') {
+            steps {
+	    	sh 'java -version'
+	    	sh 'git --version'
+             }
+	}
+	stage('Unit Test') {
+			steps {
+			sh './gradlew test'
+			 }	
+	}
+
+>>>>>>> 65b2eb3 (Banking app-ui)
 }
