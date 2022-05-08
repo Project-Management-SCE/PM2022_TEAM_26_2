@@ -367,13 +367,27 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             startActivity(new Intent(getApplicationContext(),UserProfileActivity.class));
         else if(id == R.id.nav_accounts)
             startActivity(new Intent(getApplicationContext(),AccountsOverViewActivity.class));
+        else if(id == R.id.nav_transfer)
+        {
+            setValuesForTransfer();
+            startActivity(new Intent(getApplicationContext(), TransferActivity.class));
+        }
         else if(id == R.id.nav_deposit)
             displayDepositDialog();
         else if(id == R.id.nav_loan)
             displayLoanDialog();
+        else if(id == R.id.nav_logout)
+            startActivity(new Intent(getApplicationContext(),LoginActivity.class));
         else
             startActivity(new Intent(getApplicationContext(),DashboardActivity.class));
         return true;
+    }
+
+    private void setValuesForTransfer()
+    {
+        ApplicationDB applicationDB = new ApplicationDB(getApplicationContext());
+        ArrayList<Customer> customersForTransfer = applicationDB.getAllCustomersForTransfer(customer.getId());
+        ArrayList<Account> customersAccountsForTransfer = applicationDB.getAllAccountsForTransfer(customer.getId());
     }
 
     private void displayDepositDialog()

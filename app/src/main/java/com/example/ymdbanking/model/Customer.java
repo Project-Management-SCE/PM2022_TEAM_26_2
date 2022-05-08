@@ -127,14 +127,14 @@ public class Customer extends User
         payees.add(payee);
     }
 
-    public int getNumberOfAccounts() { return this.accounts.size(); }
+//    public int getNumberOfAccounts() { return this.accounts.size(); }
     public void setPayeesFromDB(ArrayList<Payee> payees) {
         this.payees = payees;
     }
 
-//    @Override
-//    public String toString()
-//    {
-//        return getFirstName() + " " + getLastName();
-//    }
+    @Override
+    public String toString()
+    {
+        return getUsername();
+    }
 }

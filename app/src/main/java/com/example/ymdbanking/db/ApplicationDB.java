@@ -318,57 +318,56 @@ public class ApplicationDB
 	public ArrayList<Customer> getAllCustomersForTransfer(String customerID)
 	{
 		ArrayList<Customer> customers = new ArrayList<>();
-		database.getReference("Users").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+		database.getReference("Accounts").get()
+		.addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
 		{
-			@RequiresApi(api = Build.VERSION_CODES.N)
 			@Override
 			public void onComplete(@NonNull Task<DataSnapshot> task)
 			{
 				for(DataSnapshot ds : task.getResult().getChildren())
-				{
-					customers.add(ds.getValue(Customer.class));
-				}
-				customers.removeIf(customer -> customer.getId().equals(customerID));
+					if(!ds.getKey().equals(customerID))
+						customers.add(ds.getValue(Customer.class));
 			}
 		})
+		.addOnFailureListener(new OnFailureListener()
+		{
+			@Override
+			public void onFailure(@NonNull Exception e)
+			{
+				Toast.makeText(context, "ERROR - Can't get receiving customers from DB", Toast.LENGTH_SHORT).show();
+				Log.d("DB_ERROR",e.toString());
+			}
+		});
+
+		return customers;
+	}
+
+	public ArrayList<Account> getAllAccountsForTransfer(String customerID)
+	{
+		ArrayList<Account> accounts = new ArrayList<>();
+		database.getReference("Accounts").get()
+				.addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+				{
+					@Override
+					public void onComplete(@NonNull Task<DataSnapshot> task)
+					{
+						for(DataSnapshot ds : task.getResult().getChildren())
+							if(!ds.getKey().equals(customerID))
+								accounts.add(ds.child(customerID).getValue(Account.class));
+					}
+				})
 				.addOnFailureListener(new OnFailureListener()
 				{
 					@Override
 					public void onFailure(@NonNull Exception e)
 					{
-						Toast.makeText(context, "ERROR - Can't get customers for transfer from DB", Toast.LENGTH_SHORT).show();
+						Toast.makeText(context, "ERROR - Can't get receiving customers accounts from DB", Toast.LENGTH_SHORT).show();
 						Log.d("DB_ERROR",e.toString());
 					}
 				});
 
-		return customers;
+		return accounts;
 	}
-
-//	public ArrayList<Account> getAllAccountsForTransfer(String customerID)
-//	{
-//		ArrayList<Account> accounts = new ArrayList<>();
-//		database.getReference(customerID).child(KEY_ACCOUNTS).get()
-//				.addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
-//				{
-//					@Override
-//					public void onComplete(@NonNull Task<DataSnapshot> task)
-//					{
-//						for(DataSnapshot ds : task.getResult().getChildren())
-//							accounts.add(ds.getValue(Account.class));
-//					}
-//				})
-//				.addOnFailureListener(new OnFailureListener()
-//				{
-//					@Override
-//					public void onFailure(@NonNull Exception e)
-//					{
-//						Toast.makeText(context, "ERROR - Can't get customer's accounts from DB", Toast.LENGTH_SHORT).show();
-//						Log.d("DB_ERROR",e.toString());
-//					}
-//				});
-//
-//		return accounts;
-//	}
 
 	public ArrayList<Account> getAccountsFromCurrentCustomer(String customerID)
 	{
@@ -404,7 +403,6 @@ public class ApplicationDB
 		return accounts;
 	}
 
-	//Todo: this function doesn't work, find out why
 	public Customer getCustomerByID(String customerID)
 	{
 		Customer[] customer = new Customer[1];
