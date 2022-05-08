@@ -141,34 +141,42 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     private void setValues()
     {
-        FirebaseDatabase.getInstance().getReference("Accounts").child(customer.getId())
-            .addValueEventListener(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot)
+        Customer tempCustomer = new Customer();
+        tempCustomer.setAccounts(new ArrayList<>(0));
+        FirebaseDatabase.getInstance().getReference("Accounts").child(customer.getId()).get()
+            .addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
             {
-                for (DataSnapshot ds : snapshot.getChildren())
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task)
                 {
-                    customer.getAccounts().add(new Account(
-                            ds.child("accountName").getValue(String.class),
-                            ds.child("accountNo").getValue(String.class),
-                            ds.child("accountBalance").getValue(Double.class)
-                    ));
-                    customer.getAccounts().get(
-                            customer.getAccounts().size() - 1).getTransactions()
-                            .addAll(getTransactionsForAccount(customer.getAccounts().get(
-                                    customer.getAccounts().size() - 1)));
+                    for (DataSnapshot ds : task.getResult().getChildren())
+                    {
+                        tempCustomer.getAccounts().add(new Account(
+                                ds.child("accountName").getValue(String.class),
+                                ds.child("accountNo").getValue(String.class),
+                                ds.child("accountBalance").getValue(Double.class)
+                        ));
+                        tempCustomer.getAccounts().get(
+                                tempCustomer.getAccounts().size() - 1).getTransactions()
+                                .addAll(getTransactionsForAccount(tempCustomer.getAccounts().get(
+                                        tempCustomer.getAccounts().size() - 1)));
+                    }
+                    //Checking if there's any mismatch on customer's accounts between phone's memory and DB
+                    if(customer.getAccounts().size() != tempCustomer.getAccounts().size())
+                        //If there's a mismatch than we'll take the data from DB
+                        customer.setAccounts(tempCustomer.getAccounts());
+                    sessionManager.saveCustomerObjForSession(customer);
                 }
-                sessionManager.saveCustomerObjForSession(customer);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error)
+            })
+            .addOnFailureListener(new OnFailureListener()
             {
-                Toast.makeText(getApplicationContext(), "ERROR - Can't get customer's accounts from DB", Toast.LENGTH_SHORT).show();
-                Log.d("DB_ERROR", error.toString());
-            }
-        });
+                @Override
+                public void onFailure(@NonNull Exception e)
+                {
+                    Toast.makeText(getApplicationContext(), "ERROR - Can't get customer's accounts from DB", Toast.LENGTH_SHORT).show();
+                    Log.d("DB_ERROR", e.toString());
+                }
+            });
 
         //Getting all clerks from DB
         clerks = new ArrayList<>();

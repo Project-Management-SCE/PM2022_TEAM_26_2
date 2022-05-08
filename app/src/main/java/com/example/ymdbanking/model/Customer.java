@@ -9,16 +9,9 @@ import java.util.HashMap;
  */
 public class Customer extends User
 {
-//    private String firstName;
-//    private String lastName;
-//    private String country;
-//    private String username;
-//    private String password;
     private final static int typeID = 3;
     private ArrayList<Account> accounts;
-//    private ArrayList<Account> accounts;
     private ArrayList<Payee> payees;
-//    private long dbId;
 
     public Customer()
     {
