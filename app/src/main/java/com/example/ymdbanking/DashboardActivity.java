@@ -37,16 +37,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
-<<<<<<< HEAD
+
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.core.Tag;
-=======
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
->>>>>>> DB-2
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,7 +71,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private EditText edtDepositAmount;
     private Button btnCancel;
     private Button btnSuccess;
-<<<<<<< HEAD
+
     private Spinner accounts;
 
     private Dialog transferDialog;
@@ -79,11 +79,11 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private Button btnApprove, btnAbort;
     private Spinner sendingAccount,receivingAccount;
 
-    private String accountName,depositAmount;
+
     public String mInput;
 
 
-=======
+
     private Spinner spnAccounts;
     private String accountName,depositAmount;
     private Customer customer;
@@ -91,7 +91,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private Admin admin;
     private ArrayAdapter<Account> accountAdapter;
     private SessionManager sessionManager;
->>>>>>> DB-2
+
     private String TAG = "DashboardActivity";
     private Dialog loanDialog;
     private Spinner topSpinner;
@@ -174,14 +174,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
         contentView = findViewById(R.id.content);
-<<<<<<< HEAD
+
         testB = findViewById(R.id.test_btn);
 
         mAuth = FirebaseAuth.getInstance();
 
 
 
-=======
+
         sessionManager = new SessionManager(this,SessionManager.USER_SESSION);
         sessionId = sessionManager.userSession.getString(SessionManager.KEY_SESSION_ID,null);
         if(sessionId.equals("1"))
@@ -191,11 +191,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         else if(sessionId.equals("3"))
             customer = sessionManager.getCustomerObjFromSession();
         setValues();
->>>>>>> DB-2
-        navigationDrawer();
-    }
 
-<<<<<<< HEAD
+        navigationDrawer();
+
         testB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -207,7 +205,11 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                         "MyCustomDialog");
             }
         });
-=======
+    }
+
+
+
+
     private void setValues()
     {
         Customer tempCustomer = new Customer();
@@ -256,7 +258,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             {
                 for(DataSnapshot ds : task.getResult().getChildren())
                     clerks.add(ds.getValue(Clerk.class));
->>>>>>> DB-2
+
 
                 sessionManager.saveClerksForSession(clerks);
             }
@@ -436,7 +438,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         else if(id == R.id.nav_profile)
             startActivity(new Intent(DashboardActivity.this,UserProfileActivity.class));
         else if(id == R.id.nav_accounts)
-<<<<<<< HEAD
+
             startActivity(new Intent(DashboardActivity.this,AccountsOverViewActivity.class));
         else if(id == R.id.nav_deposit)
            displayDepositDialog();
@@ -472,23 +474,23 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         transferDialog.show();
 
 
-=======
-            startActivity(new Intent(getApplicationContext(),AccountsOverViewActivity.class));
-        else if(id == R.id.nav_transfer)
-        {
-            setValuesForTransfer();
-            startActivity(new Intent(getApplicationContext(), TransferActivity.class));
-        }
-        else if(id == R.id.nav_deposit)
-            displayDepositDialog();
-        else if(id == R.id.nav_loan)
-            displayLoanDialog();
-        else if(id == R.id.nav_logout)
-            startActivity(new Intent(getApplicationContext(),LoginActivity.class));
-        else
-            startActivity(new Intent(getApplicationContext(),DashboardActivity.class));
-        return true;
->>>>>>> DB-2
+
+//        startActivity(new Intent(getApplicationContext(),AccountsOverViewActivity.class));
+//        else if(id == R.id.nav_transfer)
+//        {
+//            setValuesForTransfer();
+//            startActivity(new Intent(getApplicationContext(), TransferActivity.class));
+//        }
+//        else if(id == R.id.nav_deposit)
+//            displayDepositDialog();
+//        else if(id == R.id.nav_loan)
+//            displayLoanDialog();
+//        else if(id == R.id.nav_logout)
+//            startActivity(new Intent(getApplicationContext(),LoginActivity.class));
+//        else
+//            startActivity(new Intent(getApplicationContext(),DashboardActivity.class));
+//        return true;
+
     }
 
     private void setValuesForTransfer()
@@ -531,7 +533,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         depositDialog.show();
     }
 
-<<<<<<< HEAD
+
     private void setInputToTextView()
     {
 //        mInputDisplay.setText(mInput);
@@ -539,7 +541,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     public String getAccountName() {
         return accountName;
-=======
+    }
+
     private void makeDeposit()
     {
         int selectedAccountIndex = spnAccounts.getSelectedItemPosition();
@@ -583,7 +586,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             drawerLayout.closeDrawers();
             //manualNavigation(manualNavID.ACCOUNTS_ID, null);
         }
->>>>>>> DB-2
+
     }
 
     private void displayLoanDialog()

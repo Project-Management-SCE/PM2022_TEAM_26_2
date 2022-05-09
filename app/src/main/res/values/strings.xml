@@ -52,7 +52,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="select_an_account">Select an Account</string>
     <string name="swipe_on_an_account_to_remove_or_view_details">Swipe on an Account to remove or view details</string>
-<<<<<<< HEAD
+
     <string name="select_sending_account">Select Sending Account</string>
     <string name="select_receiving_profile">Select Receiving Profile</string>
     <string name="enter_transfer_amount">Enter transfer amount</string>
