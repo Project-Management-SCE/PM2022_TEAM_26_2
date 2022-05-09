@@ -13,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:fontFamily="@font/aldrich"
         android:textAppearance="@android:style/TextAppearance.Holo.Large"
         app:layout_constraintStart_toEndOf="@+id/img_account"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,6 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:fontFamily="@font/aldrich"
         android:textAppearance="@android:style/TextAppearance.Holo.Medium"
         app:layout_constraintStart_toEndOf="@+id/img_account"
         app:layout_constraintTop_toBottomOf="@+id/txt_balance"
@@ -36,6 +38,7 @@
         android:textAppearance="@android:style/TextAppearance.Holo.Medium"
         android:textColor="@android:color/holo_green_dark"
         android:textStyle="bold"
+        android:fontFamily="@font/aldrich"
         app:layout_constraintStart_toEndOf="@+id/img_account"
         app:layout_constraintTop_toBottomOf="@+id/txt_account_name"
         tools:text="CURRENT BALANCE:" />
@@ -48,5 +51,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/lst_account_icon"
-        android:contentDescription="Account Image" />
+        android:contentDescription="@string/account_image" />
 </androidx.constraintlayout.widget.ConstraintLayout>

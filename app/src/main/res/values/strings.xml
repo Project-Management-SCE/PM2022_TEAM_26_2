@@ -122,6 +122,7 @@
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
+    <string name="account_image">Account Image</string>
 
     <string-array name="days">
         <item>Sunday</item>
