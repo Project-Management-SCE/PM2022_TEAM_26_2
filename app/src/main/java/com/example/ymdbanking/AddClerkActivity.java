@@ -21,9 +21,11 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class AddClerkActivity extends AppCompatActivity {
 
-    private TextInputEditText inputUser,inputEmail,inputPassword,inputPhone;
+    private TextInputEditText inputId,inputName,inputUser,inputEmail,inputPassword,inputPhone;
     private Button addBtn;
     private FirebaseAuth mAuth;
+    private String id;
+    private String fullName;
     private String username;
     private String email;
     private String password;
@@ -52,8 +54,10 @@ public class AddClerkActivity extends AppCompatActivity {
 
     }
 
-    private void createClerk() {
-
+    private void createClerk()
+    {
+        setId(inputId.getText().toString().trim());
+        setFullName(inputName.getText().toString().trim());
         setUsername(inputUser.getText().toString().trim());
         setEmail(inputEmail.getText().toString().trim());
         setPassword(inputPassword.getText().toString().trim());
@@ -97,6 +101,8 @@ public class AddClerkActivity extends AppCompatActivity {
 
     private void hook() {
 
+        inputId = findViewById(R.id.clerk_id);
+        inputName = findViewById(R.id.clerk_fullName);
         inputUser = findViewById(R.id.clerk_username);
         inputEmail = findViewById(R.id.clerk_email);
         inputPassword = findViewById(R.id.clerk_password);
@@ -106,6 +112,14 @@ public class AddClerkActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
     }
+
+    public String getId() {return id;}
+
+    public void setId(String id) {this.id = id;}
+
+    public String getFullName() {return fullName;}
+
+    public void setFullName(String fullName) {this.fullName = fullName;}
 
     public String getUsername() {
         return username;

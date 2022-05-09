@@ -5,6 +5,7 @@ pipeline
 		docker
 		{
 			image 'androidsdk/android-31:latest'
+<<<<<<< HEAD
 			reuseNode true            
 	  	}
 	}
@@ -56,6 +57,35 @@ pipeline
 			steps {
 			sh './gradlew test'
 			 }	
+=======
+			 reuseNode true            
+	  	}
+	}
+    	stages
+	{ 
+		stage('Build')
+		{
+				steps 
+				{
+					sh "echo 123"
+				}
+		}
+	 	stage('Log the Jenkins Docker Ant Git and Java version info')
+		{
+	    		steps 
+			{
+				sh 'java -version'
+				sh 'git --version'
+		     	}
+		}
+		stage('Unit Test') 
+		{
+			steps
+			{
+				sh './gradlew testStagingDebug'
+		 	}	
+		}
+>>>>>>> DB-2
 	}
 
 <<<<<<< HEAD
