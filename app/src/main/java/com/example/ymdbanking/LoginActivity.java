@@ -83,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), SignUpActivity.class));
             }
         });
+
         btnLogin.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -118,20 +119,29 @@ public class LoginActivity extends AppCompatActivity {
                                 String email = snapshot.child(id_login).child("email").getValue(String.class);
                                 String password = snapshot.child(id_login).child("password").getValue(String.class);
                                 String phone = snapshot.child(id_login).child("phone").getValue(String.class);
+                                int typeID = snapshot.child(id_login).child("typeID").getValue(int.class);
 
                                 //Create a User Session
                                 SessionManager sessionManager = new SessionManager(LoginActivity.this, SessionManager.USER_SESSION);
-                                sessionManager.createLoginSession(fullName, id, username, email, password, phone);
+                                sessionManager.createLoginSession(fullName, id, username, email, password, phone,String.valueOf(typeID));
 
-                                sessionManager.editor.putString(SessionManager.KEY_SESSION_ID,"3");
-//                                Account account = snapshot.child(id_login).child("accounts").getValue(Account.class);
-                                Customer customer = new Customer(email, fullName, id, password, phone, username);
-//                                ApplicationDB applicationDB = new ApplicationDB(getApplicationContext());
-//                                customer.setAccounts(applicationDB.getAccountsFromCurrentCustomer(customer.getId()));
-//                                customer.getAccounts(applicationDB.getTransactionsFromCurrentAccount());
-                                sessionManager.saveCustomerObjForSession(customer);
+//                                sessionManager.editor.putString(SessionManager.KEY_TYPE_ID,typeID);
+                                if(typeID==3) {
+                                    Customer customer = new Customer(email, fullName, id, password, phone, username);
+                                    sessionManager.saveCustomerObjForSession(customer);
+                                }
+                                if(typeID == 2)
+                                {
+                                    Clerk clerk = new Clerk(email,fullName,id,password,phone,username);
+                                    sessionManager.saveClerkObjForSession(clerk);
+                                }
+                                if(typeID == 1)
+                                {
+                                    Admin admin = new Admin(email,fullName,id,password,phone,username);
+                                    sessionManager.saveAdminObjForSession(admin);
+                                }
 
-                                startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
+                                startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                             }
                             else
                             {

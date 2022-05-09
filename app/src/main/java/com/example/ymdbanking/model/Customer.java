@@ -24,7 +24,8 @@ public class Customer extends User
      */
     public Customer(String email,String fullName,String id,String password,String phone,String username)
     {
-        super(email,fullName,id,password,phone,username);
+        super(email,fullName,id,password,phone,username,typeID);
+
         accounts = new ArrayList<>(0);
         payees = new ArrayList<>(0);
     }
@@ -36,7 +37,7 @@ public class Customer extends User
     public Customer(String email,String fullName,String id,String password,String phone,String username,
                     ArrayList<Account> accounts,ArrayList<Payee> payees)
     {
-        super(email,fullName,id,password,phone,username);
+        super(email,fullName,id,password,phone,username,typeID);
         this.accounts = accounts;
         this.payees = payees;
     }
@@ -62,7 +63,7 @@ public class Customer extends User
     public ArrayList<Account> getAccounts() { return accounts; }
     public void setAccounts(ArrayList<Account> accounts) {this.accounts = accounts;}
     public ArrayList<Payee> getPayees() { return payees; }
-    public static int getTypeID() {return typeID;}
+//    public static int getTypeID() {return typeID;}
     //    public long getDbId() { return dbId; }
 //    public void setDbId(long dbId) { this.dbId = dbId; }
 //    public void setFirstName(String firstName) {this.firstName = firstName;}

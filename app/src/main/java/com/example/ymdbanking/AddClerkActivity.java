@@ -10,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.ymdbanking.model.Clerk;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
@@ -83,11 +84,11 @@ public class AddClerkActivity extends AppCompatActivity {
     private void storeNewClerkData() {
 
         FirebaseDatabase rootNode = FirebaseDatabase.getInstance();
-        DatabaseReference reference = rootNode.getReference("Clerks");
+        DatabaseReference reference = rootNode.getReference("Users");
 
-        ClerkHelperClass addNewClerk = new ClerkHelperClass(username,email,password,phone);
+        Clerk addNewClerk = new Clerk(email,fullName,id,password,phone,username);
 
-        reference.child(username).setValue(addNewClerk).addOnCompleteListener(new OnCompleteListener<Void>() {
+        reference.child(id).setValue(addNewClerk).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 

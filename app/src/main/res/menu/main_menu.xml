@@ -16,11 +16,16 @@
             android:icon="@drawable/ic_show_users"
             android:title="@string/show_users" />
         <item
+            android:id="@+id/nav_customers"
+            android:icon="@drawable/ic_show_users"
+            android:title="@string/show_customers" />
+        <item
             android:id="@+id/nav_accounts"
             android:icon="@drawable/ic_accounts"
             android:title="@string/accounts" />
 
-        <item android:title="@string/transaction">
+        <item android:title="@string/transaction"
+            android:id="@+id/nav_transaction">
             <menu>
                 <group android:checkableBehavior="single">
                     <item
@@ -35,6 +40,10 @@
                         android:id="@+id/nav_transfer"
                         android:icon="@drawable/icon_transfer_24"
                         android:title="@string/make_a_transfer" />
+                    <item
+                        android:id="@+id/nav_loan2"
+                        android:icon="@drawable/ic_loan_req"
+                        android:title="@string/approve_loans" />
                     <item
                         android:id="@+id/nav_loan"
                         android:icon="@drawable/ic_loan_req"

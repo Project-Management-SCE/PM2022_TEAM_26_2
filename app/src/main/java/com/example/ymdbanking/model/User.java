@@ -27,6 +27,9 @@ public class User
 	private String password;
 	private String phone;
 	private String username;
+	private int typeID;
+
+
 
 	public User()
 	{
@@ -42,7 +45,7 @@ public class User
 //		this.password = password;
 //	}
 
-	public User(String email,String fullName,String id,String password,String phone,String username)
+	public User(String email,String fullName,String id,String password,String phone,String username,int userType)
 	{
 		this.email = email;
 		this.fullName = fullName;
@@ -50,6 +53,8 @@ public class User
 		this.password = password;
 		this.phone = phone;
 		this.username = username;
+		this.typeID = userType;
+
 	}
 
 //	public String getFirstName() {return firstName;}
@@ -70,6 +75,14 @@ public class User
 	public void setId(String id) {this.id = id;}
 	public String getPhone() {return phone;}
 	public void setPhone(String phone) {this.phone = phone;}
+
+	public int getTypeID() {
+		return typeID;
+	}
+
+	public void setTypeID(int typeID) {
+		this.typeID = typeID;
+	}
 
 	@Override
 	public String toString()
