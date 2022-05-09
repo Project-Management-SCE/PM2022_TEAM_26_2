@@ -144,7 +144,7 @@ public class TransactionActivity extends AppCompatActivity
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_transaction);
-		sessionManager = new SessionManager(getApplicationContext(),"AccountView");
+		sessionManager = new SessionManager(TransactionActivity.this,"AccountView");
 		selectedAccountIndex = sessionManager.userSession.getInt("SelectedAccount",0);
 		this.setTitle("Transactions");
 

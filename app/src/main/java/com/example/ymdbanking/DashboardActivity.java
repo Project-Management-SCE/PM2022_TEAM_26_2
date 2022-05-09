@@ -365,7 +365,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 navigationView.getMenu().findItem(R.id.nav_loan).setVisible(false);
                 navigationView.getMenu().findItem(R.id.nav_payment).setVisible(false);
                 navigationView.getMenu().findItem(R.id.nav_deposit).setVisible(false);
-
+                sessionManager.saveClerkObjForSession(clerk);
                 break;
             //If user is admin
             case "1":
@@ -376,7 +376,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 //                navigationView.getMenu().findItem(R.id.nav_payment).setVisible(false);
                 navigationView.getMenu().findItem(R.id.nav_customers).setVisible(false);
                 navigationView.getMenu().findItem(R.id.nav_transaction).setVisible(false);
-
+                sessionManager.saveAdminObjForSession(admin);
                 break;
         }
 //        disp_phone.setText(phone);
