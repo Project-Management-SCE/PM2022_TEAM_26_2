@@ -1,103 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/txt_select_clerk_loan_dialog"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="177dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="177dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="0dp"
         android:layout_marginBottom="15dp"
         android:text="Select Clerk To Receive Request"
-        android:textColor="#000000"
-        app:layout_constraintBottom_toTopOf="@+id/spn_clerk_list_Loan_dialog"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textAlignment="center"
+        android:textColor="#000000" />
 
     <Spinner
         android:id="@+id/spn_clerk_list_Loan_dialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-        app:layout_constraintBottom_toTopOf="@+id/txt_select_account_loan_dialog"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_select_clerk_loan_dialog" />
+        android:layout_marginBottom="15dp" />
 
     <EditText
         android:id="@+id/edt_loan_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="103dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="98dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="100dp"
         android:ems="10"
         android:hint="Enter Loan Amount Here..."
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spn_account_dialog" />
+        android:inputType="number" />
 
-    <Button
-        android:id="@+id/btn_success_loan_dialog"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/txt_select_account_loan_dialog"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="70dp"
-        android:layout_marginEnd="80dp"
-        android:layout_marginBottom="446dp"
-        android:text="Loan"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_cancel_loan_dialog"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_loan_amount" />
-
-    <Button
-        android:id="@+id/btn_cancel_loan_dialog"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="70dp"
-        android:layout_marginEnd="76dp"
-        android:layout_marginBottom="446dp"
-        android:text="Cancel"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_success_loan_dialog"
-        app:layout_constraintTop_toBottomOf="@+id/edt_loan_amount" />
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="15dp"
+        android:text="Select Account For Loan"
+        android:textAlignment="center"
+        android:textColor="#000000" />
 
     <Spinner
         android:id="@+id/spn_account_dialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="21dp"
-        app:layout_constraintBottom_toTopOf="@+id/edt_loan_amount"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_select_account_loan_dialog" />
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="20dp" />
 
-    <TextView
-        android:id="@+id/txt_select_account_loan_dialog"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/btn_success_loan_dialog"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="177dp"
-        android:layout_marginTop="26dp"
-        android:layout_marginEnd="177dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginBottom="0dp"
+        android:text="Loan" />
+
+    <Button
+        android:id="@+id/btn_cancel_loan_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="80dp"
         android:layout_marginBottom="15dp"
-        android:text="Select Account For Loan"
-        android:textColor="#000000"
-        app:layout_constraintBottom_toTopOf="@+id/spn_account_dialog"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spn_clerk_list_Loan_dialog" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:text="Cancel" />
+
+</LinearLayout>

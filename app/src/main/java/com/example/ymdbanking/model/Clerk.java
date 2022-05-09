@@ -5,7 +5,6 @@ import com.example.ymdbanking.model.*;
 
 public class Clerk extends User
 {
-	private final static int typeID = 2;
 	private ArrayList<Customer> customers;
 	private ArrayList<Transaction> loansToApprove;
 
@@ -30,23 +29,10 @@ public class Clerk extends User
 	}
 
 	// getters and setters
-//	public String getFirstName() {return firstName;}
-//	public void setFirstName(String firstName) {this.firstName = firstName;}
-//	public String getLastName() {return lastName;}
-//	public void setLastName(String lastName) {this.lastName = lastName;}
-//	public String getUsername() {return username;}
-//	public void setUsername(String username) {this.username = username;}
-//	public String getPassword() {return password;}
-//	public void setPassword(String password) {this.password = password;}
 	public ArrayList<Transaction> getLoansToApprove() {return loansToApprove;}
 	public void setLoansToApprove(ArrayList<Transaction> loansToApprove) {this.loansToApprove = loansToApprove;}
 	public void setCustomers(ArrayList<Customer> customers) {this.customers = customers;}
-	public static int getTypeID() {return typeID;}
 	public ArrayList<Customer> getCustomers() {return customers;}
-	//	public String getCountry() {return country;}
-//	public void setCountry(String country) {this.country = country;}
-//	public long getDbId() {return dbId;}
-//	public void setDbId(long dbId) {this.dbId = dbId;}
 
 	// methods
 //	public ArrayList<Customer> getUsers(int id, Context context)
@@ -86,10 +72,10 @@ public class Clerk extends User
 				receivingAccTransferCount++;
 			}
 		}
-//		Transaction transaction = new Transaction("T" + (destinationAccount.getTransactions().size() + 1) + "-L" + (receivingAccTransferCount + 1), destinationAccount, amount);
+		Transaction transaction = new Transaction("T" + (destinationAccount.getTransactions().size() + 1) + "-L" + (receivingAccTransferCount + 1), destinationAccount, amount);
 //		destinationAccount.getTransactions().put(transaction.getTransactionID(),transaction);
-		destinationAccount.getTransactions().add(new Transaction("T" + (destinationAccount.getTransactions().size() + 1) + "-L" + (receivingAccTransferCount+1), destinationAccount, amount));
-		addLoanForPending(destinationAccount.getTransactions().get(destinationAccount.getTransactions().size()));
+		destinationAccount.getTransactions().add(transaction);
+		addLoanForPending(destinationAccount.getTransactions().get(destinationAccount.getTransactions().size() - 1));
 	}
 
 	public void addLoanForPending(Transaction pendingLoan)

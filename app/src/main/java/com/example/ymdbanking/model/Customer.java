@@ -9,7 +9,7 @@ import java.util.HashMap;
  */
 public class Customer extends User
 {
-    private final static int typeID = 3;
+//    private final static int typeID = 3;
     private ArrayList<Account> accounts;
     private ArrayList<Payee> payees;
 
@@ -62,7 +62,7 @@ public class Customer extends User
     public ArrayList<Account> getAccounts() { return accounts; }
     public void setAccounts(ArrayList<Account> accounts) {this.accounts = accounts;}
     public ArrayList<Payee> getPayees() { return payees; }
-    public static int getTypeID() {return typeID;}
+//    public static int getTypeID() {return typeID;}
     //    public long getDbId() { return dbId; }
 //    public void setDbId(long dbId) { this.dbId = dbId; }
 //    public void setFirstName(String firstName) {this.firstName = firstName;}

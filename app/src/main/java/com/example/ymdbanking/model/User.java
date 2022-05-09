@@ -27,6 +27,7 @@ public class User
 	private String password;
 	private String phone;
 	private String username;
+	private int typeID;
 
 	public User()
 	{
@@ -70,6 +71,8 @@ public class User
 	public void setId(String id) {this.id = id;}
 	public String getPhone() {return phone;}
 	public void setPhone(String phone) {this.phone = phone;}
+	public int getTypeID() {return typeID;}
+	public void setTypeID(int typeID) {this.typeID = typeID;}
 
 	@Override
 	public String toString()
