@@ -97,7 +97,7 @@ public class AccountsOverViewActivity extends AppCompatActivity {
         SessionManager sessionManager = new SessionManager(this,SessionManager.USER_SESSION);
         customer = sessionManager.getCustomerObjFromSession();
 
-        AccountAdapter adapter = new AccountAdapter(getApplicationContext(), R.layout.lst_accounts, customer.getAccounts());
+        AccountAdapter adapter = new AccountAdapter(AccountsOverViewActivity.this, R.layout.lst_accounts, customer.getAccounts());
         lstAccounts.setAdapter(adapter);
 
         lstAccounts.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -117,7 +117,7 @@ public class AccountsOverViewActivity extends AppCompatActivity {
             {
                 if (customer.getAccounts().size() >= 10)
                 {
-                    Toast.makeText(getApplicationContext(), "You have reached the maximum amount of accounts (10)", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AccountsOverViewActivity.this, "You have reached the maximum amount of accounts (10)", Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
@@ -197,7 +197,7 @@ public class AccountsOverViewActivity extends AppCompatActivity {
 
                 if (!match)
                 {
-                    ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
+                    ApplicationDB applicationDb = new ApplicationDB(AccountsOverViewActivity.this);
                     customer.addAccount(edtAccountName.getText().toString(), initDepositAmount);
 
                     if (!balance.equals(""))
@@ -221,7 +221,7 @@ public class AccountsOverViewActivity extends AppCompatActivity {
                     if (customer.getAccounts().size() >= 1)
                     {
                         //txtTitleMessage.setText("Select an Account to view Transactions");
-                        AccountAdapter adapter = new AccountAdapter(getApplicationContext(), R.layout.lst_accounts, customer.getAccounts());
+                        AccountAdapter adapter = new AccountAdapter(AccountsOverViewActivity.this, R.layout.lst_accounts, customer.getAccounts());
                         lstAccounts.setAdapter(adapter);
                         txtDetailMessage.setVisibility(View.VISIBLE);
                         lstAccounts.setVisibility(View.VISIBLE);
@@ -249,9 +249,9 @@ public class AccountsOverViewActivity extends AppCompatActivity {
 
     public void viewAccount()
     {
-        sessionManager = new SessionManager(getApplicationContext(),"AccountView");
+        sessionManager = new SessionManager(AccountsOverViewActivity.this,"AccountView");
         sessionManager.editor.putInt("SelectedAccount", selectedAccountIndex);
-        startActivity(new Intent(getApplicationContext(),TransactionActivity.class));
+        startActivity(new Intent(AccountsOverViewActivity.this,TransactionActivity.class));
     }
 
 //    public ArrayList<Transaction> getTransactionsForAccount(Account account)

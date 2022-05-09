@@ -40,6 +40,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.core.Tag;
 
 import com.google.firebase.database.DataSnapshot;
@@ -101,15 +102,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private ArrayList<Clerk> clerks;
     private String sessionId;
 
-
-    public void sendInput(String input)
-    {
-        Log.d(TAG, "sendInput: got the input: " + input);
-
-        mInput = input;
-
-        setInputToTextView();
-    }
 
 
     private View.OnClickListener depositClickListener = new View.OnClickListener()
@@ -438,7 +430,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         else if(id == R.id.nav_profile)
             startActivity(new Intent(DashboardActivity.this,UserProfileActivity.class));
         else if(id == R.id.nav_accounts)
-
             startActivity(new Intent(DashboardActivity.this,AccountsOverViewActivity.class));
         else if(id == R.id.nav_deposit)
            displayDepositDialog();
@@ -449,48 +440,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             startActivity(new Intent(DashboardActivity.this,LoginActivity.class));
         }
             return true;
-    }
-
-    private void displayTransferDialog() {
-
-        transferDialog = new Dialog(this);
-        transferDialog.setContentView(R.layout.transfer_dialog);
-
-        transferDialog.setCanceledOnTouchOutside(true);
-
-        transferDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialogInterface) {
-                Toast.makeText(DashboardActivity.this, "Transfer Cancelled", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        transfer_amount = transferDialog.findViewById(R.id.transfer_amount);
-
-        btnApprove = transferDialog.findViewById(R.id.transfer_btn);
-
-        btnApprove.setOnClickListener(transferClickListener);
-
-        transferDialog.show();
-
-
-
-//        startActivity(new Intent(getApplicationContext(),AccountsOverViewActivity.class));
-//        else if(id == R.id.nav_transfer)
-//        {
-//            setValuesForTransfer();
-//            startActivity(new Intent(getApplicationContext(), TransferActivity.class));
-//        }
-//        else if(id == R.id.nav_deposit)
-//            displayDepositDialog();
-//        else if(id == R.id.nav_loan)
-//            displayLoanDialog();
-//        else if(id == R.id.nav_logout)
-//            startActivity(new Intent(getApplicationContext(),LoginActivity.class));
-//        else
-//            startActivity(new Intent(getApplicationContext(),DashboardActivity.class));
-//        return true;
-
     }
 
     private void setValuesForTransfer()
@@ -533,10 +482,38 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         depositDialog.show();
     }
 
+    private void displayTransferDialog() {
 
-    private void setInputToTextView()
-    {
-//        mInputDisplay.setText(mInput);
+        transferDialog = new Dialog(this);
+        transferDialog.setContentView(R.layout.transfer_dialog);
+
+        transferDialog.setCanceledOnTouchOutside(true);
+
+        transferDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                Toast.makeText(DashboardActivity.this, "Transfer Cancelled", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //sending account
+        sendingAccount = transferDialog.findViewById(R.id.spn_select_profile_acc);
+        accountAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, customer.getAccounts());
+        accountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        sendingAccount.setAdapter(accountAdapter);
+        sendingAccount.setSelection(0);
+
+        transfer_amount = transferDialog.findViewById(R.id.transfer_amount);
+
+        btnApprove = transferDialog.findViewById(R.id.transfer_btn);
+        //receiving account
+
+        btnApprove.setOnClickListener(transferClickListener);
+
+        transferDialog.show();
+
+
     }
 
     public String getAccountName() {
