@@ -1,6 +1,10 @@
 package com.example.ymdbanking.model;
 
+import android.content.Context;
+
 import java.util.ArrayList;
+
+import com.example.ymdbanking.db.ApplicationDB;
 import com.example.ymdbanking.model.*;
 
 public class Clerk extends User
@@ -54,12 +58,13 @@ public class Clerk extends User
 //		ApplicationDB applicationDB = new ApplicationDB(context);
 //		return applicationDB.getClerkCustomers(id);
 //	}
-//	public void assignProfileToCustomer(Customer customer, Context context)
-//	{
-//		customers.add(customer);
-//		ApplicationDB applicationDB = new ApplicationDB(context);
-//		applicationDB.saveCustomerToClerkList(customer, getUsername());
-//	}
+
+	public void assignProfileToCustomer(Customer customer,Context context)
+	{
+		customers.add(customer);
+		ApplicationDB applicationDB = new ApplicationDB(context);
+		applicationDB.saveCustomerToClerkList(customer,this);
+	}
 
 	public void viewCustomerAccounts(Customer customer)
 	{

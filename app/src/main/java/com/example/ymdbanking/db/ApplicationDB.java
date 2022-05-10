@@ -80,15 +80,15 @@ public class ApplicationDB
 	 */
 	public void saveCustomerToClerkList(Customer customer, Clerk clerk)
 	{
-		HashMap<String,Object> cust = new HashMap<>();
-		cust.put("email",customer.getEmail());
-		cust.put("fullName",customer.getFullName());
-		cust.put("id",customer.getId());
-		cust.put("password",customer.getPassword());
-		cust.put("phone",customer.getPhone());
-		cust.put("username",customer.getUsername());
+//		HashMap<String,Object> cust = new HashMap<>();
+//		cust.put("email",customer.getEmail());
+//		cust.put("fullName",customer.getFullName());
+//		cust.put("id",customer.getId());
+//		cust.put("password",customer.getPassword());
+//		cust.put("phone",customer.getPhone());
+//		cust.put("username",customer.getUsername());
 		database.getReference("ClerkCustomers").child(clerk.getId())
-			.child(customer.getId()).setValue(cust);
+			.child(customer.getId()).setValue(customer);
 	}
 
 	/**
@@ -169,6 +169,11 @@ public class ApplicationDB
 
 		database.getReference("Accounts").child(customer.getId()).child(account.getAccountNo())
 				.updateChildren(newAccount);
+	}
+
+	public void saveNewLoan(Clerk clerk,Customer customer,Account account)
+	{
+		database.getReference("Loans").child(clerk.getId()).child(customer.getId()).setValue(account);
 	}
 
 	public void saveNewPayee(Customer customer, Payee payee)
@@ -293,7 +298,7 @@ public class ApplicationDB
 	public ArrayList<Customer> getAllCustomers()
 	{
 		ArrayList<Customer> customers = new ArrayList<>();
-		database.getReference("Users").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+			database.getReference("Users").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
 		{
 			@Override
 			public void onComplete(@NonNull Task<DataSnapshot> task)
@@ -302,15 +307,15 @@ public class ApplicationDB
 					customers.add(ds.getValue(Customer.class));
 			}
 		})
-				.addOnFailureListener(new OnFailureListener()
-				{
-					@Override
-					public void onFailure(@NonNull Exception e)
-					{
-						Toast.makeText(context, "ERROR - Can't get all customers from DB", Toast.LENGTH_SHORT).show();
-						Log.d("DB_ERROR",e.toString());
-					}
-				});
+			.addOnFailureListener(new OnFailureListener()
+		{
+			@Override
+			public void onFailure(@NonNull Exception e)
+			{
+				Toast.makeText(context, "ERROR - Can't get all customers from DB", Toast.LENGTH_SHORT).show();
+				Log.d("DB_ERROR",e.toString());
+			}
+		});
 
 		return customers;
 	}

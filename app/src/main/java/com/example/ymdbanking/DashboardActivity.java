@@ -172,9 +172,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
         mAuth = FirebaseAuth.getInstance();
 
-
-
-
         sessionManager = new SessionManager(this,SessionManager.USER_SESSION);
         sessionId = sessionManager.userSession.getString(SessionManager.KEY_TYPE_ID,null);
         if(sessionId.equals("1"))
@@ -214,18 +211,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 public void onComplete(@NonNull Task<DataSnapshot> task)
                 {
                     for (DataSnapshot ds : task.getResult().getChildren())
-                    {
                         tempCustomer.getAccounts().add(ds.getValue(Account.class));
-//                        tempCustomer.getAccounts().add(new Account(
-//                                ds.child("accountName").getValue(String.class),
-//                                ds.child("accountNo").getValue(String.class),
-//                                ds.child("accountBalance").getValue(Double.class)
-//                        ));
-//                        tempCustomer.getAccounts().get(
-//                                tempCustomer.getAccounts().size() - 1).getTransactions()
-//                                .addAll(getTransactionsForAccount(tempCustomer.getAccounts().get(
-//                                        tempCustomer.getAccounts().size() - 1)));
-                    }
                     //Checking if there's any mismatch on customer's accounts between phone's memory and DB
                     if(customer.getAccounts().size() != tempCustomer.getAccounts().size())
                         //If there's a mismatch than we'll take the data from DB
@@ -251,12 +237,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task)
             {
-                HashMap<String,Clerk> clerkHashMap = new HashMap<>();
                 for(DataSnapshot ds : task.getResult().getChildren())
                     if(ds.child("typeID").getValue(int.class) == 2)
-                        clerkHashMap.put(ds.getKey(),ds.getValue(Clerk.class));
-//                        clerks.add(ds.getValue(Clerk.class));
-                clerks.addAll(clerkHashMap.values());
+                    {
+                        clerks.add(ds.getValue(Clerk.class));
+                        clerks.get(clerks.size() - 1).setLoansToApprove(getLoansForClerk(clerks.get(clerks.size() - 1)));
+                    }
+
                 sessionManager.saveClerksForSession(clerks);
             }
         })
@@ -269,6 +256,31 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 Log.d("DB_ERROR",e.toString());
             }
         });
+    }
+
+    private ArrayList<Transaction> getLoansForClerk(Clerk clerk)
+    {
+        ArrayList<Transaction> loans = new ArrayList<>();
+        FirebaseDatabase.getInstance().getReference("Loans").child(clerk.getId()).get()
+            .addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task)
+            {
+                for(DataSnapshot ds : task.getResult().getChildren())
+                    loans.add(ds.getValue(Transaction.class));
+            }
+        })
+            .addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+
+            }
+        });
+
+        return loans;
     }
 
     /**
@@ -444,6 +456,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             displayTransferDialog();
         else if(id == R.id.nav_loan)
             displayLoanDialog();
+        else if(id == R.id.nav_users)
+            startActivity(new Intent(DashboardActivity.this,ShowUsersActivity.class));
         else if(id == R.id.nav_logout)
         {
             mAuth.signOut();
@@ -789,7 +803,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             sessionManager.saveCustomerObjForSession(customer);
             Clerk clerk = clerks.get(clerkSelectedIndex);
             Account account = customer.getAccounts().get(accountSelectedIndex);
-            clerk.addLoanTransaction(account, loanAmount);
+            clerk.addLoanTransaction(account,loanAmount);
+            ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
+            applicationDb.overwriteAccount(customer,customer.getAccounts().get(accountSelectedIndex));
+            applicationDb.saveNewLoan(clerk,customer,customer.getAccounts().get(accountSelectedIndex));
             Toast.makeText(this,
                     "Loan of $" + String.format(Locale.getDefault(), "%.2f", loanAmount) + " " +
                     "is pending", Toast.LENGTH_SHORT).show();

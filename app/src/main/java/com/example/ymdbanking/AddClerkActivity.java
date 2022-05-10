@@ -42,7 +42,6 @@ public class AddClerkActivity extends AppCompatActivity {
         //Hooks
         hook();
 
-
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -50,9 +49,6 @@ public class AddClerkActivity extends AppCompatActivity {
 
             }
         });
-
-
-
     }
 
     private void createClerk()
@@ -90,16 +86,15 @@ public class AddClerkActivity extends AppCompatActivity {
 
         reference.child(id).setValue(addNewClerk).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
-
+            public void onComplete(@NonNull Task<Void> task)
+            {
+                FirebaseDatabase.getInstance().getReference("Loans").child(id).setValue(addNewClerk.getLoansToApprove());
+                FirebaseDatabase.getInstance().getReference("ClerkCustomers").child(id).setValue(addNewClerk.getCustomers());
                 Intent intent = new Intent(getApplicationContext(),DashboardActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
         });
-
-        FirebaseDatabase.getInstance().getReference("Loans").child(id).setValue(addNewClerk.getLoansToApprove());
-        FirebaseDatabase.getInstance().getReference("ClerkCustomers").child(id).setValue(addNewClerk.getCustomers());
     }
 
     private void hook() {

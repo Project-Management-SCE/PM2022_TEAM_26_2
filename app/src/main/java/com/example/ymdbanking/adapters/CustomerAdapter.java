@@ -33,9 +33,9 @@ public class CustomerAdapter extends ArrayAdapter<Customer>
 	{
 		if (convertView == null)
 		{
-
-			LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-			convertView = inflater.inflate(resource, parent, false);
+			convertView = LayoutInflater.from(context).inflate(resource,parent,false);
+//			LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+//			convertView = inflater.inflate(resource, parent, false);
 		}
 		Customer customer = getItem(position);
 		TextView txtUserName = convertView.findViewById(R.id.txt_profile_username);

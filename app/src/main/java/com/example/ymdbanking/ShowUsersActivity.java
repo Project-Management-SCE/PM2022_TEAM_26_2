@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -17,13 +16,12 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.ymdbanking.adapters.ClerkAdapter;
 import com.example.ymdbanking.adapters.ProfileAdapter;
-import com.example.ymdbanking.model.Account;
 import com.example.ymdbanking.model.Admin;
 import com.example.ymdbanking.model.Clerk;
 import com.example.ymdbanking.model.Customer;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
@@ -33,14 +31,15 @@ import java.util.ArrayList;
 public class ShowUsersActivity extends AppCompatActivity {
 
     private ListView usersList;
-    private int selectedAccountIndex;
+    private int selectedCustomerIndex;
     private Admin admin;
+    private Clerk clerk;
     private ArrayList<Customer>customers;
     private SessionManager sessionManager;
 
 
-    private Dialog clerkToUser;
-    private Spinner selectClerk;
+    private Dialog dlgClerkToUser;
+    private Spinner spnSelectClerk;
     private Button addBtn;
     private ArrayAdapter<Clerk> clerkAdapter;
     private ArrayList<Clerk> clerks;
@@ -54,8 +53,8 @@ public class ShowUsersActivity extends AppCompatActivity {
         {
             if (view.getId() == cancelBtn.getId())
             {
-                clerkToUser.dismiss();
-                Toast.makeText(ShowUsersActivity.this, "Deposit Cancelled", Toast.LENGTH_SHORT).show();
+                dlgClerkToUser.dismiss();
+                Toast.makeText(ShowUsersActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
             }
             else if (view.getId() == addBtn.getId())
             {
@@ -72,20 +71,39 @@ public class ShowUsersActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         usersList = findViewById(R.id.lst_users);
-        
-        
-        selectedAccountIndex = 0;
+
+        selectedCustomerIndex = 0;
         
         sessionManager = new SessionManager(ShowUsersActivity.this,SessionManager.USER_SESSION);
-        admin = sessionManager.getAdminObjFromSession();
+        String sessionID = sessionManager.userSession.getString(SessionManager.KEY_TYPE_ID,null);
+        if(sessionID.equals("1"))
+            admin = sessionManager.getAdminObjFromSession();
+        else if(sessionID.equals("2"))
+            clerk = sessionManager.getClerkObjFromSession();
 
+        setValues();
+    }
+
+    private void setValues()
+    {
+        ArrayList<Customer> tempCustomers = new ArrayList<>();
+        tempCustomers = getClerkCustomers();
         customers = new ArrayList<>();
+        ArrayList<Customer> finalTempCustomers = tempCustomers;
         FirebaseDatabase.getInstance().getReference("Users").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 for(DataSnapshot ds : task.getResult().getChildren())
-                    if(ds.child("typeID").getValue(int.class)== 3)
-                        customers.add(ds.getValue(Customer.class));
+                    if(ds.child("typeID").getValue(int.class) == 3)
+                    {
+                        boolean exists = false;
+                        for(Customer customer : finalTempCustomers)
+                            if(customer.getId().equals(ds.getValue(Customer.class).getId()))
+                                exists = true;
+
+                        if(!exists)
+                            customers.add(ds.getValue(Customer.class));
+                    }
 
                 ProfileAdapter adapter = new ProfileAdapter(ShowUsersActivity.this, R.layout.lst_profile_row, customers);
                 usersList.setAdapter(adapter);
@@ -94,44 +112,50 @@ public class ShowUsersActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                        selectedAccountIndex = i;
+                        selectedCustomerIndex = i;
                         displayClerkToUserDialog();
 //                        Intent intent = new Intent(ShowUsersActivity.this,AdminAccountsOverView.class);
 //                        intent.putExtra("selecteduserid",customers.get(i).getId());
 //                        startActivity(intent);
 
 //                      viewUser();
-
                     }
                 });
             }
         });
-
-
-//
-//        lstAccounts.setOnItemClickListener(new AdapterView.OnItemClickListener()
-//        {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
-//            {
-//                selectedAccountIndex = i;
-//                viewAccount();
-//            }
-//        });
-
-
-
-
     }
 
-    private void displayClerkToUserDialog() {
+    private ArrayList<Customer> getClerkCustomers()
+    {
+        ArrayList<Customer> customers = new ArrayList<>();
+        FirebaseDatabase.getInstance().getReference("ClerkCustomers").child(clerk.getId())
+            .get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task)
+            {
+                for(DataSnapshot ds : task.getResult().getChildren())
+                    customers.add(ds.getValue(Customer.class));
+            }
+        })
+            .addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+
+            }
+        });
+        return customers;
+    }
+
+    private void displayClerkToUserDialog()
+    {
+        dlgClerkToUser = new Dialog(ShowUsersActivity.this);
+        dlgClerkToUser.setContentView(R.layout.add_clerk_to_user_dialog);
+        dlgClerkToUser.setCanceledOnTouchOutside(true);
         
-        clerkToUser = new Dialog(ShowUsersActivity.this);
-        clerkToUser.setContentView(R.layout.add_clerk_to_user__dialog);
-        
-        clerkToUser.setCanceledOnTouchOutside(true);
-        
-        clerkToUser.setOnCancelListener(new DialogInterface.OnCancelListener() {
+        dlgClerkToUser.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialogInterface) {
                 Toast.makeText(ShowUsersActivity.this, "Adding Clerk has been cancelled", Toast.LENGTH_SHORT).show();
@@ -139,9 +163,9 @@ public class ShowUsersActivity extends AppCompatActivity {
         });
 
 
-        cancelBtn = clerkToUser.findViewById(R.id.clerkToUser_cancelBtn);
-        addBtn = clerkToUser.findViewById(R.id.add_clerkUser_btn);
-        selectClerk = clerkToUser.findViewById(R.id.spn_select_clerk);
+        cancelBtn = dlgClerkToUser.findViewById(R.id.clerkToUser_cancelBtn);
+        addBtn = dlgClerkToUser.findViewById(R.id.add_clerkUser_btn);
+        spnSelectClerk = dlgClerkToUser.findViewById(R.id.spn_select_clerk);
 
         clerks = new ArrayList<>();
         FirebaseDatabase.getInstance().getReference("Users").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -157,18 +181,20 @@ public class ShowUsersActivity extends AppCompatActivity {
         clerkAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, clerks);
         clerkAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        selectClerk.setAdapter(clerkAdapter);
-
+        spnSelectClerk.setAdapter(clerkAdapter);
 
         cancelBtn.setOnClickListener(clerkToUserClickListener);
         addBtn.setOnClickListener(clerkToUserClickListener);
 
-        clerkToUser.show();
+        dlgClerkToUser.show();
 
     }
 
-    private void addClerkToUser() {
+    private void addClerkToUser()
+    {
+        clerk.assignProfileToCustomer(((Customer) usersList.getAdapter().getItem(selectedCustomerIndex)),getApplicationContext());
+        Toast.makeText(getApplicationContext(),"User has been assigned to you",Toast.LENGTH_SHORT).show();
+        dlgClerkToUser.dismiss();
+        setValues();
     }
-
-
 }
