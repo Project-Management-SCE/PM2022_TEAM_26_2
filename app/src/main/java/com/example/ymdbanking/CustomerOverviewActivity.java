@@ -3,6 +3,7 @@ package com.example.ymdbanking;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -83,7 +84,7 @@ public class CustomerOverviewActivity extends AppCompatActivity
 			{
 				openAccount();
 			}
-			else if(view.getId() == R.id.btn_cancel_customer_dialog)
+			else if(view.getId() == R.id.btn_cancel_account_dialog)
 			{
 				accountDialog.dismiss();
 			}
@@ -276,7 +277,8 @@ public class CustomerOverviewActivity extends AppCompatActivity
 			@Override
 			public void onFailure(@NonNull Exception e)
 			{
-
+				Toast.makeText(getApplicationContext(),"Can't get " + clerk.getFullName() + "'s customers list from DB",Toast.LENGTH_SHORT).show();
+				Log.d("DB_ERROR",e.toString());
 			}
 		});
 		return customers;
