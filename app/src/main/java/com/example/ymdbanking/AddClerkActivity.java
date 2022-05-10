@@ -98,6 +98,8 @@ public class AddClerkActivity extends AppCompatActivity {
             }
         });
 
+        FirebaseDatabase.getInstance().getReference("Loans").child(id).setValue(addNewClerk.getLoansToApprove());
+        FirebaseDatabase.getInstance().getReference("ClerkCustomers").child(id).setValue(addNewClerk.getCustomers());
     }
 
     private void hook() {

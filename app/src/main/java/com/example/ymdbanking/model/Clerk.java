@@ -86,10 +86,10 @@ public class Clerk extends User
 				receivingAccTransferCount++;
 			}
 		}
-//		Transaction transaction = new Transaction("T" + (destinationAccount.getTransactions().size() + 1) + "-L" + (receivingAccTransferCount + 1), destinationAccount, amount);
+		Transaction transaction = new Transaction("T" + (destinationAccount.getTransactions().size() + 1) + "-L" + (receivingAccTransferCount + 1), destinationAccount, amount);
 //		destinationAccount.getTransactions().put(transaction.getTransactionID(),transaction);
-		destinationAccount.getTransactions().add(new Transaction("T" + (destinationAccount.getTransactions().size() + 1) + "-L" + (receivingAccTransferCount+1), destinationAccount, amount));
-		addLoanForPending(destinationAccount.getTransactions().get(destinationAccount.getTransactions().size()));
+		destinationAccount.getTransactions().add(transaction);
+		addLoanForPending(destinationAccount.getTransactions().get(destinationAccount.getTransactions().size() - 1));
 	}
 
 	public void addLoanForPending(Transaction pendingLoan)
