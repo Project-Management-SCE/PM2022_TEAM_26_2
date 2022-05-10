@@ -39,7 +39,6 @@ public class CustomerOverviewActivity extends AppCompatActivity
 	private TextView txtCustomerFullName;
 	private TextView txtCustomerEmail;
 	private TextView txtCustomerUsername;
-	private Button btnCancel;
 	private int selectedCustomerIndex;
 	private Clerk clerk;
 	private Admin admin;
@@ -48,12 +47,14 @@ public class CustomerOverviewActivity extends AppCompatActivity
 	private ArrayAdapter<Customer> customerAdapter;
 	private Dialog customerDialog;
 	private Dialog accountDialog;
-	private Button btnAssign;
+	private Button btnAssignCustomer;
+	private Button btnCancelAssign;
 	private SessionManager sessionManager;
 	private TextView txtTitleAccount;
 	private EditText edtAccountName;
 	private EditText edtAccountInitAmount;
 	private Button btnSuccess;
+	private Button btnCancel;
 	private TextView txtCustomerId;
 
 
@@ -78,7 +79,7 @@ public class CustomerOverviewActivity extends AppCompatActivity
 		@Override
 		public void onClick(View view)
 		{
-			if(view.getId() == R.id.btn_success_customer_dialog)
+			if(view.getId() == R.id.btn_success_account_dialog)
 			{
 				openAccount();
 			}
@@ -95,14 +96,14 @@ public class CustomerOverviewActivity extends AppCompatActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_customers_overview);
 		customers = new ArrayList<>();
-		lstProfiles = findViewById(R.id.lst_profiles_overview);
 		txtTitle = findViewById(R.id.txt_profile_fragment_title);
+		lstProfiles = findViewById(R.id.lst_profiles_overview);
 		setValues();
 	}
 
 	private void displayCustomerDialog(int index)
 	{
-		customerDialog = new Dialog(getApplicationContext());
+		customerDialog = new Dialog(this);
 		customerDialog.setContentView(R.layout.customer_dialog);
 		customerDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 		customerDialog.setCanceledOnTouchOutside(true);
@@ -124,10 +125,10 @@ public class CustomerOverviewActivity extends AppCompatActivity
 		txtCustomerId.setText(customerAdapter.getItem(index).getId());
 		txtCustomerUsername.setText(customerAdapter.getItem(index).getUsername());
 		//txtCustomerAccountNum.setText(customerAdapter.getItem(index).getNumberOfAccounts());
-		btnCancel = customerDialog.findViewById(R.id.btn_cancel_customer_dialog);
-		btnSuccess = customerDialog.findViewById(R.id.btn_success_customer_dialog);
-		btnCancel.setOnClickListener(customerDialogClickListener);
-		btnSuccess.setOnClickListener(customerDialogClickListener);
+		btnAssignCustomer = customerDialog.findViewById(R.id.btn_success_customer_dialog);
+		btnCancelAssign = customerDialog.findViewById(R.id.btn_cancel_customer_dialog);
+		btnAssignCustomer.setOnClickListener(customerDialogClickListener);
+		btnCancelAssign.setOnClickListener(customerDialogClickListener);
 		customerDialog.show();
 	}
 
@@ -141,7 +142,7 @@ public class CustomerOverviewActivity extends AppCompatActivity
 
 	private void displayAccountDialog()
 	{
-		accountDialog = new Dialog(getApplicationContext());
+		accountDialog = new Dialog(this);
 		accountDialog.setContentView(R.layout.account_dialog);
 		accountDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 		accountDialog.setCanceledOnTouchOutside(true);
@@ -261,6 +262,10 @@ public class CustomerOverviewActivity extends AppCompatActivity
 					public void onItemClick(AdapterView<?> parent, View view, int i, long id)
 					{
 						selectedCustomerIndex = i;
+						customer = customerAdapter.getItem(selectedCustomerIndex);
+
+						ApplicationDB applicationDB = new ApplicationDB(getApplicationContext());
+						customer.setAccounts(applicationDB.getAccountsFromCurrentCustomer(customer.getId()));
 						displayCustomerDialog(i);
 					}
 				});
