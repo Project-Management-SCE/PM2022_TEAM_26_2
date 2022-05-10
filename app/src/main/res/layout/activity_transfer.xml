@@ -8,7 +8,7 @@
     tools:context="com.example.ymdbanking.TransactionActivity">
 
     <Spinner
-        android:id="@+id/spn_select_profile_acc"
+        android:id="@+id/spn_select_customer_acc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -32,7 +32,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spn_select_profile_acc" />
+        app:layout_constraintTop_toBottomOf="@+id/spn_select_customer_acc" />
 
     <Spinner
         android:id="@+id/spn_select_receiving_acc"
@@ -117,7 +117,7 @@
         android:text="Select Receiving Profile"
         android:textColor="#000000"
         android:textSize="22sp"
-        app:layout_constraintBottom_toTopOf="@+id/spn_select_profile_acc"
+        app:layout_constraintBottom_toTopOf="@+id/spn_select_customer_acc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edt_transfer_amount" />

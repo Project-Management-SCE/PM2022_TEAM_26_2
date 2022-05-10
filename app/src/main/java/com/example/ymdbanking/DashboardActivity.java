@@ -175,16 +175,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 
         sessionManager = new SessionManager(this,SessionManager.USER_SESSION);
-        sessionId = sessionManager.userSession.getString(SessionManager.KEY_TYPE_ID,null);
+        sessionId = sessionManager.userSession.getString(SessionManager.KEY_SESSION_ID,null);
         if(sessionId.equals("1"))
             admin = sessionManager.getAdminObjFromSession();
         else if(sessionId.equals("2"))
             clerk = sessionManager.getClerkObjFromSession();
-        else if(sessionId.equals("3")) {
+        else if(sessionId.equals("3"))
             customer = sessionManager.getCustomerObjFromSession();
-            setValues();
-        }
-
+        setValues();
 
         navigationDrawer();
 
@@ -338,48 +336,33 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
         disp_phone = findViewById(R.id.display_phone);
 
-//        //User Session Details
-//        SessionManager sessionManager = new SessionManager(DashboardActivity.this,SessionManager.USER_SESSION);
-//        userDetails = sessionManager.getUserDetailFromSession();
-//        String phone = userDetails.get(SessionManager.KEY_PHONE);
+        //User Session Details
+        SessionManager sessionManager = new SessionManager(DashboardActivity.this,SessionManager.USER_SESSION);
+        userDetails = sessionManager.getUserDetailFromSession();
+        String phone = userDetails.get(SessionManager.KEY_PHONE);
 
         //If user is customer
-        switch (sessionId) {
-            case "3":
-                //User's navigation drawer
-                View headerView = navigationView.getHeaderView(0);
-//                disp_username = headerView.findViewById(R.id.menu_userName);
-//                disp_username.setText(userDetails.get(SessionManager.KEY_USERNAME));
-                navigationView.getMenu().findItem(R.id.nav_add_clerks).setVisible(false);
-                navigationView.getMenu().findItem(R.id.nav_users).setVisible(false);
-                navigationView.getMenu().findItem(R.id.nav_customers).setVisible(false);
-                navigationView.getMenu().findItem(R.id.nav_loan2).setVisible(false);
-                sessionManager.saveCustomerObjForSession(customer);
-                break;
-            //If user is clerk
-            case "2":
-                //Todo: Hide all nav bars that the other type of users shouldn't see
-                navigationView.getMenu().findItem(R.id.nav_add_clerks).setVisible(false);
-                navigationView.getMenu().findItem(R.id.nav_profile).setVisible(false);
-                navigationView.getMenu().findItem(R.id.nav_accounts).setVisible(false);
-                navigationView.getMenu().findItem(R.id.nav_loan).setVisible(false);
-                navigationView.getMenu().findItem(R.id.nav_payment).setVisible(false);
-                navigationView.getMenu().findItem(R.id.nav_deposit).setVisible(false);
-                sessionManager.saveClerkObjForSession(clerk);
-                break;
-            //If user is admin
-            case "1":
-                //Todo: Hide all nav bars that the other type of users shouldn't see
-                navigationView.getMenu().findItem(R.id.nav_profile).setVisible(false);
-                navigationView.getMenu().findItem(R.id.nav_accounts).setVisible(false);
-//                navigationView.getMenu().findItem(R.id.nav_loan).setVisible(false);
-//                navigationView.getMenu().findItem(R.id.nav_payment).setVisible(false);
-                navigationView.getMenu().findItem(R.id.nav_customers).setVisible(false);
-                navigationView.getMenu().findItem(R.id.nav_transaction).setVisible(false);
-                sessionManager.saveAdminObjForSession(admin);
-                break;
+        if(sessionId.equals("3"))
+        {
+            //User's navigation drawer
+            View headerView = navigationView.getHeaderView(0);
+            disp_username = headerView.findViewById(R.id.menu_userName);
+            disp_username.setText(userDetails.get(SessionManager.KEY_USERNAME));
+            navigationView.getMenu().findItem(R.id.nav_add_clerks).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_users).setVisible(false);
+            sessionManager.saveCustomerObjForSession(customer);
         }
-//        disp_phone.setText(phone);
+        //If user is clerk
+        else if(sessionId.equals("2"))
+        {
+            //Todo: Hide all nav bars that the other type of users shouldn't see
+        }
+        //If user is admin
+        else if(sessionId.equals("1"))
+        {
+            //Todo: Hide all nav bars that the other type of users shouldn't see
+        }
+        disp_phone.setText(phone);
 
         menuIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -442,7 +425,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     {
         int id = item.getItemId();
 
-        //customers view
         if(id == R.id.nav_add_clerks)
             startActivity(new Intent(DashboardActivity.this,AddClerkActivity.class));
         else if(id == R.id.nav_profile)
@@ -450,27 +432,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         else if(id == R.id.nav_accounts)
             startActivity(new Intent(DashboardActivity.this,AccountsOverViewActivity.class));
         else if(id == R.id.nav_deposit)
-            displayDepositDialog();
+           displayDepositDialog();
         else if(id == R.id.nav_transfer)
             displayTransferDialog();
-        //clerks view
-        else if(id == R.id.nav_customers)
-            displayCustomers();
-
-        //admin view
-        else if(id == R.id.nav_users)
-            startActivity(new Intent(DashboardActivity.this,ShowUsersActivity.class));
-
-
-
         else if(id == R.id.nav_logout) {
             mAuth.signOut();
             startActivity(new Intent(DashboardActivity.this,LoginActivity.class));
         }
             return true;
-    }
-
-    private void displayCustomers() {
     }
 
     private void setValuesForTransfer()

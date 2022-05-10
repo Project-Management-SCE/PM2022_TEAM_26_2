@@ -20,12 +20,10 @@ import com.example.ymdbanking.model.Account;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -58,7 +56,7 @@ public class TransferActivity extends AppCompatActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_transfer);
 
-		spnReceivingCustomer = findViewById(R.id.spn_select_profile_acc);
+		spnReceivingCustomer = findViewById(R.id.spn_select_customer_acc);
 		spnSendingAccount = findViewById(R.id.spn_select_sending_acc);
 		edtTransferAmount = findViewById(R.id.edt_transfer_amount);
 		spnReceivingAccount = findViewById(R.id.spn_select_receiving_acc);
@@ -155,11 +153,11 @@ public class TransferActivity extends AppCompatActivity
 
 		customerAccountsAdapter = new ArrayAdapter<Account>(getApplicationContext(), android.R.layout.simple_spinner_item, customer.getAccounts());
 		customerAccountsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spnSendingAccount.setAdapter(customerAccountsAdapter);
 //		accountsToTransferAdapter = new ArrayAdapter<Account>(getApplicationContext(), android.R.layout.simple_spinner_item, accountsToTransfer);
 //		accountsToTransferAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 //		spnReceivingCustomer.setAdapter(customerAdapter);
-		spnSendingAccount.setAdapter(customerAccountsAdapter);
 //		spnReceivingAccount.setAdapter(accountsToTransferAdapter);
 		//spnReceivingAccount.setSelection(1);
 	}

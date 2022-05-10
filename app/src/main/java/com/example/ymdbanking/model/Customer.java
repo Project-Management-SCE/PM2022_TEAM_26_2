@@ -9,7 +9,7 @@ import java.util.HashMap;
  */
 public class Customer extends User
 {
-    private final static int typeID = 3;
+//    private final static int typeID = 3;
     private ArrayList<Account> accounts;
     private ArrayList<Payee> payees;
 
