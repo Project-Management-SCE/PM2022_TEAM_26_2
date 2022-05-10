@@ -1,13 +1,11 @@
 package com.example.ymdbanking;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -19,21 +17,9 @@ import android.widget.Toast;
 
 import com.example.ymdbanking.adapters.AccountAdapter;
 import com.example.ymdbanking.db.ApplicationDB;
-import com.example.ymdbanking.model.Account;
 import com.example.ymdbanking.model.Customer;
-import com.example.ymdbanking.model.Transaction;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class AccountsOverViewActivity extends AppCompatActivity {
 
@@ -143,11 +129,11 @@ public class AccountsOverViewActivity extends AppCompatActivity {
             }
         });
 
-        edtAccountName = accountDialog.findViewById(R.id.edt_payee_name);
-        edtInitAccountBalance = accountDialog.findViewById(R.id.edt_init_bal);
+        edtAccountName = accountDialog.findViewById(R.id.edt_name_account_dialog);
+        edtInitAccountBalance = accountDialog.findViewById(R.id.edt_init_bal_account_dialog);
 
-        btnCancel = accountDialog.findViewById(R.id.btn_cancel_dialog);
-        btnAddAccount = accountDialog.findViewById(R.id.btn_add_payee);
+        btnCancel = accountDialog.findViewById(R.id.btn_cancel_account_dialog);
+        btnAddAccount = accountDialog.findViewById(R.id.btn_success_account_dialog);
 
         btnCancel.setOnClickListener(addAccountClickListener);
         btnAddAccount.setOnClickListener(addAccountClickListener);

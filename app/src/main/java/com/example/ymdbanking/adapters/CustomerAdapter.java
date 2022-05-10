@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import com.example.ymdbanking.R;
 import com.example.ymdbanking.model.Customer;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class CustomerAdapter extends ArrayAdapter<Customer>
@@ -38,6 +40,8 @@ public class CustomerAdapter extends ArrayAdapter<Customer>
 //			convertView = inflater.inflate(resource, parent, false);
 		}
 		Customer customer = getItem(position);
+		TextView txtFullName = convertView.findViewById(R.id.txt_profile_name);
+		txtFullName.setText(customer.getFullName());
 		TextView txtUserName = convertView.findViewById(R.id.txt_profile_username);
 		txtUserName.setText(customer.getUsername());
 		return convertView;

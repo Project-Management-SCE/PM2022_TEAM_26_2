@@ -458,6 +458,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             displayLoanDialog();
         else if(id == R.id.nav_users)
             startActivity(new Intent(DashboardActivity.this,ShowUsersActivity.class));
+        else if(id == R.id.nav_customers)
+            startActivity(new Intent(DashboardActivity.this,CustomerOverviewActivity.class));
         else if(id == R.id.nav_logout)
         {
             mAuth.signOut();

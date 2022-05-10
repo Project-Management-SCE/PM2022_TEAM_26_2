@@ -16,19 +16,19 @@
         tools:layout_editor_absoluteX="242dp">
 
         <TextView
-            android:id="@+id/txt_fullName_customer_dialog"
+            android:id="@+id/txt_fullName_customer_assign_dialog"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:text="TextView" />
 
         <TextView
-            android:id="@+id/txt_email_customer_dialog"
+            android:id="@+id/txt_email_customer_assign_dialog"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:text="TextView" />
 
         <TextView
-            android:id="@+id/txt_username_customer_dialog"
+            android:id="@+id/txt_username_customer_assign_dialog"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:text="TextView" />
