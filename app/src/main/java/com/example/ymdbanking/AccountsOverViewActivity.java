@@ -66,7 +66,7 @@ public class AccountsOverViewActivity extends AppCompatActivity {
         txtTitleMessage = findViewById(R.id.txt_title_msg);
         txtDetailMessage = findViewById(R.id.txt_details_msg);
         lstAccounts = findViewById(R.id.lst_accounts);
-        fab = findViewById(R.id.floating_action_btn);
+        fab = findViewById(R.id.btn_add_clerk_overview);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {

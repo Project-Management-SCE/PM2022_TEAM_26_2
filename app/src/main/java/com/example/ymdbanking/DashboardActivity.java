@@ -25,7 +25,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 
-import com.example.ymdbanking.adapters.ClerkAdapter;
 import com.example.ymdbanking.db.ApplicationDB;
 import com.example.ymdbanking.model.Account;
 import com.example.ymdbanking.model.Admin;
@@ -41,9 +40,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 
 import java.util.ArrayList;
@@ -357,15 +354,18 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         SessionManager sessionManager = new SessionManager(DashboardActivity.this,SessionManager.USER_SESSION);
         userDetails = sessionManager.getUserDetailFromSession();
         String phone = userDetails.get(SessionManager.KEY_PHONE);
+        View headerView = navigationView.getHeaderView(0);
+        disp_username = headerView.findViewById(R.id.menu_userName);
+        disp_username.setText(userDetails.get(SessionManager.KEY_USERNAME));
 
         //If user is customer
         if(sessionId.equals("3"))
         {
             //User's navigation drawer
-            View headerView = navigationView.getHeaderView(0);
-            disp_username = headerView.findViewById(R.id.menu_userName);
-            disp_username.setText(userDetails.get(SessionManager.KEY_USERNAME));
-            navigationView.getMenu().findItem(R.id.nav_add_clerks).setVisible(false);
+//            View headerView = navigationView.getHeaderView(0);
+//            disp_username = headerView.findViewById(R.id.menu_userName);
+//            disp_username.setText(userDetails.get(SessionManager.KEY_USERNAME));
+            navigationView.getMenu().findItem(R.id.nav_clerks).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_users).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_loan2).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_customers).setVisible(false);
@@ -374,12 +374,26 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         //If user is clerk
         else if(sessionId.equals("2"))
         {
-            //Todo: Hide all nav bars that the other type of users shouldn't see
+            navigationView.getMenu().findItem(R.id.nav_clerks).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_transfer).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_loan).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_accounts).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_payment).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_deposit).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_transaction).setVisible(false);
+            sessionManager.saveClerkObjForSession(clerk);
+
         }
         //If user is admin
         else if(sessionId.equals("1"))
         {
-            //Todo: Hide all nav bars that the other type of users shouldn't see
+            navigationView.getMenu().findItem(R.id.nav_transfer).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_loan).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_accounts).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_payment).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_deposit).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_transaction).setVisible(false);
+            sessionManager.saveAdminObjForSession(admin);
         }
         disp_phone.setText(phone);
 
@@ -444,8 +458,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     {
         int id = item.getItemId();
 
-        if(id == R.id.nav_add_clerks)
-            startActivity(new Intent(DashboardActivity.this,AddClerkActivity.class));
+        if(id == R.id.nav_clerks)
+            startActivity(new Intent(DashboardActivity.this,ClerkOverviewActivity.class));
         else if(id == R.id.nav_profile)
             startActivity(new Intent(DashboardActivity.this,UserProfileActivity.class));
         else if(id == R.id.nav_accounts)

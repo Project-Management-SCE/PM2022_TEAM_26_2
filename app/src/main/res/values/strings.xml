@@ -38,7 +38,8 @@
     <string name="add_account">Add account</string>
     <string name="_266_225_225">+266 225 225</string>
     <string name="add_clerks">Add Clerks</string>
-    <string name="create_nclerk">Create\nClerk</string>
+    <string name="show_clerks">Show Clerks</string>
+    <string name="create_clerk">Create\nClerk</string>
     <string name="add_clerk">Add Clerk</string>
     <string name="navigation_drawer_open">onDrawerOpened</string>
     <string name="navigation_drawer_close">onDrawerClosed</string>

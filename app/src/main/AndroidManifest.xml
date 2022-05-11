@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.YMDBanking">
         <activity
+            android:name=".ClerkOverviewActivity"
+            android:exported="false" />
+        <activity
             android:name=".CustomerOverviewActivity"
             android:exported="false" />
         <activity
