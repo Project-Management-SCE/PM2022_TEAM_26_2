@@ -3,6 +3,7 @@ package com.example.ymdbanking;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.ymdbanking.model.Account;
 import com.example.ymdbanking.model.Admin;
 import com.example.ymdbanking.model.Clerk;
 import com.example.ymdbanking.model.Customer;
@@ -26,6 +27,7 @@ public class SessionManager
 
     public static final String SESSION_OBJ = "sessionObj";
     public static final String CUSTOMER_OBJ = "customerObj";
+    private static final String SESSION_ACCOUNTS = "accountsObj";
 
     //User session variables
     private static final String IS_LOGIN = "IsLoggedIn";
@@ -141,6 +143,21 @@ public class SessionManager
         String json = gson.toJson(customer);
         editor.putString(SESSION_OBJ,json);
         editor.commit();
+    }
+
+    public void saveAccountsObjForSession(ArrayList<Account> accounts)
+    {
+        Gson gson = new Gson();
+        String json = gson.toJson(accounts);
+        editor.putString(SESSION_ACCOUNTS,json);
+        editor.commit();
+    }
+
+    public ArrayList<Account> getAccountsObjFromSession()
+    {
+        Gson gson = new Gson();
+        String json = userSession.getString(SESSION_ACCOUNTS,null);
+        return gson.fromJson(json,ArrayList.class);
     }
 
     public Clerk getClerkObjFromSession()

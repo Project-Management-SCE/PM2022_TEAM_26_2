@@ -1,11 +1,13 @@
 package com.example.ymdbanking;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -17,9 +19,17 @@ import android.widget.Toast;
 
 import com.example.ymdbanking.adapters.AccountAdapter;
 import com.example.ymdbanking.db.ApplicationDB;
+import com.example.ymdbanking.model.Account;
 import com.example.ymdbanking.model.Customer;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
+
+import java.util.ArrayList;
 
 public class AccountsOverViewActivity extends AppCompatActivity {
 
@@ -67,34 +77,34 @@ public class AccountsOverViewActivity extends AppCompatActivity {
         txtDetailMessage = findViewById(R.id.txt_details_msg);
         lstAccounts = findViewById(R.id.lst_accounts);
         fab = findViewById(R.id.btn_add_clerk_overview);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                displayAccountDialog();
-//            }
-//        });
-        setValues();
+
+        SessionManager sessionManager = new SessionManager(this,SessionManager.USER_SESSION);
+        customer = sessionManager.getCustomerObjFromSession();
+        customer.setAccounts(sessionManager.getAccountsObjFromSession());
+        setValuesForCustomer();
+        selectedAccountIndex = 0;
+//        setValues();
     }
 
     private void setValues()
     {
-        selectedAccountIndex = 0;
-
-        SessionManager sessionManager = new SessionManager(this,SessionManager.USER_SESSION);
-        customer = sessionManager.getCustomerObjFromSession();
-
-        AccountAdapter adapter = new AccountAdapter(AccountsOverViewActivity.this, R.layout.lst_accounts, customer.getAccounts());
-        lstAccounts.setAdapter(adapter);
-
-        lstAccounts.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
-            {
-                selectedAccountIndex = i;
-                viewAccount();
-            }
-        });
+//        SessionManager sessionManager = new SessionManager(getApplicationContext(),SessionManager.USER_SESSION);
+//        customer = sessionManager.getCustomerObjFromSession();
+//        customer.setAccounts(sessionManager.getAccountsObjFromSession());
+//        setValuesForCustomer();
+//        selectedAccountIndex = 0;
+//        AccountAdapter adapter = new AccountAdapter(AccountsOverViewActivity.this, R.layout.lst_accounts, customer.getAccounts());
+//        lstAccounts.setAdapter(adapter);
+//
+//        lstAccounts.setOnItemClickListener(new AdapterView.OnItemClickListener()
+//        {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+//            {
+//                selectedAccountIndex = i;
+//                viewAccount();
+//            }
+//        });
 
         fab.setOnClickListener(new View.OnClickListener()
         {
@@ -109,6 +119,52 @@ public class AccountsOverViewActivity extends AppCompatActivity {
                 {
                     displayAccountDialog();
                 }
+            }
+        });
+    }
+
+    private void setValuesForCustomer()
+    {
+        customer.setAccounts(new ArrayList<>());
+        Customer tempCustomer = new Customer();
+        tempCustomer.setAccounts(new ArrayList<>(0));
+        FirebaseDatabase.getInstance().getReference("Accounts").child(customer.getId()).get()
+            .addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task)
+            {
+                for (DataSnapshot ds : task.getResult().getChildren())
+                    tempCustomer.getAccounts().add(ds.getValue(Account.class));
+                //Checking if there's any mismatch on customer's accounts between phone's memory and DB
+                if (customer.getAccounts().size() != tempCustomer.getAccounts().size())
+                    //If there's a mismatch than we'll take the data from DB
+                    customer.setAccounts(tempCustomer.getAccounts());
+                sessionManager = new SessionManager(getApplicationContext(),SessionManager.USER_SESSION);
+                sessionManager.saveCustomerObjForSession(customer);
+                sessionManager.saveAccountsObjForSession(customer.getAccounts());
+
+                AccountAdapter adapter = new AccountAdapter(AccountsOverViewActivity.this, R.layout.lst_accounts, customer.getAccounts());
+                lstAccounts.setAdapter(adapter);
+
+                lstAccounts.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+                    {
+                        selectedAccountIndex = i;
+                        viewAccount();
+                    }
+                });
+            }
+        })
+            .addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Toast.makeText(getApplicationContext(), "ERROR - Can't get customer's accounts from DB", Toast.LENGTH_SHORT).show();
+                Log.d("DB_ERROR", e.toString());
             }
         });
     }

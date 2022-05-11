@@ -346,8 +346,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 //                drawerLayout.closeDrawers();
             }
         });
-
-
         disp_phone = findViewById(R.id.display_phone);
 
         //User Session Details

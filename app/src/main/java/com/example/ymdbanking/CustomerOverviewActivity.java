@@ -2,6 +2,7 @@ package com.example.ymdbanking;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -56,6 +57,7 @@ public class CustomerOverviewActivity extends AppCompatActivity
 	private EditText edtAccountInitAmount;
 	private Button btnSuccess;
 	private Button btnCancel;
+	private Button btnShowAccounts;
 	private TextView txtCustomerId;
 
 
@@ -67,6 +69,10 @@ public class CustomerOverviewActivity extends AppCompatActivity
 			if(view.getId() == R.id.btn_success_customer_dialog)
 			{
 				displayAccountDialog();
+			}
+			else if(view.getId() == R.id.btn_show_accounts_customer_dialog)
+			{
+				startActivity(new Intent(CustomerOverviewActivity.this,AccountsOverViewActivity.class));
 			}
 			else if(view.getId() == R.id.btn_cancel_customer_dialog)
 			{
@@ -127,8 +133,10 @@ public class CustomerOverviewActivity extends AppCompatActivity
 		txtCustomerUsername.setText(customerAdapter.getItem(index).getUsername());
 		//txtCustomerAccountNum.setText(customerAdapter.getItem(index).getNumberOfAccounts());
 		btnAssignCustomer = customerDialog.findViewById(R.id.btn_success_customer_dialog);
+		btnShowAccounts = customerDialog.findViewById(R.id.btn_show_accounts_customer_dialog);
 		btnCancelAssign = customerDialog.findViewById(R.id.btn_cancel_customer_dialog);
 		btnAssignCustomer.setOnClickListener(customerDialogClickListener);
+		btnShowAccounts.setOnClickListener(customerDialogClickListener);
 		btnCancelAssign.setOnClickListener(customerDialogClickListener);
 		customerDialog.show();
 	}
@@ -267,6 +275,8 @@ public class CustomerOverviewActivity extends AppCompatActivity
 
 						ApplicationDB applicationDB = new ApplicationDB(getApplicationContext());
 						customer.setAccounts(applicationDB.getAccountsFromCurrentCustomer(customer.getId()));
+						sessionManager.saveCustomerObjForSession(customer);
+						sessionManager.saveAccountsObjForSession(customer.getAccounts());
 						displayCustomerDialog(i);
 					}
 				});

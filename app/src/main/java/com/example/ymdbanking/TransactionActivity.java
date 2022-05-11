@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -215,40 +216,54 @@ public class TransactionActivity extends AppCompatActivity
 		txtTransfersMsg.setVisibility(GONE);
 		txtPaymentsMsg.setVisibility(GONE);
 
-		if (transactions.size() > 0) {
-
-			txtTransactionMsg.setVisibility(GONE);
-			lstTransactions.setVisibility(VISIBLE);
-
-			if (dateFilter == DateFilter.OLDEST_NEWEST) {
-				Collections.sort(transactions, new TransactionComparator());
-			} else if (dateFilter == DateFilter.NEWEST_OLDEST) {
-				Collections.sort(transactions, Collections.reverseOrder(new TransactionComparator()));
-			}
-
-			if (transFilter == TransactionTypeFilter.ALL_TRANSACTIONS) {
-				TransactionAdapter transactionAdapter = new TransactionAdapter(this, R.layout.lst_transactions, transactions);
-				lstTransactions.setAdapter(transactionAdapter);
-			}
-			else if (transFilter == TransactionTypeFilter.PAYMENTS) {
-				displayPayments(transactions);
-			}
-			else if (transFilter == TransactionTypeFilter.TRANSFERS) {
-				displayTransfers(transactions);
-			}
-			else if (transFilter == TransactionTypeFilter.DEPOSITS) {
-				displayDeposits(transactions);
-			}
-			else if(transFilter == TransactionTypeFilter.LOANS)
+		try
+		{
+			if (transactions.size() > 0)
 			{
-				displayLoans(transactions);
-			}
 
-		} else {
+				txtTransactionMsg.setVisibility(GONE);
+				lstTransactions.setVisibility(VISIBLE);
+
+				if (dateFilter == DateFilter.OLDEST_NEWEST)
+				{
+					Collections.sort(transactions, new TransactionComparator());
+				} else if (dateFilter == DateFilter.NEWEST_OLDEST)
+				{
+					Collections.sort(transactions, Collections.reverseOrder(new TransactionComparator()));
+				}
+
+				if (transFilter == TransactionTypeFilter.ALL_TRANSACTIONS)
+				{
+					TransactionAdapter transactionAdapter = new TransactionAdapter(this, R.layout.lst_transactions, transactions);
+					lstTransactions.setAdapter(transactionAdapter);
+				} else if (transFilter == TransactionTypeFilter.PAYMENTS)
+				{
+					displayPayments(transactions);
+				} else if (transFilter == TransactionTypeFilter.TRANSFERS)
+				{
+					displayTransfers(transactions);
+				} else if (transFilter == TransactionTypeFilter.DEPOSITS)
+				{
+					displayDeposits(transactions);
+				} else if (transFilter == TransactionTypeFilter.LOANS)
+				{
+					displayLoans(transactions);
+				}
+
+			}
+			else
+			{
+				txtTransactionMsg.setVisibility(VISIBLE);
+				lstTransactions.setVisibility(GONE);
+			}
+		}
+		catch (NullPointerException exception)
+		{
+			transactions = new ArrayList<>(0);
 			txtTransactionMsg.setVisibility(VISIBLE);
 			lstTransactions.setVisibility(GONE);
+			Toast.makeText(this,"No transaction for this account",Toast.LENGTH_SHORT).show();
 		}
-
 	}
 
 	private void displayLoans(ArrayList<Transaction> transactions)

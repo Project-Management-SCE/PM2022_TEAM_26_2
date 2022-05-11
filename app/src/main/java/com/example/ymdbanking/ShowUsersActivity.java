@@ -44,6 +44,7 @@ public class ShowUsersActivity extends AppCompatActivity {
     private ArrayAdapter<Clerk> clerkAdapter;
     private ArrayList<Clerk> clerks;
     private ImageView cancelBtn;
+    private String sessionID;
 
 
     private View.OnClickListener clerkToUserClickListener = new View.OnClickListener()
@@ -75,7 +76,7 @@ public class ShowUsersActivity extends AppCompatActivity {
         selectedCustomerIndex = 0;
         
         sessionManager = new SessionManager(ShowUsersActivity.this,SessionManager.USER_SESSION);
-        String sessionID = sessionManager.userSession.getString(SessionManager.KEY_TYPE_ID,null);
+        sessionID = sessionManager.userSession.getString(SessionManager.KEY_TYPE_ID,null);
         if(sessionID.equals("1"))
             admin = sessionManager.getAdminObjFromSession();
         else if(sessionID.equals("2"))
@@ -87,7 +88,8 @@ public class ShowUsersActivity extends AppCompatActivity {
     private void setValues()
     {
         ArrayList<Customer> tempCustomers = new ArrayList<>();
-        tempCustomers = getClerkCustomers();
+        if(sessionID.equals("2"))
+            tempCustomers = getClerkCustomers();
         customers = new ArrayList<>();
         ArrayList<Customer> finalTempCustomers = tempCustomers;
         FirebaseDatabase.getInstance().getReference("Users").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
