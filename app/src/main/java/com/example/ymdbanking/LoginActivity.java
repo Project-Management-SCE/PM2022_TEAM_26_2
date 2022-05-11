@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -42,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+]";
     ProgressDialog progressDialog;
 //
-//    FirebaseAuth mAuth;
+    FirebaseAuth mAuth;
 //    FirebaseUser mUser;
 
     @Override
@@ -61,6 +62,8 @@ public class LoginActivity extends AppCompatActivity {
         inputId = findViewById(R.id.login_id);
         btnForgot = findViewById(R.id.forgot_btn);
         rememberMe = findViewById(R.id.login_remember);
+
+        mAuth = FirebaseAuth.getInstance();
 
         //Variables
         progressDialog = new ProgressDialog(this);
@@ -99,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
                     SessionManager sessionManager = new SessionManager(LoginActivity.this, SessionManager.REMEMBER_ME_SESSION);
                     sessionManager.createRememberMeSession(mail, id_login, pass);
                 }
+
                 Query checkUser = FirebaseDatabase.getInstance().getReference("Users").orderByChild("id").equalTo(id_login);
                 checkUser.addListenerForSingleValueEvent(new ValueEventListener()
                 {
@@ -140,6 +144,7 @@ public class LoginActivity extends AppCompatActivity {
                                     Admin admin = new Admin(email,fullName,id,password,phone,username);
                                     sessionManager.saveAdminObjForSession(admin);
                                 }
+                                mAuth.signInWithEmailAndPassword(email,password);
 
                                 startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                             }
@@ -161,52 +166,6 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
-//                //Checking if user is admin
-//                FirebaseDatabase.getInstance().getReference("Admins").child(id_login)
-//                    .get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
-//                {
-//                    @Override
-//                    public void onComplete(@NonNull Task<DataSnapshot> task)
-//                    {
-//                        DataSnapshot ds = task.getResult();
-//                        Admin admin = ds.getValue(Admin.class);
-//                        sessionManager.saveAdminObjForSession(admin);
-//                        sessionManager.editor.putInt(SessionManager.KEY_SESSION_ID,1);
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener()
-//                {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e)
-//                    {
-//
-//                    }
-//                });
-//
-//                //Checking if user is clerk
-//                FirebaseDatabase.getInstance().getReference("Clerks").child(id_login)
-//                        .get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
-//                {
-//                    @Override
-//                    public void onComplete(@NonNull Task<DataSnapshot> task)
-//                    {
-//                        DataSnapshot ds = task.getResult();
-//                        Clerk clerk = ds.getValue(Clerk.class);
-//                        sessionManager.saveClerkObjForSession(clerk);
-//                        sessionManager.editor.putInt(SessionManager.KEY_SESSION_ID,2);
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener()
-//                {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e)
-//                    {
-//
-//                    }
-//                });
-//            }
-//        });
 
                 btnForgot.setOnClickListener(new View.OnClickListener()
                 {

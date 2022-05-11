@@ -83,28 +83,6 @@ public class AccountsOverViewActivity extends AppCompatActivity {
         customer.setAccounts(sessionManager.getAccountsObjFromSession());
         setValuesForCustomer();
         selectedAccountIndex = 0;
-//        setValues();
-    }
-
-    private void setValues()
-    {
-//        SessionManager sessionManager = new SessionManager(getApplicationContext(),SessionManager.USER_SESSION);
-//        customer = sessionManager.getCustomerObjFromSession();
-//        customer.setAccounts(sessionManager.getAccountsObjFromSession());
-//        setValuesForCustomer();
-//        selectedAccountIndex = 0;
-//        AccountAdapter adapter = new AccountAdapter(AccountsOverViewActivity.this, R.layout.lst_accounts, customer.getAccounts());
-//        lstAccounts.setAdapter(adapter);
-//
-//        lstAccounts.setOnItemClickListener(new AdapterView.OnItemClickListener()
-//        {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
-//            {
-//                selectedAccountIndex = i;
-//                viewAccount();
-//            }
-//        });
 
         fab.setOnClickListener(new View.OnClickListener()
         {
