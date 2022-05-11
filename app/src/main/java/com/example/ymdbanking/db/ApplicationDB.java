@@ -171,9 +171,10 @@ public class ApplicationDB
 				.updateChildren(newAccount);
 	}
 
-	public void saveNewLoan(Clerk clerk,Customer customer,Account account)
+	public void saveNewLoan(Clerk clerk,Customer customer,Transaction loan)
 	{
-		database.getReference("Loans").child(clerk.getId()).child(customer.getId()).setValue(account);
+		database.getReference("Loans").child(clerk.getId()).child(customer.getId())
+				.child(loan.getTransactionID()).setValue(loan);
 	}
 
 	public void saveNewPayee(Customer customer, Payee payee)

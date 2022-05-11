@@ -23,7 +23,8 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
     private Context context;
     private int resource;
 
-    public TransactionAdapter(Context context, int resource, ArrayList<Transaction> transactions) {
+    public TransactionAdapter(Context context, int resource, ArrayList<Transaction> transactions)
+    {
         super(context, resource, transactions);
 
         this.context = context;
@@ -32,9 +33,10 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
 
     @Override
     @NonNull
-    public View getView (int position, View convertView, @NonNull ViewGroup parent) {
-
-        if (convertView == null) {
+    public View getView (int position, View convertView, @NonNull ViewGroup parent)
+    {
+        if (convertView == null)
+        {
 
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             convertView = inflater.inflate(resource, parent, false);
@@ -53,18 +55,29 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         txtTransactionTimestamp.setText(transaction.getTimestamp());
         txtTransactionAmount.setText("Amount: $" + String.format("%.2f",transaction.getAmount()));
 
-        if (transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.PAYMENT) {
+        if (transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.PAYMENT)
+        {
             imgTransactionIcon.setImageResource(R.drawable.lst_payment_icon);
             txtTransactionInfo.setText("To Payee: " + transaction.getPayee());
             txtTransactionAmount.setTextColor(Color.RED);
-        } else if (transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.TRANSFER) {
+        }
+        else if (transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.TRANSFER)
+        {
             imgTransactionIcon.setImageResource(R.drawable.lst_transfer_icon);
             txtTransactionInfo.setText("From: " + transaction.getSendingAccount() + " - " + "To: " + transaction.getDestinationAccount());
             txtTransactionAmount.setTextColor(getContext().getResources().getColor(android.R.color.holo_blue_light));
-        } else if (transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.DEPOSIT) {
+        }
+        else if (transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.DEPOSIT)
+        {
             imgTransactionIcon.setImageResource(R.drawable.lst_deposit_icon);
             txtTransactionInfo.setVisibility(View.GONE);
             txtTransactionAmount.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
+        }
+        else if(transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.LOAN)
+        {
+            imgTransactionIcon.setImageResource(R.drawable.loan_icon);
+            txtTransactionInfo.setVisibility(View.GONE);
+            txtTransactionAmount.setTextColor(getContext().getResources().getColor(android.R.color.holo_purple));
         }
 
         return convertView;

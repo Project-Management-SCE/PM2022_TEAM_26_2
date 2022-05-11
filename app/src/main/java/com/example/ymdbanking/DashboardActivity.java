@@ -366,7 +366,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 //            disp_username.setText(userDetails.get(SessionManager.KEY_USERNAME));
             navigationView.getMenu().findItem(R.id.nav_clerks).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_users).setVisible(false);
-            navigationView.getMenu().findItem(R.id.nav_loan2).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_approve_loans).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_customers).setVisible(false);
             sessionManager.saveCustomerObjForSession(customer);
         }
@@ -782,7 +782,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             clerk.addLoanTransaction(account,loanAmount);
             ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
             applicationDb.overwriteAccount(customer,customer.getAccounts().get(accountSelectedIndex));
-            applicationDb.saveNewLoan(clerk,customer,customer.getAccounts().get(accountSelectedIndex));
+            applicationDb.saveNewLoan(clerk,customer,customer.getAccounts().get(accountSelectedIndex)
+                                                             .getTransactions().get(customer.getAccounts().get(accountSelectedIndex).getTransactions().size()-1));
             Toast.makeText(this,
                     "Loan of $" + String.format(Locale.getDefault(), "%.2f", loanAmount) + " " +
                     "is pending", Toast.LENGTH_SHORT).show();

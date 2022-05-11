@@ -83,18 +83,30 @@ public class Clerk extends User
 	public void addLoanTransaction(Account destinationAccount, double amount)
 	{
 //		destinationAccount.setAccountBalance(destinationAccount.getAccountBalance() + amount);
-		int receivingAccTransferCount = 0;
-		for (int i = 0; i < destinationAccount.getTransactions().size(); i ++)
+		int receivingAccLoanCount = 0;
+		try
 		{
-			if (destinationAccount.getTransactions().get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.LOAN)
+			for (int i = 0; i < destinationAccount.getTransactions().size(); i++)
 			{
-				receivingAccTransferCount++;
+				if (destinationAccount.getTransactions().get(i).getTransactionType() ==
+				    Transaction.TRANSACTION_TYPE.LOAN)
+				{
+					receivingAccLoanCount++;
+				}
 			}
-		}
-		Transaction transaction = new Transaction("T" + (destinationAccount.getTransactions().size() + 1) + "-L" + (receivingAccTransferCount + 1), destinationAccount, amount);
+			Transaction transaction = new Transaction("T" + (destinationAccount.getTransactions().size() + 1) + "-L" + (receivingAccLoanCount + 1), destinationAccount, amount);
 //		destinationAccount.getTransactions().put(transaction.getTransactionID(),transaction);
-		destinationAccount.getTransactions().add(transaction);
-		addLoanForPending(destinationAccount.getTransactions().get(destinationAccount.getTransactions().size() - 1));
+			destinationAccount.getTransactions().add(transaction);
+//			addLoanForPending(destinationAccount.getTransactions().get(destinationAccount.getTransactions().size() - 1));
+			addLoanForPending(transaction);
+		}
+		catch(NullPointerException e)
+		{
+			destinationAccount.setTransactions(new ArrayList<Transaction>());
+			Transaction transaction = new Transaction("T1" + "-L1", destinationAccount, amount);
+			destinationAccount.getTransactions().add(transaction);
+			addLoanForPending(transaction);
+		}
 	}
 
 	public void addLoanForPending(Transaction pendingLoan)

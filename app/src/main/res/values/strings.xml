@@ -133,6 +133,7 @@
     <string name="approve_loans">Approve Loans</string>
     <string name="show_customers">Show Customers</string>
     <string name="select_clerk">Select Clerk</string>
+    <string name="select_loan">Select loan to view it\'s details</string>
 
     <string-array name="days">
         <item>Sunday</item>

@@ -40,7 +40,7 @@
                         android:icon="@drawable/icon_transfer_24"
                         android:title="@string/make_a_transfer" />
                     <item
-                        android:id="@+id/nav_loan2"
+                        android:id="@+id/nav_approve_loans"
                         android:icon="@drawable/ic_loan_req"
                         android:title="@string/approve_loans" />
                     <item
