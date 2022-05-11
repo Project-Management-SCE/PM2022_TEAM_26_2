@@ -46,6 +46,7 @@ public class AccountsOverViewActivity extends AppCompatActivity {
     private Customer customer;
     private int selectedAccountIndex;
     private SessionManager sessionManager;
+    private final static int DEPOSIT_MIN_LIMIT = 500;
 
     private View.OnClickListener addAccountClickListener = new View.OnClickListener()
     {
@@ -217,27 +218,23 @@ public class AccountsOverViewActivity extends AppCompatActivity {
 
                 if (!match)
                 {
-                    ApplicationDB applicationDb = new ApplicationDB(AccountsOverViewActivity.this);
-                    customer.addAccount(edtAccountName.getText().toString(), initDepositAmount);
-
                     if (!balance.equals(""))
                     {
                         if (isNum)
                         {
-                            if (initDepositAmount >= 0.01)
+                            if (initDepositAmount >= DEPOSIT_MIN_LIMIT)
                             {
-//                                customer.getAccounts().get(customer.getAccounts().size() - 1).addDepositTransaction(initDepositAmount);
+                                ApplicationDB applicationDb = new ApplicationDB(AccountsOverViewActivity.this);
+                                customer.addAccount(edtAccountName.getText().toString(), initDepositAmount);
                                 applicationDb.saveNewAccount(customer, customer.getAccounts().get(customer.getAccounts().size() - 1));
-//                                applicationDb.saveNewTransaction(customer,customer.getAccounts().get(customer.getAccounts().size() - 1).getTransactions()
-//                                                                                   .get(customer.getAccounts().get(customer.getAccounts().size() - 1).getTransactions().size() - 1));
+                                Toast.makeText(this, R.string.acc_saved_successfully, Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                Toast.makeText(getApplicationContext(),"There's a minimun deposit limit of " + DEPOSIT_MIN_LIMIT,Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
-
-//                    applicationDb.saveNewAccount(customer, customer.getAccounts().get(
-//                            customer.getAccounts().size() - 1));
-                    Toast.makeText(this, R.string.acc_saved_successfully, Toast.LENGTH_SHORT).show();
-
                     if (customer.getAccounts().size() >= 1)
                     {
                         //txtTitleMessage.setText("Select an Account to view Transactions");
@@ -252,7 +249,6 @@ public class AccountsOverViewActivity extends AppCompatActivity {
                     sessionManager.editor.putString(SessionManager.SESSION_OBJ,json);
 
                     accountDialog.dismiss();
-
                 }
                 else
                 {

@@ -463,11 +463,26 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         else if(id == R.id.nav_accounts)
             startActivity(new Intent(DashboardActivity.this,AccountsOverViewActivity.class));
         else if(id == R.id.nav_deposit)
-           displayDepositDialog();
+        {
+            if(customer.getAccounts().size() > 0)
+                displayDepositDialog();
+            else
+                Toast.makeText(getApplicationContext(),"There are no accounts to deposit to",Toast.LENGTH_SHORT).show();
+        }
         else if(id == R.id.nav_transfer)
-            displayTransferDialog();
+        {
+            if(customer.getAccounts().size() > 0)
+                displayTransferDialog();
+            else
+                Toast.makeText(getApplicationContext(),"There are no accounts to transfer from",Toast.LENGTH_SHORT).show();
+        }
         else if(id == R.id.nav_loan)
-            displayLoanDialog();
+        {
+            if(customer.getAccounts().size() > 0)
+                displayLoanDialog();
+            else
+                Toast.makeText(getApplicationContext(),"There are no accounts to loan to",Toast.LENGTH_SHORT).show();
+        }
         else if(id == R.id.nav_users)
             startActivity(new Intent(DashboardActivity.this,ShowUsersActivity.class));
         else if(id == R.id.nav_customers)
@@ -536,43 +551,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 Log.d("DB_ERROR",e.toString());
             }
         });
-
-//        //Getting accounts for those customers we got from the query above (receiving accounts)
-//        accountsToTransfer = new ArrayList<>();
-//        FirebaseDatabase.getInstance().getReference("Accounts").get()
-//            .addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
-//        {
-//            @Override
-//            public void onComplete(@NonNull Task<DataSnapshot> task)
-//            {
-//                for(DataSnapshot ds : task.getResult().getChildren())
-//                    if(!ds.getKey().equals(customer.getId()))
-//                        for(DataSnapshot dst : ds.getChildren())
-//                            accountsToTransfer.add(new Account(
-//                                    dst.child("accountName").getValue(String.class),
-//                                    dst.child("accountNo").getValue(String.class),
-//                                    dst.child("accountBalance").getValue(Double.class)
-//                            ));
-//                tempCustomer.getAccounts().get(
-//                        tempCustomer.getAccounts().size() - 1).getTransactions()
-//                        .addAll(getTransactionsForAccount(tempCustomer.getAccounts().get(
-//                                tempCustomer.getAccounts().size() - 1)));
-//
-//                //Setting adapter for customers accounts after pulling data from DB
-//                accountsToTransferAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, accountsToTransfer);
-//                accountsToTransferAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                spnReceivingAccount.setAdapter(accountsToTransferAdapter);
-//            }
-//        })
-//            .addOnFailureListener(new OnFailureListener()
-//        {
-//            @Override
-//            public void onFailure(@NonNull Exception e)
-//            {
-//                Toast.makeText(getApplicationContext(), "ERROR - Can't get receiving customers accounts from DB", Toast.LENGTH_SHORT).show();
-//                Log.d("DB_ERROR",e.toString());
-//            }
-//        });
     }
 
     private void displayDepositDialog()
