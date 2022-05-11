@@ -46,7 +46,7 @@ public class AccountsOverViewActivity extends AppCompatActivity {
     private Customer customer;
     private int selectedAccountIndex;
     private SessionManager sessionManager;
-    private final static int DEPOSIT_MIN_LIMIT = 500;
+    private final static double DEPOSIT_MIN_LIMIT = 100;
 
     private View.OnClickListener addAccountClickListener = new View.OnClickListener()
     {
@@ -231,7 +231,7 @@ public class AccountsOverViewActivity extends AppCompatActivity {
                             }
                             else
                             {
-                                Toast.makeText(getApplicationContext(),"There's a minimun deposit limit of " + DEPOSIT_MIN_LIMIT,Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(),"There's a minimum deposit limit of " + DEPOSIT_MIN_LIMIT,Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -270,31 +270,6 @@ public class AccountsOverViewActivity extends AppCompatActivity {
         startActivity(new Intent(AccountsOverViewActivity.this,TransactionActivity.class));
     }
 
-//    public ArrayList<Transaction> getTransactionsForAccount(Account account)
-//    {
-//        ArrayList<Transaction> transactions = new ArrayList<>();
-//        FirebaseDatabase.getInstance().getReference("Accounts").child(customer.getId()).child(account.getAccountNo())
-//                .child("transactions").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
-//        {
-//            @Override
-//            public void onComplete(@NonNull Task<DataSnapshot> task)
-//            {
-//                for(DataSnapshot ds : task.getResult().getChildren())
-//                    transactions.add(ds.getValue(Transaction.class));
-//            }
-//        })
-//        .addOnFailureListener(new OnFailureListener()
-//        {
-//            @Override
-//            public void onFailure(@NonNull Exception e)
-//            {
-//                Toast.makeText(getApplicationContext(), "ERROR - Can't get transactions from DB for this account", Toast.LENGTH_SHORT).show();
-//                Log.d("DB_ERROR",e.toString());
-//            }
-//        });
-//        return transactions;
-//    }
-
     public String getAccountName() {
         return accountName;
     }
@@ -306,5 +281,10 @@ public class AccountsOverViewActivity extends AppCompatActivity {
     }
     public void setAccountBalance(String accountBalance) {
         this.accountBalance = accountBalance;
+    }
+
+    public static double getDepositMinLimit()
+    {
+        return DEPOSIT_MIN_LIMIT;
     }
 }
