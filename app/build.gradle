@@ -28,11 +28,9 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    java {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(11))
-        }
-    }
+    task stage(dependsOn: ['build', 'clean']){
+        build.mustRunAfter clean}
+
 }
 
 dependencies {
