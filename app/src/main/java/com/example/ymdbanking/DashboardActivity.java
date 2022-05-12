@@ -1,7 +1,6 @@
 package com.example.ymdbanking;
 
 import android.app.Dialog;
-import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,7 +31,6 @@ import com.example.ymdbanking.model.Admin;
 import com.example.ymdbanking.model.Clerk;
 import com.example.ymdbanking.model.Customer;
 import com.example.ymdbanking.model.Transaction;
-import com.example.ymdbanking.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -40,12 +38,9 @@ import com.google.android.material.navigation.NavigationView;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.core.Tag;
 
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 
 import java.util.ArrayList;
@@ -55,6 +50,7 @@ import java.util.Locale;
 public class DashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     static final float END_SCALE = 0.7f;
+    private static final double DEPOSIT_MIN_LIMIT = AccountsOverViewActivity.getDepositMinLimit();
 
     //Drawer menu
     DrawerLayout drawerLayout;
@@ -79,10 +75,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private Button btnApprove, btnAbort;
     private Spinner sendingAccount,receivingAccount;
 
-
     public String mInput;
-
-
 
     private Spinner spnAccounts;
     private String accountName,depositAmount;
@@ -96,20 +89,17 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private Dialog loanDialog;
     private Spinner topSpinner;
     private Spinner bottomSpinner;
-    private ArrayAdapter<Clerk> clerkAdapter;
     private EditText edtLoanAmount;
     private ArrayList<Clerk> clerks;
     private String sessionId;
 
-
-    public void sendInput(String input)
-    {
-        Log.d(TAG, "sendInput: got the input: " + input);
-
-        mInput = input;
-
-        setInputToTextView();
-    }
+    private Spinner spnSendingAccount;
+    private Spinner spnReceivingCustomer;
+    private Spinner spnReceivingAccount;
+    private ArrayList<Customer> customersForTransfer;
+    private ArrayAdapter<Customer> customerAdapter;
+    private ArrayList<Account> accountsToTransfer;
+    private ArrayAdapter<Account> accountsToTransferAdapter;
 
 
     private View.OnClickListener depositClickListener = new View.OnClickListener()
@@ -149,13 +139,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     private View.OnClickListener transferClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(view.getId() == btnAbort.getId()) {
-                transferDialog.dismiss();
-                Toast.makeText(DashboardActivity.this, "Transfer Cancelled", Toast.LENGTH_SHORT).show();
-            }
-            else if (view.getId() == btnSuccess.getId()) {
+//            if(view.getId() == btnAbort.getId()) {
+//                transferDialog.dismiss();
+//                Toast.makeText(DashboardActivity.this, "Transfer Cancelled", Toast.LENGTH_SHORT).show();
+//            }
+            if (view.getId() == btnApprove.getId())
+            {
 
-//                makeTransfer();
+                makeTransfer();
             }
         }
     };
@@ -179,19 +170,19 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
         mAuth = FirebaseAuth.getInstance();
 
-
-
-
         sessionManager = new SessionManager(this,SessionManager.USER_SESSION);
-        sessionId = sessionManager.userSession.getString(SessionManager.KEY_SESSION_ID,null);
+        sessionId = sessionManager.userSession.getString(SessionManager.KEY_TYPE_ID,null);
         if(sessionId.equals("1"))
             admin = sessionManager.getAdminObjFromSession();
         else if(sessionId.equals("2"))
             clerk = sessionManager.getClerkObjFromSession();
         else if(sessionId.equals("3"))
+        {
             customer = sessionManager.getCustomerObjFromSession();
-        setValues();
-
+            setValuesForCustomer();
+            setViewForTransfer();
+            setValuesForTransfer();
+        }
         navigationDrawer();
 
         testB.setOnClickListener(new View.OnClickListener() {
@@ -207,10 +198,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         });
     }
 
-
-
-
-    private void setValues()
+    private void setValuesForCustomer()
     {
         Customer tempCustomer = new Customer();
         tempCustomer.setAccounts(new ArrayList<>(0));
@@ -221,17 +209,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 public void onComplete(@NonNull Task<DataSnapshot> task)
                 {
                     for (DataSnapshot ds : task.getResult().getChildren())
-                    {
-                        tempCustomer.getAccounts().add(new Account(
-                                ds.child("accountName").getValue(String.class),
-                                ds.child("accountNo").getValue(String.class),
-                                ds.child("accountBalance").getValue(Double.class)
-                        ));
-                        tempCustomer.getAccounts().get(
-                                tempCustomer.getAccounts().size() - 1).getTransactions()
-                                .addAll(getTransactionsForAccount(tempCustomer.getAccounts().get(
-                                        tempCustomer.getAccounts().size() - 1)));
-                    }
+                        tempCustomer.getAccounts().add(ds.getValue(Account.class));
                     //Checking if there's any mismatch on customer's accounts between phone's memory and DB
                     if(customer.getAccounts().size() != tempCustomer.getAccounts().size())
                         //If there's a mismatch than we'll take the data from DB
@@ -251,14 +229,18 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
         //Getting all clerks from DB
         clerks = new ArrayList<>();
-        FirebaseDatabase.getInstance().getReference("Clerks").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+        FirebaseDatabase.getInstance().getReference("Users")
+            .get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
         {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task)
             {
                 for(DataSnapshot ds : task.getResult().getChildren())
-                    clerks.add(ds.getValue(Clerk.class));
-
+                    if(ds.child("typeID").getValue(int.class) == 2)
+                    {
+                        clerks.add(ds.getValue(Clerk.class));
+                        clerks.get(clerks.size() - 1).setLoansToApprove(getLoansForClerk(clerks.get(clerks.size() - 1)));
+                    }
 
                 sessionManager.saveClerksForSession(clerks);
             }
@@ -272,6 +254,31 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 Log.d("DB_ERROR",e.toString());
             }
         });
+    }
+
+    private ArrayList<Transaction> getLoansForClerk(Clerk clerk)
+    {
+        ArrayList<Transaction> loans = new ArrayList<>();
+        FirebaseDatabase.getInstance().getReference("Loans").child(clerk.getId()).get()
+            .addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task)
+            {
+                for(DataSnapshot ds : task.getResult().getChildren())
+                    loans.add(ds.getValue(Transaction.class));
+            }
+        })
+            .addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+
+            }
+        });
+
+        return loans;
     }
 
     /**
@@ -340,35 +347,52 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 //                drawerLayout.closeDrawers();
             }
         });
-
-
         disp_phone = findViewById(R.id.display_phone);
 
         //User Session Details
         SessionManager sessionManager = new SessionManager(DashboardActivity.this,SessionManager.USER_SESSION);
         userDetails = sessionManager.getUserDetailFromSession();
         String phone = userDetails.get(SessionManager.KEY_PHONE);
+        View headerView = navigationView.getHeaderView(0);
+        disp_username = headerView.findViewById(R.id.menu_userName);
+        disp_username.setText(userDetails.get(SessionManager.KEY_USERNAME));
 
         //If user is customer
         if(sessionId.equals("3"))
         {
             //User's navigation drawer
-            View headerView = navigationView.getHeaderView(0);
-            disp_username = headerView.findViewById(R.id.menu_userName);
-            disp_username.setText(userDetails.get(SessionManager.KEY_USERNAME));
-            navigationView.getMenu().findItem(R.id.nav_add_clerks).setVisible(false);
+//            View headerView = navigationView.getHeaderView(0);
+//            disp_username = headerView.findViewById(R.id.menu_userName);
+//            disp_username.setText(userDetails.get(SessionManager.KEY_USERNAME));
+            navigationView.getMenu().findItem(R.id.nav_clerks).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_users).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_approve_loans).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_customers).setVisible(false);
             sessionManager.saveCustomerObjForSession(customer);
         }
         //If user is clerk
         else if(sessionId.equals("2"))
         {
-            //Todo: Hide all nav bars that the other type of users shouldn't see
+            navigationView.getMenu().findItem(R.id.nav_clerks).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_transfer).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_loan).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_accounts).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_payment).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_deposit).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_transaction).setVisible(false);
+            sessionManager.saveClerkObjForSession(clerk);
+
         }
         //If user is admin
         else if(sessionId.equals("1"))
         {
-            //Todo: Hide all nav bars that the other type of users shouldn't see
+            navigationView.getMenu().findItem(R.id.nav_transfer).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_loan).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_accounts).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_payment).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_deposit).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_transaction).setVisible(false);
+            sessionManager.saveAdminObjForSession(admin);
         }
         disp_phone.setText(phone);
 
@@ -433,26 +457,47 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
     {
         int id = item.getItemId();
 
-        if(id == R.id.nav_add_clerks)
-            startActivity(new Intent(DashboardActivity.this,AddClerkActivity.class));
+        if(id == R.id.nav_clerks)
+            startActivity(new Intent(DashboardActivity.this,ClerkOverviewActivity.class));
         else if(id == R.id.nav_profile)
             startActivity(new Intent(DashboardActivity.this,UserProfileActivity.class));
         else if(id == R.id.nav_accounts)
-
             startActivity(new Intent(DashboardActivity.this,AccountsOverViewActivity.class));
         else if(id == R.id.nav_deposit)
-           displayDepositDialog();
+        {
+            if(customer.getAccounts().size() > 0)
+                displayDepositDialog();
+            else
+                Toast.makeText(getApplicationContext(),"There are no accounts to deposit to",Toast.LENGTH_SHORT).show();
+        }
         else if(id == R.id.nav_transfer)
-            displayTransferDialog();
-        else if(id == R.id.nav_logout) {
+        {
+            if(customer.getAccounts().size() > 0)
+                displayTransferDialog();
+            else
+                Toast.makeText(getApplicationContext(),"There are no accounts to transfer from",Toast.LENGTH_SHORT).show();
+        }
+        else if(id == R.id.nav_loan)
+        {
+            if(customer.getAccounts().size() > 0)
+                displayLoanDialog();
+            else
+                Toast.makeText(getApplicationContext(),"There are no accounts to loan to",Toast.LENGTH_SHORT).show();
+        }
+        else if(id == R.id.nav_users)
+            startActivity(new Intent(DashboardActivity.this,ShowUsersActivity.class));
+        else if(id == R.id.nav_customers)
+            startActivity(new Intent(DashboardActivity.this,CustomerOverviewActivity.class));
+        else if(id == R.id.nav_logout)
+        {
             mAuth.signOut();
             startActivity(new Intent(DashboardActivity.this,LoginActivity.class));
         }
             return true;
     }
 
-    private void displayTransferDialog() {
-
+    private void setViewForTransfer()
+    {
         transferDialog = new Dialog(this);
         transferDialog.setContentView(R.layout.transfer_dialog);
 
@@ -465,39 +510,48 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }
         });
 
-        transfer_amount = transferDialog.findViewById(R.id.transfer_amount);
-
-        btnApprove = transferDialog.findViewById(R.id.transfer_btn);
-
-        btnApprove.setOnClickListener(transferClickListener);
-
-        transferDialog.show();
-
-
-
-//        startActivity(new Intent(getApplicationContext(),AccountsOverViewActivity.class));
-//        else if(id == R.id.nav_transfer)
-//        {
-//            setValuesForTransfer();
-//            startActivity(new Intent(getApplicationContext(), TransferActivity.class));
-//        }
-//        else if(id == R.id.nav_deposit)
-//            displayDepositDialog();
-//        else if(id == R.id.nav_loan)
-//            displayLoanDialog();
-//        else if(id == R.id.nav_logout)
-//            startActivity(new Intent(getApplicationContext(),LoginActivity.class));
-//        else
-//            startActivity(new Intent(getApplicationContext(),DashboardActivity.class));
-//        return true;
-
+        spnSendingAccount = transferDialog.findViewById(R.id.spn_select_customer_acc);
+        spnReceivingCustomer = transferDialog.findViewById(R.id.spn_receiving_customer);
+        spnReceivingAccount = transferDialog.findViewById(R.id.spn_receiving_acc);
     }
 
     private void setValuesForTransfer()
     {
-        ApplicationDB applicationDB = new ApplicationDB(getApplicationContext());
-        ArrayList<Customer> customersForTransfer = applicationDB.getAllCustomersForTransfer(customer.getId());
-        ArrayList<Account> customersAccountsForTransfer = applicationDB.getAllAccountsForTransfer(customer.getId());
+        //Setting adapter to current customer's accounts (sending accounts)
+        accountAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, customer.getAccounts());
+        accountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spnSendingAccount.setAdapter(customerAccountsAdapter);
+
+        //Getting all customers besides the current one (receiving customers)
+        customersForTransfer = new ArrayList<>();
+        FirebaseDatabase.getInstance().getReference("Users").get()
+            .addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task)
+            {
+                for(DataSnapshot ds : task.getResult().getChildren())
+                    if(!ds.getKey().equals(customer.getId()) && ds.child("typeID").getValue(int.class) == 3)
+                    {
+                        customersForTransfer.add(ds.getValue(Customer.class));
+                        customersForTransfer.get(customersForTransfer.size() - 1).setAccounts(getAccountsFromCurrentCustomer(ds.getKey()));
+                    }
+
+                //Setting adapter for customers list after pulling data from DB
+                customerAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, customersForTransfer);
+                customerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spnReceivingCustomer.setAdapter(customerAdapter);
+            }
+        })
+            .addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Toast.makeText(getApplicationContext(), "ERROR - Can't get receiving customers from DB", Toast.LENGTH_SHORT).show();
+                Log.d("DB_ERROR",e.toString());
+            }
+        });
     }
 
     private void displayDepositDialog()
@@ -533,14 +587,86 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         depositDialog.show();
     }
 
-
-    private void setInputToTextView()
+    private void displayTransferDialog()
     {
-//        mInputDisplay.setText(mInput);
+
+        //sending account
+        sendingAccount = transferDialog.findViewById(R.id.spn_select_customer_acc);
+        accountAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, customer.getAccounts());
+        accountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        sendingAccount.setAdapter(accountAdapter);
+        sendingAccount.setSelection(0);
+
+        transfer_amount = transferDialog.findViewById(R.id.transfer_amount);
+
+        btnApprove = transferDialog.findViewById(R.id.transfer_btn);
+        //receiving account
+
+        btnApprove.setOnClickListener(transferClickListener);
+
+        transferDialog.show();
     }
 
-    public String getAccountName() {
-        return accountName;
+    private void makeTransfer()
+    {
+        int receivingProfIndex = spnReceivingCustomer.getSelectedItemPosition();
+        int receivingAccIndex = spnReceivingAccount.getSelectedItemPosition();
+        boolean isNum = false;
+        double transferAmount = 0;
+
+        try
+        {
+            transferAmount = Double.parseDouble(transfer_amount.getText().toString());
+            isNum = true;
+        }
+        catch (Exception e)
+        {
+            Toast.makeText(getApplicationContext(), "Please enter an amount to transfer", Toast.LENGTH_SHORT).show();
+        }
+        if (isNum)
+        {
+            if (transferAmount < DEPOSIT_MIN_LIMIT)
+            {
+                Toast.makeText(getApplicationContext(), "The minimum amount for a transfer is $0.01", Toast.LENGTH_SHORT).show();
+
+            }
+            else if (transferAmount > customer.getAccounts().get(spnSendingAccount.getSelectedItemPosition()).getAccountBalance())
+            {
+                Account acc = (Account) spnSendingAccount.getSelectedItem();
+                Toast.makeText(getApplicationContext(), "The account," + " " + acc.toString() + " " +
+                                                        "does not have sufficient funds to make this transfer", Toast.LENGTH_LONG).show();
+            }
+            else
+            {
+                int sendingAccIndex = spnSendingAccount.getSelectedItemPosition();
+
+                Account sendingAccount = (Account) spnSendingAccount.getItemAtPosition(sendingAccIndex);
+                Account receivingAccount = (Account) spnReceivingAccount.getItemAtPosition(receivingAccIndex);
+                Customer receivingCustomer = (Customer) spnReceivingCustomer.getItemAtPosition(receivingProfIndex);
+
+                customer.addTransferTransaction(sendingAccount, receivingAccount, transferAmount);
+                spnSendingAccount.setAdapter(accountAdapter);
+                spnReceivingAccount.setAdapter(accountsToTransferAdapter);
+
+                spnSendingAccount.setSelection(sendingAccIndex);
+                spnReceivingAccount.setSelection(receivingAccIndex);
+
+                ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
+
+                applicationDb.overwriteAccount(customer, sendingAccount);
+                applicationDb.overwriteAccount(receivingCustomer, receivingAccount);
+
+                sessionManager.saveCustomerObjForSession(customer);
+
+                Toast.makeText(getApplicationContext(), "Transfer of $" +
+                                                        String.format(Locale.getDefault(), "%.2f", transferAmount) +
+                                                        " successfully made", Toast.LENGTH_SHORT).show();
+            }
+        }
+        transferDialog.dismiss();
+        drawerLayout.closeDrawers();
+        startActivity(new Intent(DashboardActivity.this,DashboardActivity.class));
     }
 
     private void makeDeposit()
@@ -557,36 +683,40 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         {
             e.printStackTrace();
         }
-
-        if (depositAmount < 0.01 && !isNum)
+        if(!isNum)
         {
             Toast.makeText(this, "Please enter a valid amount", Toast.LENGTH_SHORT).show();
         }
         else
         {
-            customer.getAccounts().get(selectedAccountIndex).addDepositTransaction(depositAmount);
-            sessionManager.saveCustomerObjForSession(customer);
+            if (depositAmount < DEPOSIT_MIN_LIMIT)
+            {
+                Toast.makeText(getApplicationContext(),"There's a minimum deposit limit of " + DEPOSIT_MIN_LIMIT,Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                customer.getAccounts().get(selectedAccountIndex).addDepositTransaction(depositAmount);
+                sessionManager.saveCustomerObjForSession(customer);
 
-            ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
-            applicationDb.overwriteAccount(customer, customer.getAccounts().get(selectedAccountIndex));
-//            applicationDb.saveNewTransaction(userCustomer, account.getAccountNo(),
-//                    account.getTransactions().get(account.getTransactions().size() - 1));
+                ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
+                applicationDb.overwriteAccount(customer, customer.getAccounts().get(selectedAccountIndex));
 
-            Toast.makeText(this,
-                    "Deposit of $" + String.format(Locale.getDefault(), "%.2f", depositAmount) +
-                    " " + "made successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,
+                        "Deposit of $" + String.format(Locale.getDefault(), "%.2f", depositAmount) +
+                        " " + "made successfully", Toast.LENGTH_SHORT).show();
 
-            accountAdapter = new ArrayAdapter<Account>(this, android.R.layout.simple_spinner_item, customer.getAccounts());
-            accountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spnAccounts.setAdapter(accountAdapter);
+                accountAdapter = new ArrayAdapter<Account>(this, android.R.layout.simple_spinner_item, customer.getAccounts());
+                accountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spnAccounts.setAdapter(accountAdapter);
 
-            //TODO: Add checkbox if the user wants to make more than one deposit
+                //TODO: Add checkbox if the user wants to make more than one deposit
 
-            depositDialog.dismiss();
-            drawerLayout.closeDrawers();
-            //manualNavigation(manualNavID.ACCOUNTS_ID, null);
+                depositDialog.dismiss();
+                drawerLayout.closeDrawers();
+                //manualNavigation(manualNavID.ACCOUNTS_ID, null);
+                startActivity(new Intent(DashboardActivity.this, DashboardActivity.class));
+            }
         }
-
     }
 
     private void displayLoanDialog()
@@ -603,9 +733,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 Toast.makeText(getApplicationContext(),"Deposit Cancelled", Toast.LENGTH_SHORT).show();
             }
         });
-        clerks = sessionManager.getClerksFromSession();
+//        clerks = sessionManager.getClerksFromSession();
         topSpinner = loanDialog.findViewById(R.id.spn_clerk_list_Loan_dialog);
-        clerkAdapter = new ArrayAdapter<Clerk>(this, android.R.layout.simple_spinner_item,clerks);
+        ArrayAdapter<Clerk> clerkAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, clerks);
         clerkAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         topSpinner.setAdapter(clerkAdapter);
         topSpinner.setSelection(0);
@@ -649,13 +779,59 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             sessionManager.saveCustomerObjForSession(customer);
             Clerk clerk = clerks.get(clerkSelectedIndex);
             Account account = customer.getAccounts().get(accountSelectedIndex);
-            clerk.addLoanTransaction(account, loanAmount);
+            clerk.addLoanTransaction(account,loanAmount);
+            ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
+            applicationDb.overwriteAccount(customer,customer.getAccounts().get(accountSelectedIndex));
+            applicationDb.saveNewLoan(clerk,customer,customer.getAccounts().get(accountSelectedIndex)
+                                                             .getTransactions().get(customer.getAccounts().get(accountSelectedIndex).getTransactions().size()-1));
             Toast.makeText(this,
                     "Loan of $" + String.format(Locale.getDefault(), "%.2f", loanAmount) + " " +
                     "is pending", Toast.LENGTH_SHORT).show();
             loanDialog.dismiss();
             drawerLayout.closeDrawers();
+            startActivity(new Intent(DashboardActivity.this,DashboardActivity.class));
 //            manualNavigation(manualNavID.ACCOUNTS_ID, null);
         }
+    }
+
+    public ArrayList<Account> getAccountsFromCurrentCustomer(String customerID)
+    {
+        accountsToTransfer = new ArrayList<>();
+        FirebaseDatabase.getInstance().getReference("Accounts").child(customerID)
+            .get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task)
+            {
+                for(DataSnapshot ds : task.getResult().getChildren())
+                {
+//					accountHM.put(ds.getKey(),ds.getValue(Account.class));
+//					accounts.add(accountHM.get(ds.getKey()));
+                    accountsToTransfer.add(new Account(
+                            ds.child("accountName").getValue(String.class),
+                            ds.child("accountNo").getValue(String.class),
+                            ds.child("accountBalance").getValue(Double.class)
+                    ));
+                    accountsToTransfer.get(accountsToTransfer.size() - 1).getTransactions()
+                            .addAll(getTransactionsForAccount(accountsToTransfer.get(accountsToTransfer.size()-1)));
+                }
+
+                //Setting adapter for customers accounts after pulling data from DB
+                accountsToTransferAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, accountsToTransfer);
+                accountsToTransferAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spnReceivingAccount.setAdapter(accountsToTransferAdapter);
+            }
+        })
+        .addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Toast.makeText(getApplicationContext(), "ERROR - Can't get customer's accounts from DB", Toast.LENGTH_SHORT).show();
+                Log.d("DB_ERROR",e.toString());
+            }
+        });
+
+        return accountsToTransfer;
     }
 }

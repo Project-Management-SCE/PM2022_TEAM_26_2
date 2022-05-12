@@ -24,7 +24,8 @@ public class Customer extends User
      */
     public Customer(String email,String fullName,String id,String password,String phone,String username)
     {
-        super(email,fullName,id,password,phone,username);
+        super(email,fullName,id,password,phone,username,typeID);
+
         accounts = new ArrayList<>(0);
         payees = new ArrayList<>(0);
     }
@@ -34,9 +35,9 @@ public class Customer extends User
      * dbId field will be set later on
      */
     public Customer(String email,String fullName,String id,String password,String phone,String username,
-                    ArrayList<Account> accounts,ArrayList<Payee> payees)
+                    int typeID,ArrayList<Account> accounts,ArrayList<Payee> payees)
     {
-        super(email,fullName,id,password,phone,username);
+        super(email,fullName,id,password,phone,username,typeID);
         this.accounts = accounts;
         this.payees = payees;
     }
@@ -44,32 +45,9 @@ public class Customer extends User
     /**
      * getters used to access the private fields of the profile
      */
-//    public String getFirstName() {
-//        return firstName;
-//    }
-//    public String getLastName() {
-//        return lastName;
-//    }
-//    public String getCountry() {
-//        return country;
-//    }
-//    public String getUsername() {
-//        return username;
-//    }
-//    public String getPassword() {
-//        return password;
-//    }
     public ArrayList<Account> getAccounts() { return accounts; }
     public void setAccounts(ArrayList<Account> accounts) {this.accounts = accounts;}
     public ArrayList<Payee> getPayees() { return payees; }
-    public static int getTypeID() {return typeID;}
-    //    public long getDbId() { return dbId; }
-//    public void setDbId(long dbId) { this.dbId = dbId; }
-//    public void setFirstName(String firstName) {this.firstName = firstName;}
-//    public void setLastName(String lastName) {this.lastName = lastName;}
-//    public void setCountry(String country) {this.country = country;}
-//    public void setUsername(String username) {this.username = username;}
-//    public void setPassword(String password) {this.password = password;}
 
     /**
      * Method to add account to this profile user
@@ -80,6 +58,7 @@ public class Customer extends User
     {
         String accNo = "A" + (accounts.size() + 1);
         Account account = new Account(accountName, accNo, accountBalance);
+        account.setTransactions(new ArrayList<Transaction>(0));
         accounts.add(account);
     }
 //    public void setAccountsFromDB(ArrayList<Account> accounts) {

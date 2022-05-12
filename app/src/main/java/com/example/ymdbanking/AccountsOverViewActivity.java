@@ -21,19 +21,15 @@ import com.example.ymdbanking.adapters.AccountAdapter;
 import com.example.ymdbanking.db.ApplicationDB;
 import com.example.ymdbanking.model.Account;
 import com.example.ymdbanking.model.Customer;
-import com.example.ymdbanking.model.Transaction;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class AccountsOverViewActivity extends AppCompatActivity {
 
@@ -50,6 +46,7 @@ public class AccountsOverViewActivity extends AppCompatActivity {
     private Customer customer;
     private int selectedAccountIndex;
     private SessionManager sessionManager;
+    private final static double DEPOSIT_MIN_LIMIT = 100;
 
     private View.OnClickListener addAccountClickListener = new View.OnClickListener()
     {
@@ -80,35 +77,13 @@ public class AccountsOverViewActivity extends AppCompatActivity {
         txtTitleMessage = findViewById(R.id.txt_title_msg);
         txtDetailMessage = findViewById(R.id.txt_details_msg);
         lstAccounts = findViewById(R.id.lst_accounts);
-        fab = findViewById(R.id.floating_action_btn);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                displayAccountDialog();
-//            }
-//        });
-        setValues();
-    }
-
-    private void setValues()
-    {
-        selectedAccountIndex = 0;
+        fab = findViewById(R.id.btn_add_clerk_overview);
 
         SessionManager sessionManager = new SessionManager(this,SessionManager.USER_SESSION);
         customer = sessionManager.getCustomerObjFromSession();
-
-        AccountAdapter adapter = new AccountAdapter(getApplicationContext(), R.layout.lst_accounts, customer.getAccounts());
-        lstAccounts.setAdapter(adapter);
-
-        lstAccounts.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
-            {
-                selectedAccountIndex = i;
-                viewAccount();
-            }
-        });
+        customer.setAccounts(sessionManager.getAccountsObjFromSession());
+        setValuesForCustomer();
+        selectedAccountIndex = 0;
 
         fab.setOnClickListener(new View.OnClickListener()
         {
@@ -117,12 +92,58 @@ public class AccountsOverViewActivity extends AppCompatActivity {
             {
                 if (customer.getAccounts().size() >= 10)
                 {
-                    Toast.makeText(getApplicationContext(), "You have reached the maximum amount of accounts (10)", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AccountsOverViewActivity.this, "You have reached the maximum amount of accounts (10)", Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
                     displayAccountDialog();
                 }
+            }
+        });
+    }
+
+    private void setValuesForCustomer()
+    {
+        customer.setAccounts(new ArrayList<>());
+        Customer tempCustomer = new Customer();
+        tempCustomer.setAccounts(new ArrayList<>(0));
+        FirebaseDatabase.getInstance().getReference("Accounts").child(customer.getId()).get()
+            .addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task)
+            {
+                for (DataSnapshot ds : task.getResult().getChildren())
+                    tempCustomer.getAccounts().add(ds.getValue(Account.class));
+                //Checking if there's any mismatch on customer's accounts between phone's memory and DB
+                if (customer.getAccounts().size() != tempCustomer.getAccounts().size())
+                    //If there's a mismatch than we'll take the data from DB
+                    customer.setAccounts(tempCustomer.getAccounts());
+                sessionManager = new SessionManager(getApplicationContext(),SessionManager.USER_SESSION);
+                sessionManager.saveCustomerObjForSession(customer);
+                sessionManager.saveAccountsObjForSession(customer.getAccounts());
+
+                AccountAdapter adapter = new AccountAdapter(AccountsOverViewActivity.this, R.layout.lst_accounts, customer.getAccounts());
+                lstAccounts.setAdapter(adapter);
+
+                lstAccounts.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+                    {
+                        selectedAccountIndex = i;
+                        viewAccount();
+                    }
+                });
+            }
+        })
+            .addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                Toast.makeText(getApplicationContext(), "ERROR - Can't get customer's accounts from DB", Toast.LENGTH_SHORT).show();
+                Log.d("DB_ERROR", e.toString());
             }
         });
     }
@@ -143,11 +164,11 @@ public class AccountsOverViewActivity extends AppCompatActivity {
             }
         });
 
-        edtAccountName = accountDialog.findViewById(R.id.edt_payee_name);
-        edtInitAccountBalance = accountDialog.findViewById(R.id.edt_init_bal);
+        edtAccountName = accountDialog.findViewById(R.id.edt_name_account_dialog);
+        edtInitAccountBalance = accountDialog.findViewById(R.id.edt_init_bal_account_dialog);
 
-        btnCancel = accountDialog.findViewById(R.id.btn_cancel_dialog);
-        btnAddAccount = accountDialog.findViewById(R.id.btn_add_payee);
+        btnCancel = accountDialog.findViewById(R.id.btn_cancel_account_dialog);
+        btnAddAccount = accountDialog.findViewById(R.id.btn_success_account_dialog);
 
         btnCancel.setOnClickListener(addAccountClickListener);
         btnAddAccount.setOnClickListener(addAccountClickListener);
@@ -197,31 +218,27 @@ public class AccountsOverViewActivity extends AppCompatActivity {
 
                 if (!match)
                 {
-                    ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
-                    customer.addAccount(edtAccountName.getText().toString(), initDepositAmount);
-
                     if (!balance.equals(""))
                     {
                         if (isNum)
                         {
-                            if (initDepositAmount >= 0.01)
+                            if (initDepositAmount >= DEPOSIT_MIN_LIMIT)
                             {
-//                                customer.getAccounts().get(customer.getAccounts().size() - 1).addDepositTransaction(initDepositAmount);
+                                ApplicationDB applicationDb = new ApplicationDB(AccountsOverViewActivity.this);
+                                customer.addAccount(edtAccountName.getText().toString(), initDepositAmount);
                                 applicationDb.saveNewAccount(customer, customer.getAccounts().get(customer.getAccounts().size() - 1));
-//                                applicationDb.saveNewTransaction(customer,customer.getAccounts().get(customer.getAccounts().size() - 1).getTransactions()
-//                                                                                   .get(customer.getAccounts().get(customer.getAccounts().size() - 1).getTransactions().size() - 1));
+                                Toast.makeText(this, R.string.acc_saved_successfully, Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                Toast.makeText(getApplicationContext(),"There's a minimum deposit limit of " + DEPOSIT_MIN_LIMIT,Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
-
-//                    applicationDb.saveNewAccount(customer, customer.getAccounts().get(
-//                            customer.getAccounts().size() - 1));
-                    Toast.makeText(this, R.string.acc_saved_successfully, Toast.LENGTH_SHORT).show();
-
                     if (customer.getAccounts().size() >= 1)
                     {
                         //txtTitleMessage.setText("Select an Account to view Transactions");
-                        AccountAdapter adapter = new AccountAdapter(getApplicationContext(), R.layout.lst_accounts, customer.getAccounts());
+                        AccountAdapter adapter = new AccountAdapter(AccountsOverViewActivity.this, R.layout.lst_accounts, customer.getAccounts());
                         lstAccounts.setAdapter(adapter);
                         txtDetailMessage.setVisibility(View.VISIBLE);
                         lstAccounts.setVisibility(View.VISIBLE);
@@ -232,7 +249,6 @@ public class AccountsOverViewActivity extends AppCompatActivity {
                     sessionManager.editor.putString(SessionManager.SESSION_OBJ,json);
 
                     accountDialog.dismiss();
-
                 }
                 else
                 {
@@ -249,35 +265,10 @@ public class AccountsOverViewActivity extends AppCompatActivity {
 
     public void viewAccount()
     {
-        sessionManager = new SessionManager(getApplicationContext(),"AccountView");
+        sessionManager = new SessionManager(AccountsOverViewActivity.this,"AccountView");
         sessionManager.editor.putInt("SelectedAccount", selectedAccountIndex);
-        startActivity(new Intent(getApplicationContext(),TransactionActivity.class));
+        startActivity(new Intent(AccountsOverViewActivity.this,TransactionActivity.class));
     }
-
-//    public ArrayList<Transaction> getTransactionsForAccount(Account account)
-//    {
-//        ArrayList<Transaction> transactions = new ArrayList<>();
-//        FirebaseDatabase.getInstance().getReference("Accounts").child(customer.getId()).child(account.getAccountNo())
-//                .child("transactions").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
-//        {
-//            @Override
-//            public void onComplete(@NonNull Task<DataSnapshot> task)
-//            {
-//                for(DataSnapshot ds : task.getResult().getChildren())
-//                    transactions.add(ds.getValue(Transaction.class));
-//            }
-//        })
-//        .addOnFailureListener(new OnFailureListener()
-//        {
-//            @Override
-//            public void onFailure(@NonNull Exception e)
-//            {
-//                Toast.makeText(getApplicationContext(), "ERROR - Can't get transactions from DB for this account", Toast.LENGTH_SHORT).show();
-//                Log.d("DB_ERROR",e.toString());
-//            }
-//        });
-//        return transactions;
-//    }
 
     public String getAccountName() {
         return accountName;
@@ -290,5 +281,10 @@ public class AccountsOverViewActivity extends AppCompatActivity {
     }
     public void setAccountBalance(String accountBalance) {
         this.accountBalance = accountBalance;
+    }
+
+    public static double getDepositMinLimit()
+    {
+        return DEPOSIT_MIN_LIMIT;
     }
 }

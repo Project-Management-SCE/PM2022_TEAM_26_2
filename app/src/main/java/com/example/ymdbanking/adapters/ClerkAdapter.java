@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import com.example.ymdbanking.R;
 import com.example.ymdbanking.model.Clerk;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class ClerkAdapter extends ArrayAdapter<Clerk>
@@ -33,9 +35,7 @@ public class ClerkAdapter extends ArrayAdapter<Clerk>
 	{
 		if (convertView == null)
 		{
-
-			LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-			convertView = inflater.inflate(resource, parent, false);
+			convertView = LayoutInflater.from(context).inflate(resource,parent,false);
 		}
 
 		Clerk clerk = getItem(position);
@@ -43,8 +43,8 @@ public class ClerkAdapter extends ArrayAdapter<Clerk>
 		TextView txtClerkName = convertView.findViewById(R.id.txt_profile_name);
 		txtClerkName.setText(clerk.getFullName());
 
-//		TextView txtClerkCountry = convertView.findViewById(R.id.txt_profile_username);
-//		txtClerkCountry.setText(clerk.getCountry());
+		TextView txtClerkUsername = convertView.findViewById(R.id.txt_profile_username);
+		txtClerkUsername.setText(clerk.getUsername());
 
 		return convertView;
 	}

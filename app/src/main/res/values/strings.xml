@@ -38,7 +38,8 @@
     <string name="add_account">Add account</string>
     <string name="_266_225_225">+266 225 225</string>
     <string name="add_clerks">Add Clerks</string>
-    <string name="create_nclerk">Create\nClerk</string>
+    <string name="show_clerks">Show Clerks</string>
+    <string name="create_clerk">Create\nClerk</string>
     <string name="add_clerk">Add Clerk</string>
     <string name="navigation_drawer_open">onDrawerOpened</string>
     <string name="navigation_drawer_close">onDrawerClosed</string>
@@ -57,7 +58,7 @@
     <string name="select_receiving_profile">Select Receiving Profile</string>
     <string name="enter_transfer_amount">Enter transfer amount</string>
     <string name="transfer">Transfer</string>
-=======
+    =======
     <string name="incorrect_login">Incorrect Username or Password</string>
     <string name="account_success">Account Successfully Created</string>
     <string name="account_cancelled">Account Creation Cancelled</string>
@@ -129,6 +130,10 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="account_image">Account Image</string>
+    <string name="approve_loans">Approve Loans</string>
+    <string name="show_customers">Show Customers</string>
+    <string name="select_clerk">Select Clerk</string>
+    <string name="select_loan">Select loan to view it\'s details</string>
 
     <string-array name="days">
         <item>Sunday</item>
@@ -152,6 +157,6 @@
         <item>Old - New</item>
         <item>New - Old</item>
     </string-array>
->>>>>>> DB-2
+    >>>>>>> DB-2
 
 </resources>

@@ -1,6 +1,10 @@
 package com.example.ymdbanking.model;
 
+import android.content.Context;
+
 import java.util.ArrayList;
+
+import com.example.ymdbanking.db.ApplicationDB;
 import com.example.ymdbanking.model.*;
 
 public class Clerk extends User
@@ -16,7 +20,7 @@ public class Clerk extends User
 
 	public Clerk(String email,String fullName,String id,String password,String phone,String username)
 	{
-		super(email,fullName,id,password,phone,username);
+		super(email,fullName,id,password,phone,username,typeID);
 		this.customers = new ArrayList<>(0);
 		this.loansToApprove = new ArrayList<>(0);
 	}
@@ -24,7 +28,7 @@ public class Clerk extends User
 	public Clerk(String email,String fullName,String id,String password,String phone,String username,
 	             ArrayList<Customer> customers,ArrayList<Transaction> loansToApprove)
 	{
-		super(email,fullName,id,password,phone,username);
+		super(email,fullName,id,password,phone,username,typeID);
 		this.customers = customers;
 		this.loansToApprove = loansToApprove;
 	}
@@ -41,7 +45,7 @@ public class Clerk extends User
 	public ArrayList<Transaction> getLoansToApprove() {return loansToApprove;}
 	public void setLoansToApprove(ArrayList<Transaction> loansToApprove) {this.loansToApprove = loansToApprove;}
 	public void setCustomers(ArrayList<Customer> customers) {this.customers = customers;}
-	public static int getTypeID() {return typeID;}
+//	public static int getTypeID() {return typeID;}
 	public ArrayList<Customer> getCustomers() {return customers;}
 	//	public String getCountry() {return country;}
 //	public void setCountry(String country) {this.country = country;}
@@ -54,12 +58,13 @@ public class Clerk extends User
 //		ApplicationDB applicationDB = new ApplicationDB(context);
 //		return applicationDB.getClerkCustomers(id);
 //	}
-//	public void assignProfileToCustomer(Customer customer, Context context)
-//	{
-//		customers.add(customer);
-//		ApplicationDB applicationDB = new ApplicationDB(context);
-//		applicationDB.saveCustomerToClerkList(customer, getUsername());
-//	}
+
+	public void assignProfileToCustomer(Customer customer,Context context)
+	{
+		customers.add(customer);
+		ApplicationDB applicationDB = new ApplicationDB(context);
+		applicationDB.saveCustomerToClerkList(customer,this);
+	}
 
 	public void viewCustomerAccounts(Customer customer)
 	{
@@ -78,18 +83,30 @@ public class Clerk extends User
 	public void addLoanTransaction(Account destinationAccount, double amount)
 	{
 //		destinationAccount.setAccountBalance(destinationAccount.getAccountBalance() + amount);
-		int receivingAccTransferCount = 0;
-		for (int i = 0; i < destinationAccount.getTransactions().size(); i ++)
+		int receivingAccLoanCount = 0;
+		try
 		{
-			if (destinationAccount.getTransactions().get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.LOAN)
+			for (int i = 0; i < destinationAccount.getTransactions().size(); i++)
 			{
-				receivingAccTransferCount++;
+				if (destinationAccount.getTransactions().get(i).getTransactionType() ==
+				    Transaction.TRANSACTION_TYPE.LOAN)
+				{
+					receivingAccLoanCount++;
+				}
 			}
-		}
-//		Transaction transaction = new Transaction("T" + (destinationAccount.getTransactions().size() + 1) + "-L" + (receivingAccTransferCount + 1), destinationAccount, amount);
+			Transaction transaction = new Transaction("T" + (destinationAccount.getTransactions().size() + 1) + "-L" + (receivingAccLoanCount + 1), destinationAccount, amount);
 //		destinationAccount.getTransactions().put(transaction.getTransactionID(),transaction);
-		destinationAccount.getTransactions().add(new Transaction("T" + (destinationAccount.getTransactions().size() + 1) + "-L" + (receivingAccTransferCount+1), destinationAccount, amount));
-		addLoanForPending(destinationAccount.getTransactions().get(destinationAccount.getTransactions().size()));
+			destinationAccount.getTransactions().add(transaction);
+//			addLoanForPending(destinationAccount.getTransactions().get(destinationAccount.getTransactions().size() - 1));
+			addLoanForPending(transaction);
+		}
+		catch(NullPointerException e)
+		{
+			destinationAccount.setTransactions(new ArrayList<Transaction>());
+			Transaction transaction = new Transaction("T1" + "-L1", destinationAccount, amount);
+			destinationAccount.getTransactions().add(transaction);
+			addLoanForPending(transaction);
+		}
 	}
 
 	public void addLoanForPending(Transaction pendingLoan)

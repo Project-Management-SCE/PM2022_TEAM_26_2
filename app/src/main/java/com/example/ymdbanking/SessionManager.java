@@ -3,6 +3,7 @@ package com.example.ymdbanking;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.ymdbanking.model.Account;
 import com.example.ymdbanking.model.Admin;
 import com.example.ymdbanking.model.Clerk;
 import com.example.ymdbanking.model.Customer;
@@ -26,6 +27,7 @@ public class SessionManager
 
     public static final String SESSION_OBJ = "sessionObj";
     public static final String CUSTOMER_OBJ = "customerObj";
+    private static final String SESSION_ACCOUNTS = "accountsObj";
 
     //User session variables
     private static final String IS_LOGIN = "IsLoggedIn";
@@ -35,6 +37,7 @@ public class SessionManager
     public static final String KEY_EMAIL = "email";
     public static final String KEY_PASSWORD = "password";
     public static final String KEY_PHONE = "phone";
+    public static final String KEY_TYPE_ID = "typeID";
 
     //Remember Me variables
     private static final String IS_REMEMBER_ME = "IsRememberMe";
@@ -60,7 +63,7 @@ public class SessionManager
     /*
     Users -> Login Session
     */
-    public void createLoginSession(String fullname, String id, String username, String email, String password, String phone) {
+    public void createLoginSession(String fullname, String id, String username, String email, String password, String phone, String typeID) {
         editor.putBoolean(IS_LOGIN, true);
 
         editor.putString(KEY_FULLNAME, fullname);
@@ -69,7 +72,7 @@ public class SessionManager
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_PASSWORD, password);
         editor.putString(KEY_PHONE, phone);
-
+        editor.putString(KEY_TYPE_ID,typeID);
         editor.commit();
     }
 
@@ -83,6 +86,7 @@ public class SessionManager
         userData.put(KEY_EMAIL, userSession.getString(KEY_EMAIL, null));
         userData.put(KEY_PASSWORD, userSession.getString(KEY_PASSWORD, null));
         userData.put(KEY_PHONE, userSession.getString(KEY_PHONE, null));
+        userData.put(KEY_TYPE_ID,userSession.getString(KEY_TYPE_ID,null));
 
         return userData;
     }
@@ -139,6 +143,21 @@ public class SessionManager
         String json = gson.toJson(customer);
         editor.putString(SESSION_OBJ,json);
         editor.commit();
+    }
+
+    public void saveAccountsObjForSession(ArrayList<Account> accounts)
+    {
+        Gson gson = new Gson();
+        String json = gson.toJson(accounts);
+        editor.putString(SESSION_ACCOUNTS,json);
+        editor.commit();
+    }
+
+    public ArrayList<Account> getAccountsObjFromSession()
+    {
+        Gson gson = new Gson();
+        String json = userSession.getString(SESSION_ACCOUNTS,null);
+        return gson.fromJson(json,ArrayList.class);
     }
 
     public Clerk getClerkObjFromSession()

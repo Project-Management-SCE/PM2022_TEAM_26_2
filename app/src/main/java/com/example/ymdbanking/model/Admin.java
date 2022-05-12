@@ -7,25 +7,18 @@ import java.util.ArrayList;
  */
 public class Admin extends User
 {
-//	private String firstName;
-//	private String lastName;
-//	private String country;
-	//private String username;
-	//private String password;
-	private ArrayList<User> users;
+	private ArrayList<Customer> users;
 	private final static int typeID = 1;
-	//private long dbId;
 
 	public Admin()
 	{
 		super();
 		//Empty constructor
 	}
-	public Admin(String email,String fullName,String id,String password,String phone,String username,
-	             ArrayList<User> users)
+	public Admin(String email,String fullName,String id,String password,String phone,String username)
 	{
-		super(email,fullName,id,password,phone,username);
-		this.users = users;
+		super(email,fullName,id,password,phone,username,typeID);
+//		this.users = users;
 	}
 //	public String getCountry() {return country;}
 //	public void setCountry(String country) {this.country = country;}
@@ -37,9 +30,9 @@ public class Admin extends User
 //	public void setUsername(String username) {this.username = username;}
 //	public String getPassword() {return password;}
 //	public void setPassword(String password) {this.password = password;}
-	public ArrayList<User> getUsers() {return users;}
-	public void setUsers(ArrayList<User> users) {this.users = users;}
-	public static int getTypeID() {return typeID;}
+	public ArrayList<Customer> getUsers() {return users;}
+	public void setUsers(ArrayList<Customer> users) {this.users = users;}
+//	public static int getTypeID() {return typeID;}
 	//	public long getDbId() {return dbId;}
 //	public void setDbId(long dbId) {this.dbId = dbId;}
 //
