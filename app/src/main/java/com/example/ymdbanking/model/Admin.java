@@ -7,14 +7,8 @@ import java.util.ArrayList;
  */
 public class Admin extends User
 {
-//	private String firstName;
-//	private String lastName;
-//	private String country;
-	//private String username;
-	//private String password;
 	private ArrayList<Customer> users;
 	private final static int typeID = 1;
-	//private long dbId;
 
 	public Admin()
 	{

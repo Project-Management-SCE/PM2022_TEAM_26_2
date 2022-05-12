@@ -13,9 +13,6 @@
             android:name=".ShowUsersActivity"
             android:exported="false" />
         <activity
-            android:name=".TransferActivity"
-            android:exported="false" />
-        <activity
             android:name=".TransactionActivity"
             android:exported="false" />
         <activity

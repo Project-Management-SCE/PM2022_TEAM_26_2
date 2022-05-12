@@ -87,8 +87,8 @@ public class ApplicationDB
 		cust.put("password",customer.getPassword());
 		cust.put("phone",customer.getPhone());
 		cust.put("username",customer.getUsername());
-		database.getReference("Clerks").child(clerk.getUsername()).child("customers")
-				.child(String.valueOf(customer.getId())).setValue(cust);
+		database.getReference("ClerkCustomers").child(clerk.getId())
+			.child(customer.getId()).setValue(cust);
 	}
 
 	/**

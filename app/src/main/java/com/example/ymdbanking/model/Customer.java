@@ -35,7 +35,7 @@ public class Customer extends User
      * dbId field will be set later on
      */
     public Customer(String email,String fullName,String id,String password,String phone,String username,
-                    ArrayList<Account> accounts,ArrayList<Payee> payees)
+                    int typeID,ArrayList<Account> accounts,ArrayList<Payee> payees)
     {
         super(email,fullName,id,password,phone,username,typeID);
         this.accounts = accounts;
