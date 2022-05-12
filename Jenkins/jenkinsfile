@@ -5,7 +5,6 @@ pipeline
 		docker
 		{
 			image 'androidsdk/android-31:latest'
-<<<<<<< HEAD
 			reuseNode true            
 	  	}
 	}
@@ -17,8 +16,6 @@ pipeline
 			{
 				sh "echo 123"
 			}
-<<<<<<< HEAD
-<<<<<<< HEAD
 		}
 	 	stage('Log the Jenkins Docker Ant Git and Java version info')
 		{
@@ -43,10 +40,6 @@ pipeline
             junit 'build/reports/**/*.xml'
         }
     }
-=======
-=======
->>>>>>> 1b34581 (BankingApp)
-	    
 	 stage('Log the Jenkins Docker Ant Git and Java version info') {
             steps {
 	    	sh 'java -version'
@@ -56,8 +49,7 @@ pipeline
 	stage('Unit Test') {
 			steps {
 			sh './gradlew test'
-			 }	
-=======
+			 }
 			 reuseNode true            
 	  	}
 	}
@@ -85,13 +77,7 @@ pipeline
 				sh './gradlew testStagingDebug'
 		 	}	
 		}
->>>>>>> DB-2
 	}
-
-<<<<<<< HEAD
->>>>>>> 65b2eb3 (Banking app-ui)
-=======
-=======
 		}
 	 	stage('Log the Jenkins Docker Ant Git and Java version info')
 		{
@@ -116,6 +102,4 @@ pipeline
             junit 'build/reports/**/*.xml'
         }
     }
->>>>>>> 5491120231fce5e04f96ae40c96bb19686528655
->>>>>>> 1b34581 (BankingApp)
 }

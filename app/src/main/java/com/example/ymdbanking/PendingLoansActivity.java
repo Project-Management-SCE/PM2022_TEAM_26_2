@@ -61,7 +61,7 @@ public class PendingLoansActivity extends AppCompatActivity
 
 	private void approveLoan()
 	{
-		
+
 	}
 
 	@Override
