@@ -12,11 +12,13 @@ import android.widget.Toast;
 
 import com.example.ymdbanking.model.Clerk;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -70,6 +72,22 @@ public class AddClerkActivity extends AppCompatActivity {
 
                 if(task.isSuccessful())
                 {
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+
+                            Toast.makeText(AddClerkActivity.this, "Verification email has been sent", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(AddClerkActivity.this,LoginActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(AddClerkActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
                     storeNewClerkData();
                     Toast.makeText(AddClerkActivity.this,"Successfully Added Clerk",Toast.LENGTH_SHORT).show();
                 }

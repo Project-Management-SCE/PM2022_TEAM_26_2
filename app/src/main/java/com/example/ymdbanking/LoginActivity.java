@@ -21,6 +21,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -42,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+]";
     ProgressDialog progressDialog;
 //
-//    FirebaseAuth mAuth;
+    private FirebaseAuth mAuth;
 //    FirebaseUser mUser;
 
     @Override
@@ -64,6 +66,7 @@ public class LoginActivity extends AppCompatActivity {
 
         //Variables
         progressDialog = new ProgressDialog(this);
+        mAuth = FirebaseAuth.getInstance();
 
         //check if id,email,password is already saved in Shared Preferences or not
         SessionManager sessionManager = new SessionManager(LoginActivity.this,SessionManager.REMEMBER_ME_SESSION);
@@ -90,77 +93,82 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view)
             {
 
+                FirebaseUser user = mAuth.getCurrentUser();
                 String mail = inputEmail.getText().toString().trim();
                 String pass = inputPass.getText().toString().trim();
                 String id_login = inputId.getText().toString().trim();
 
-                if (rememberMe.isChecked())
+                if(!user.isEmailVerified())
                 {
-                    SessionManager sessionManager = new SessionManager(LoginActivity.this, SessionManager.REMEMBER_ME_SESSION);
-                    sessionManager.createRememberMeSession(mail, id_login, pass);
-                }
-                Query checkUser = FirebaseDatabase.getInstance().getReference("Users").orderByChild("id").equalTo(id_login);
-                checkUser.addListenerForSingleValueEvent(new ValueEventListener()
-                {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot)
+                    if (rememberMe.isChecked())
                     {
-                        if (snapshot.child(id_login).exists())
+                        SessionManager sessionManager = new SessionManager(LoginActivity.this, SessionManager.REMEMBER_ME_SESSION);
+                        sessionManager.createRememberMeSession(mail, id_login, pass);
+                    }
+
+                    Query checkUser = FirebaseDatabase.getInstance().getReference("Users").orderByChild("id").equalTo(id_login);
+                    checkUser.addListenerForSingleValueEvent(new ValueEventListener()
+                    {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot)
                         {
-                            String systemPassword = snapshot.child(id_login).child("password").getValue(String.class);
-                            if (systemPassword.equals(pass))
+                            if (snapshot.child(id_login).exists())
                             {
-                                inputPass.setError(null);
+                                String systemPassword = snapshot.child(id_login).child("password").getValue(String.class);
+                                if (systemPassword.equals(pass))
+                                {
+                                    inputPass.setError(null);
 
-                                //Get users data from firebase DB
-                                String fullName = snapshot.child(id_login).child("fullName").getValue(String.class);
-                                String id = snapshot.child(id_login).child("id").getValue(String.class);
-                                String username = snapshot.child(id_login).child("username").getValue(String.class);
-                                String email = snapshot.child(id_login).child("email").getValue(String.class);
-                                String password = snapshot.child(id_login).child("password").getValue(String.class);
-                                String phone = snapshot.child(id_login).child("phone").getValue(String.class);
-                                int typeID = snapshot.child(id_login).child("typeID").getValue(int.class);
+                                    //Get users data from firebase DB
+                                    String fullName = snapshot.child(id_login).child("fullName").getValue(String.class);
+                                    String id = snapshot.child(id_login).child("id").getValue(String.class);
+                                    String username = snapshot.child(id_login).child("username").getValue(String.class);
+                                    String email = snapshot.child(id_login).child("email").getValue(String.class);
+                                    String password = snapshot.child(id_login).child("password").getValue(String.class);
+                                    String phone = snapshot.child(id_login).child("phone").getValue(String.class);
+                                    int typeID = snapshot.child(id_login).child("typeID").getValue(int.class);
 
-                                //Create a User Session
-                                SessionManager sessionManager = new SessionManager(LoginActivity.this, SessionManager.USER_SESSION);
-                                sessionManager.createLoginSession(fullName, id, username, email, password, phone,String.valueOf(typeID));
+                                    //Create a User Session
+                                    SessionManager sessionManager = new SessionManager(LoginActivity.this, SessionManager.USER_SESSION);
+                                    sessionManager.createLoginSession(fullName, id, username, email, password, phone,String.valueOf(typeID));
 
 //                                sessionManager.editor.putString(SessionManager.KEY_TYPE_ID,typeID);
-                                if(typeID==3) {
-                                    Customer customer = new Customer(email, fullName, id, password, phone, username);
-                                    sessionManager.saveCustomerObjForSession(customer);
-                                }
-                                if(typeID == 2)
-                                {
-                                    Clerk clerk = new Clerk(email,fullName,id,password,phone,username);
-                                    sessionManager.saveClerkObjForSession(clerk);
-                                }
-                                if(typeID == 1)
-                                {
-                                    Admin admin = new Admin(email,fullName,id,password,phone,username);
-                                    sessionManager.saveAdminObjForSession(admin);
-                                }
+                                    if(typeID==3) {
+                                        Customer customer = new Customer(email, fullName, id, password, phone, username);
+                                        sessionManager.saveCustomerObjForSession(customer);
+                                    }
+                                    if(typeID == 2)
+                                    {
+                                        Clerk clerk = new Clerk(email,fullName,id,password,phone,username);
+                                        sessionManager.saveClerkObjForSession(clerk);
+                                    }
+                                    if(typeID == 1)
+                                    {
+                                        Admin admin = new Admin(email,fullName,id,password,phone,username);
+                                        sessionManager.saveAdminObjForSession(admin);
+                                    }
 
-                                startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
+                                    startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
+                                }
+                                else
+                                    inputPass.setError("Password does not match!");
                             }
                             else
-                            {
-                                inputPass.setError("Password does not match!");
-                                Toast.makeText(LoginActivity.this, "", Toast.LENGTH_SHORT).show();
-                            }
+                                Toast.makeText(LoginActivity.this, "No such users exist!", Toast.LENGTH_SHORT).show();
                         }
-                        else
-                        {
-                            Toast.makeText(LoginActivity.this, "No such users exist!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error)
-                    {
-                        Toast.makeText(LoginActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error)
+                        {
+                            Toast.makeText(LoginActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
+                else
+                    Toast.makeText(LoginActivity.this, "email not been verified", Toast.LENGTH_SHORT).show();
+
+
 
 //                //Checking if user is admin
 //                FirebaseDatabase.getInstance().getReference("Admins").child(id_login)

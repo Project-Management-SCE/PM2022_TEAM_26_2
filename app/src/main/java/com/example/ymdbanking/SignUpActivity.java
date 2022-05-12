@@ -16,10 +16,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.ymdbanking.model.Customer;
 import com.example.ymdbanking.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 ;import java.util.Locale;
@@ -73,6 +75,7 @@ public class SignUpActivity extends AppCompatActivity {
                 setPhone(inputPhone.getEditText().getText().toString().trim());
                 setId(inputId.getEditText().getText().toString().trim());
                 checkCredentials();
+
             }
         });
 
@@ -120,9 +123,25 @@ public class SignUpActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
+
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+
+                                Toast.makeText(SignUpActivity.this, "Verification email has been sent", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(SignUpActivity.this,LoginActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         storeNewUserData();
                         Toast.makeText(SignUpActivity.this, "Successfully Signed In", Toast.LENGTH_SHORT).show();
-
                     } else
                         Toast.makeText(SignUpActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
 
@@ -144,9 +163,7 @@ public class SignUpActivity extends AppCompatActivity {
         {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+
             }
         });
 
