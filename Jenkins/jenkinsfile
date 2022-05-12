@@ -41,7 +41,7 @@ pipeline
                			docker
 				{
                    			image 'cimg/base:stable'
-			                   args '-u root'
+				   	args '-u root'
                			}
            		}
            		steps
