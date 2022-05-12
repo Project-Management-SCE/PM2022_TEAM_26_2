@@ -6,7 +6,7 @@ pipeline
 		{
 			image 'androidsdk/android-31:latest'
 			reuseNode true
-	  	}
+		}
 	}
 	stages
 	{ 
@@ -17,90 +17,45 @@ pipeline
 				sh "echo 123"
 			}
 		}
-	 	stage('Log the Jenkins Docker Ant Git and Java version info')
+		stage('Log the Jenkins Docker Ant Git and Java version info')
 		{
 			steps 
-			{
-			sh 'java -version'
-			sh 'git --version'
-			}
-		}
-        stage('Unit Test') {
-          steps {
-            // Execute your Unit Test
-            sh './gradlew testStagingDebug'
-          }
-        }
-	}
-	post 
-	{
-        always 
-		{
-            archiveArtifacts artifacts: 'build/libs/**/*.jar', fingerprint: true
-            junit 'build/reports/**/*.xml'
-        }
-    }
-	    
-	 stage('Log the Jenkins Docker Ant Git and Java version info') {
-            steps {
-	    	sh 'java -version'
-	    	sh 'git --version'
-             }
-	}
-	stage('Unit Test') {
-			steps {
-			sh './gradlew test'
-			 }
-			 reuseNode true            
-	  	}
-	}
-    	stages
-	{ 
-		stage('Build')
-		{
-				steps 
-				{
-					sh "echo 123"
-				}
-		}
-	 	stage('Log the Jenkins Docker Ant Git and Java version info')
-		{
-	    		steps 
 			{
 				sh 'java -version'
 				sh 'git --version'
-		     	}
+			}
 		}
 		stage('Unit Test') 
 		{
-			steps
+	  		steps
 			{
-				sh './gradlew testStagingDebug'
-		 	}	
+		    		// Execute your Unit Test
+		    		sh './gradlew testStagingDebug'
+	  		}
 		}
-	}
-		}
-	 	stage('Log the Jenkins Docker Ant Git and Java version info')
-		{
-			steps 
-			{
-			sh 'java -version'
-			sh 'git --version'
-			}
-		}
-        stage('Unit Test') {
-          steps {
-            // Execute your Unit Test
-            sh './gradlew testStagingDebug'
-          }
-        }
 	}
 	post 
 	{
-        always 
+		always 
 		{
-            archiveArtifacts artifacts: 'build/libs/**/*.jar', fingerprint: true
-            junit 'build/reports/**/*.xml'
-        }
-    }
+			archiveArtifacts artifacts: 'build/libs/**/*.jar', fingerprint: true
+		    	junit 'build/reports/**/*.xml'
+		}
+	}
+	 stage('Log the Jenkins Docker Ant Git and Java version info')
+	 {
+    		steps 
+		{
+			sh 'java -version'
+			sh 'git --version'
+	     	}
+	}	
+	stage('Unit Test')
+	{
+		steps 
+		{
+			sh './gradlew test'
+	 	}
+		 reuseNode true            
+	}
 }
