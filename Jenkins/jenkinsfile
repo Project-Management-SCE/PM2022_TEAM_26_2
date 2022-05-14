@@ -1,32 +1,21 @@
-pipeline
-{
-	agent any
-	
-
-	stages
-	{
-		stage('Log the Jenkins Docker Ant Git and Java version info')
-		{
-			steps 
-			{
-				sh 'java -version'
-				sh 'git --version'
-			}
-		}
-
-		stage('Build python') 
-		{
-			steps
-			{
-				sh 'python hello.py'
-				//sh 'python -m pip install -r requirements.txt'
-				//sh 'python main.py'
-			}
-		}
+pipeline {
+        agent none
+         stages {
+            stage('Build') {
+                agent {
+                    docker { 
+						image 'androidsdk/android-31:latest'
+						reuseNode true  
+					}
+						steps {
+							sh 'java -version'
+							sh 'git --version'
+						}
+					}
+	    }
 	}
 }
-				
-
-
-
+		
+		
+		
 		
