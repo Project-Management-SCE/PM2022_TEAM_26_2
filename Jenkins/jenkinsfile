@@ -1,9 +1,6 @@
 pipeline
 {
 	agent any 
-	{
-		reuseNode true
-	}
 	
 
 	stages
@@ -27,6 +24,7 @@ pipeline
 		{
 			steps
 			{
+				reuseNode true
 				bat label:'',script:'python main.py'
 			}
 		}
