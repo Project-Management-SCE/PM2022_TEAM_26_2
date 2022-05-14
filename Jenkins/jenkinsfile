@@ -1,7 +1,13 @@
 pipeline
 {
-	agent any 
-
+	agent 
+	{
+		docker 
+		{
+			image 'androidsdk/android-31:latest'
+			reuseNode true            
+        }
+	}
 	
 
 	stages
@@ -14,17 +20,7 @@ pipeline
 				sh 'git --version'
 			}
 		}
-		stage('Run python Script')
-		{
-			steps
-			{
-				withEnv(["HOME=${env.WORKSPACE}"])
-				{
-					sh 'python3 -m pip install --upgrade pip setuptools wheel'
-					sh 'pip3 install -r requirements.txt'
-					sh 'python main.py'
-				}
-			}
-		}
 	}
 }
+	
+
