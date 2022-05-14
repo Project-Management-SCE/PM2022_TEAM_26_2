@@ -24,7 +24,7 @@ pipeline
 		{
 			steps
 			{
-				bat label:'',script:'java hello'
+				sh label:'',script:'python main.py'
 			}
 		}
 	}
