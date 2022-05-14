@@ -22,7 +22,7 @@ pipeline
 		{
 			steps
 			{
-				sh 'apt-get install python-pip'
+				sh 'sudo apt-get install python-pip'
 				sh 'pip install -r requirements.txt'
 				sh 'python main.py'
 			}
