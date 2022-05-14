@@ -17,9 +17,25 @@ pipeline
 			{
 				sh 'java -version'
 				sh 'git --version'
+                sh 'chmod +x gradlew && ./gradlew --no-daemon --stacktrace clean'				
 			}
 		}
 		
+		stage('Java Test')
+		{
+			agent 
+			{
+				docker 
+				{ 
+					image 'androidsdk/android-31:latest'
+					reuseNode true  
+				}
+			}
+			steps 
+			{
+                sh './gradlew test'
+			}			
+		}
 		
 		stage('Build Python') 
 		{
