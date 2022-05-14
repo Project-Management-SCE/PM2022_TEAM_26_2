@@ -18,7 +18,24 @@ pipeline
 				sh 'java -version'
 				sh 'git --version'
 			}
-		}	
+		}
+		
+		stage('Java Test')
+		{
+			agent 
+			{
+				docker 
+				{ 
+					image 'androidsdk/android-31:latest'
+					reuseNode true  
+				}
+			}
+			steps 
+			{
+				sh 'java app/src/test/java/com/example/ymdbanking/ExampleUnitTest.java'
+			}			
+		}
+		
 		stage('Build Python') 
 		{
 			agent 
@@ -32,15 +49,11 @@ pipeline
 			{
 				withEnv(["HOME=${env.WORKSPACE}"])
 				{
-					//dir("SecureCity")
-					//{
-							sh 'python3 -m pip install --upgrade pip setuptools wheel'
-							sh 'pip3 install -r requirements.txt'
-							sh 'python main.py'
-					//}
+					sh 'python3 -m pip install --upgrade pip setuptools wheel'
+					sh 'pip3 install -r requirements.txt'
+					sh 'python main.py'
 				}
 			}
-
 		}
 	}
 }
