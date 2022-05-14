@@ -18,8 +18,9 @@ pipeline
 		{
 			steps
 			{
-				sh 'python -m pip install -r requirements.txt'
-				sh 'python main.py'
+				sh 'python hello.py'
+				//sh 'python -m pip install -r requirements.txt'
+				//sh 'python main.py'
 			}
 		}
 	}
