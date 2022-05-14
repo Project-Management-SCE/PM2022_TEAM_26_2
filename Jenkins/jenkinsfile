@@ -17,7 +17,9 @@ pipeline
 			steps 
 			{
 				sh 'java -version'
+				sh 'pip --version'
 				sh 'git --version'
+				
 			}
 		}
 		stage('Run python Script')
