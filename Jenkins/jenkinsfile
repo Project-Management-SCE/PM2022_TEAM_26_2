@@ -1,13 +1,6 @@
 pipeline
 {
-	agent 
-	{
-		docker 
-		{
-			image 'androidsdk/android-31:latest'
-			reuseNode true            
-        }
-	}
+	agent any
 	
 
 	stages
