@@ -11,15 +11,14 @@ pipeline
 				sh "echo 123"
 			}
 		}
-	 	stage('Log the Jenkins Docker Ant Git and Java version info')
+		stage('Log the Jenkins Docker Ant Git and Java version info')
 		{
 			steps 
 			{
-			sh 'java -version'
-			sh 'git --version'
+				sh 'java -version'
+				sh 'git --version'
 			}
 		}
 		
 	}
-	
 }

@@ -10,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.ymdbanking.model.Clerk;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
@@ -21,9 +22,11 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class AddClerkActivity extends AppCompatActivity {
 
-    private TextInputEditText inputUser,inputEmail,inputPassword,inputPhone;
+    private TextInputEditText inputId,inputName,inputUser,inputEmail,inputPassword,inputPhone;
     private Button addBtn;
     private FirebaseAuth mAuth;
+    private String id;
+    private String fullName;
     private String username;
     private String email;
     private String password;
@@ -39,7 +42,6 @@ public class AddClerkActivity extends AppCompatActivity {
         //Hooks
         hook();
 
-
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -47,13 +49,12 @@ public class AddClerkActivity extends AppCompatActivity {
 
             }
         });
-
-
-
     }
 
-    private void createClerk() {
-
+    private void createClerk()
+    {
+        setId(inputId.getText().toString().trim());
+        setFullName(inputName.getText().toString().trim());
         setUsername(inputUser.getText().toString().trim());
         setEmail(inputEmail.getText().toString().trim());
         setPassword(inputPassword.getText().toString().trim());
@@ -79,24 +80,27 @@ public class AddClerkActivity extends AppCompatActivity {
     private void storeNewClerkData() {
 
         FirebaseDatabase rootNode = FirebaseDatabase.getInstance();
-        DatabaseReference reference = rootNode.getReference("Clerks");
+        DatabaseReference reference = rootNode.getReference("Users");
 
-        ClerkHelperClass addNewClerk = new ClerkHelperClass(username,email,password,phone);
+        Clerk addNewClerk = new Clerk(email,fullName,id,password,phone,username);
 
-        reference.child(username).setValue(addNewClerk).addOnCompleteListener(new OnCompleteListener<Void>() {
+        reference.child(id).setValue(addNewClerk).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
-
+            public void onComplete(@NonNull Task<Void> task)
+            {
+                FirebaseDatabase.getInstance().getReference("Loans").child(id).setValue(addNewClerk.getLoansToApprove());
+                FirebaseDatabase.getInstance().getReference("ClerkCustomers").child(id).setValue(addNewClerk.getCustomers());
                 Intent intent = new Intent(getApplicationContext(),DashboardActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
         });
-
     }
 
     private void hook() {
 
+        inputId = findViewById(R.id.clerk_id);
+        inputName = findViewById(R.id.clerk_fullName);
         inputUser = findViewById(R.id.clerk_username);
         inputEmail = findViewById(R.id.clerk_email);
         inputPassword = findViewById(R.id.clerk_password);
@@ -106,6 +110,14 @@ public class AddClerkActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
     }
+
+    public String getId() {return id;}
+
+    public void setId(String id) {this.id = id;}
+
+    public String getFullName() {return fullName;}
+
+    public void setFullName(String fullName) {this.fullName = fullName;}
 
     public String getUsername() {
         return username;

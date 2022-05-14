@@ -25,7 +25,7 @@
             android:id="@+id/signup_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/create_nclerk"
+            android:text="@string/add_clerk"
             android:textColor="@color/black"
             android:textSize="44sp"
             android:fontFamily="@font/aldrich"
@@ -38,6 +38,54 @@
             android:orientation="vertical"
             android:layout_marginTop="20dp">
 
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/enter_your_id"
+                android:textColorHint="@color/black"
+                app:boxStrokeColor="@color/black"
+                app:boxStrokeWidthFocused="2dp"
+                app:hintTextColor="@color/black"
+                app:startIconDrawable="@drawable/ic_profile"
+                app:startIconTint="@color/black"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/black">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/clerk_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/aldrich"
+                    android:inputType="text" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/full_name"
+                android:textColorHint="@color/black"
+                app:boxStrokeColor="@color/black"
+                app:boxStrokeWidthFocused="2dp"
+                app:hintTextColor="@color/black"
+                app:startIconDrawable="@drawable/ic_profile"
+                app:startIconTint="@color/black"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/black">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/clerk_fullName"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/aldrich"
+                    android:inputType="text" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
