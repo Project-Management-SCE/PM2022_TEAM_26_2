@@ -32,7 +32,7 @@ pipeline
 			}
 			steps 
 			{
-				sh 'java app/src/test/java/com/example/ymdbanking/ExampleUnitTest.java'
+				sh 'junit app/src/test/java/com/example/ymdbanking/ExampleUnitTest.java'
 			}			
 		}
 		
