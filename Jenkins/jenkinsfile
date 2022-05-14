@@ -1,10 +1,6 @@
 pipeline
 {
-	agent {
-		any {
-			args '-u root'
-			} 
-		}
+	agent any 
 
 	
 
@@ -22,10 +18,12 @@ pipeline
 		{
 			steps
 			{
-				//sh 'sudo apt-get install python-pip'
-				sh 'python3 -m pip install -r requirements.txt'
-				//sh 'pip install -r requirements.txt'
-				sh 'python main.py'
+				withEnv(["HOME=${env.WORKSPACE}"])
+				{
+					sh 'python3 -m pip install --upgrade pip setuptools wheel'
+					sh 'pip3 install -r requirements.txt'
+					sh 'python main.py'
+				}
 			}
 		}
 	}
