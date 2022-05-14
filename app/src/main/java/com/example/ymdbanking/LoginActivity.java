@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
 //
     FirebaseAuth mAuth;
-//    FirebaseUser mUser;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
