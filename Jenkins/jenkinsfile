@@ -24,7 +24,7 @@ pipeline
 		{
 			steps
 			{
-				sh label:'',script:'python main.py'
+				sh 'virtualenv venv && . venv/bin/activate && pip install -r requirements.txt && python main.py'
 			}
 		}
 	}
