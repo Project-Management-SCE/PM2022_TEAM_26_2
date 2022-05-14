@@ -3,7 +3,7 @@ pipeline
 	agent none
 	stages 
 	{
-		stage('Build') 
+		stage('Build Java') 
 		{
 			agent 
 			{
@@ -19,7 +19,7 @@ pipeline
 				sh 'git --version'
 			}
 		}	
-		stage('Build') 
+		stage('Build Python') 
 		{
 			agent 
 			{
