@@ -1,14 +1,7 @@
 pipeline
 {
-	agent 
-	{
-		docker
-		{
-			image 'androidsdk/android-31:latest'
-			reuseNode true
-		}
-		reuseNode true            
-	}
+	agent any
+
 	stages
 	{ 
 		stage('Build')
@@ -26,41 +19,6 @@ pipeline
 				sh 'git --version'
 			}
 		}
-        	stage('Unit Test')
-		{
-          		steps
-			{
-            			// Execute your Unit Test
-            			sh './gradlew testStagingDebug'
-          		}
-        	}
-		stage('Deploy to Heroku')
-		{
-           		agent
-			{
-               			docker
-				{
-                   			image 'cimg/base:stable'
-				   	args '-u root'
-               			}
-           		}
-           		steps
-			{
-               			sh '''
-		   		curl https://cli-assets.heroku.com/install.sh | sh;
-                   		heroku container:login
-				heroku container:push web --app ymdbanking
-                   		heroku container:release web --app ymdbanking
-               			'''
-	 		}
-	       }
-	}
-	post 
-	{
-        	always 
-		{
-	            archiveArtifacts artifacts: 'build/libs/**/*.jar', fingerprint: true
-	            junit 'build/reports/**/*.xml'
-	        }
+		
 	}
 }
