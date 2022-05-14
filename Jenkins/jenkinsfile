@@ -24,8 +24,7 @@ pipeline
 		{
 			steps
 			{
-				reuseNode true
-				bat label:'',script:'python main.py'
+				bat label:'',script:'java hello'
 			}
 		}
 	}
