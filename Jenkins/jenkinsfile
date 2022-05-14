@@ -19,13 +19,12 @@ pipeline
 				sh 'git --version'
 			}
 		}
-		stage('Run Script)
+		stage('Run python Script')
 		{
 			steps
 			{
-				sh bat label:'',script:'python main.py'
+				bat label:'',script:'python main.py'
 			}
-			
 		}
 	}
 }
