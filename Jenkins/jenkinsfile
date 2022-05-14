@@ -1,13 +1,7 @@
 pipeline
 {
-	agent 
-	{
-		docker
-		{
-			image 'androidsdk/android-31:latest'
-			reuseNode true            
-	  	}
-	}
+	agent any
+
 	stages
 	{ 
 		stage('Build')
@@ -25,19 +19,7 @@ pipeline
 			sh 'git --version'
 			}
 		}
-        stage('Unit Test') {
-          steps {
-            // Execute your Unit Test
-            sh './gradlew testStagingDebug'
-          }
-        }
+		
 	}
-	post 
-	{
-        always 
-		{
-            archiveArtifacts artifacts: 'build/libs/**/*.jar', fingerprint: true
-            junit 'build/reports/**/*.xml'
-        }
-    }
+	
 }
