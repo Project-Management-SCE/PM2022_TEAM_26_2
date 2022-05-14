@@ -17,7 +17,7 @@ pipeline
 			{
 				sh 'java -version'
 				sh 'git --version'
-                sh 'chmod +x gradlew && ./gradlew --no-daemon --stacktrace clean'				
+                sh 'chmod +x gradlew && ./gradlew --no-daemon clean'				
 			}
 		}
 		
@@ -33,7 +33,7 @@ pipeline
 			}
 			steps 
 			{
-                sh './gradlew test --stacktrace'
+                sh './gradlew test'
 			}			
 		}
 		
