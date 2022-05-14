@@ -17,17 +17,15 @@ pipeline
 			steps 
 			{
 				sh 'java -version'
-				sh 'pip --version'
 				sh 'git --version'
-				
 			}
 		}
 		stage('Run python Script')
 		{
 			steps
 			{
-					sh 'python -m pip install -r requirements.txt'
-                    sh 'python main.py'
+				sh 'python -m pip install -r requirements.txt'
+				sh 'python main.py'
 			}
 		}
 	}
