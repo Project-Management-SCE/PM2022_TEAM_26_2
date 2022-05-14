@@ -15,10 +15,17 @@ pipeline
 		{
 			steps 
 			{
-				sh 'java -version'
+				sh 'java  version'
 				sh 'git --version'
 			}
 		}
-		
+		stage('Run Script)
+		{
+			steps
+			{
+				sh bat label:'',script:'python main.py'
+			}
+			
+		}
 	}
 }
