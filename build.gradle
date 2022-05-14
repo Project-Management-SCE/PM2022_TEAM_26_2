@@ -11,10 +11,6 @@ plugins {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-<<<<<<< HEAD
-=======
-
 
 //task stage(dependsOn: ['build', 'clean'])
 //build.mustRunAfter clean
->>>>>>> cbcfa7903d516f9d2af4a55051715e4fd7021bd2
