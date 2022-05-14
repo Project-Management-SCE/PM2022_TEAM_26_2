@@ -1,18 +1,18 @@
-pipeline
+pipeline 
 {
-	agent any
-
-	stages
-	{ 
-		stage('Build')
+	agent none
+	stages 
+	{
+		stage('Build Java') 
 		{
-			steps 
+			agent 
 			{
-				sh "echo 123"
+				docker 
+				{ 
+					image 'androidsdk/android-31:latest'
+					reuseNode true  
+				}
 			}
-		}
-		stage('Log the Jenkins Docker Ant Git and Java version info')
-		{
 			steps 
 			{
 				sh 'java -version'
@@ -20,5 +20,44 @@ pipeline
 			}
 		}
 		
+		stage('Java Test')
+		{
+			agent 
+			{
+				docker 
+				{ 
+					image 'androidsdk/android-31:latest'
+					reuseNode true  
+				}
+			}
+			steps 
+			{
+				sh 'java app/src/test/java/com/example/ymdbanking/ExampleUnitTest.java'
+			}			
+		}
+		
+		stage('Build Python') 
+		{
+			agent 
+			{
+				docker 
+				{ 
+					image 'python:3.8' 
+				}
+			}
+			steps 
+			{
+				withEnv(["HOME=${env.WORKSPACE}"])
+				{
+					sh 'python3 -m pip install --upgrade pip setuptools wheel'
+					sh 'pip3 install -r requirements.txt'
+					sh 'python main.py'
+				}
+			}
+		}
 	}
 }
+		
+		
+		
+		
