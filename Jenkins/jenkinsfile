@@ -21,11 +21,11 @@ pipeline
 			}
 		}
 		
-		stage('Build') 
+		stage('Build python') 
 		{
 			agent 
 			{
-				docker { image 'python:latest' }
+				docker { image 'python:3' }
             }
                 steps 
 				{
