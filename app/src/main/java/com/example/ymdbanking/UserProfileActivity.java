@@ -40,6 +40,7 @@ public class UserProfileActivity extends AppCompatActivity
 	private static final int PICK_IMAGE = 100;
 	Uri imageUri;
 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
