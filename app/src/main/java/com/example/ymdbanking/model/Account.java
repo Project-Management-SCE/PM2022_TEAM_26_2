@@ -85,9 +85,10 @@ public class Account
 
     /**
      * Method to implement a deposit to profile's account
+     * @param customerId
      * @param amount - amount to deposit in account
      */
-    public void addDepositTransaction(double amount)
+    public void addDepositTransaction(String customerId, double amount)
     {
         accountBalance += amount;
 
@@ -102,12 +103,12 @@ public class Account
             }
         }
 
-        Transaction deposit = new Transaction("T" + (transactions.size() + 1) + "-D" + (depositsCount+1),amount,this);
+        Transaction deposit = new Transaction("T" + (transactions.size() + 1) + "-D" + (depositsCount+1),amount,this,customerId);
         transactions.add(deposit);
 //        transactions.put(deposit.getTransactionID(),deposit);
     }
 
-    public void addLoanTransaction(double amount)
+    public void addLoanTransaction(String customerId,double amount)
     {
         accountBalance += amount;
 
@@ -122,7 +123,7 @@ public class Account
             }
         }
 
-        Transaction loan = new Transaction("T" + (transactions.size() + 1) + "-L" + (depositsCount+1),this,amount);
+        Transaction loan = new Transaction("T" + (transactions.size() + 1) + "-L" + (depositsCount+1),this,amount,customerId);
         transactions.add(loan);
 //        transactions.put(loan.getTransactionID(),loan);
     }

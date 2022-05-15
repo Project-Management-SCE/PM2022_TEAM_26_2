@@ -46,7 +46,8 @@ public class AccountsOverViewActivity extends AppCompatActivity {
     private Customer customer;
     private int selectedAccountIndex;
     private SessionManager sessionManager;
-    private final static double DEPOSIT_MIN_LIMIT = 100;
+    private static final double DEPOSIT_MIN_LIMIT = 100;
+    private static final double LOAN_MIN_LIMIT = 1000;
 
     private View.OnClickListener addAccountClickListener = new View.OnClickListener()
     {
@@ -67,7 +68,12 @@ public class AccountsOverViewActivity extends AppCompatActivity {
         }
     };
 
-    @Override
+    public static double getLoanMinLimit()
+    {
+        return LOAN_MIN_LIMIT;
+    }
+
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accounts_over_view);

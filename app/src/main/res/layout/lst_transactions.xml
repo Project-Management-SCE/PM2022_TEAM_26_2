@@ -61,8 +61,8 @@
         android:id="@+id/txt_transaction_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="57dp"
+        android:layout_marginStart="8dp"
         android:text="TRANS_STATUS"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/img_transaction"
         app:layout_constraintTop_toBottomOf="@+id/txt_transaction_amount" />
 </androidx.constraintlayout.widget.ConstraintLayout>

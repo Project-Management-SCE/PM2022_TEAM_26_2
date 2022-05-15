@@ -50,6 +50,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         TextView txtTransactionInfo = convertView.findViewById(R.id.txt_transaction_info);
         txtTransactionInfo.setVisibility(View.VISIBLE);
         TextView txtTransactionAmount = convertView.findViewById(R.id.txt_transaction_amount);
+        TextView txtTransactionStatus = convertView.findViewById(R.id.txt_transaction_status);
 
         txtTransactionTitle.setText(transaction.getTransactionType().toString() + " - " + transaction.getTransactionID());
         txtTransactionTimestamp.setText(transaction.getTimestamp());
@@ -76,11 +77,20 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         else if(transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.LOAN)
         {
             if(transaction.getStatus() == Transaction.STATUS.PENDING)
+            {
                 imgTransactionIcon.setImageResource(R.drawable.pending_icon);
+                txtTransactionStatus.setText(Transaction.STATUS.PENDING.toString());
+            }
             else if(transaction.getStatus() == Transaction.STATUS.APPROVED)
+            {
                 imgTransactionIcon.setImageResource(R.drawable.approved_icon);
+                txtTransactionStatus.setText(Transaction.STATUS.APPROVED.toString());
+            }
             else if(transaction.getStatus() == Transaction.STATUS.DENIED)
+            {
                 imgTransactionIcon.setImageResource(R.drawable.denied_icon);
+                txtTransactionStatus.setText(Transaction.STATUS.DENIED.toString());
+            }
             txtTransactionInfo.setVisibility(View.GONE);
             txtTransactionAmount.setTextColor(getContext().getResources().getColor(android.R.color.holo_purple));
         }

@@ -51,6 +51,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     static final float END_SCALE = 0.7f;
     private static final double DEPOSIT_MIN_LIMIT = AccountsOverViewActivity.getDepositMinLimit();
+    private static final double LOAN_MIN_LIMIT = AccountsOverViewActivity.getLoanMinLimit();
 
     //Drawer menu
     DrawerLayout drawerLayout;
@@ -701,7 +702,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
             }
             else
             {
-                customer.getAccounts().get(selectedAccountIndex).addDepositTransaction(depositAmount);
+                customer.getAccounts().get(selectedAccountIndex).addDepositTransaction(customer.getId(),depositAmount);
                 sessionManager.saveCustomerObjForSession(customer);
 
                 ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
@@ -776,16 +777,20 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         {
             e.printStackTrace();
         }
-        if (loanAmount < 0.01 && !isNum)
+        if(!isNum)
         {
-            Toast.makeText(this, "Please enter a valid amount", Toast.LENGTH_SHORT).show();
+            Toast.makeText(DashboardActivity.this, "Please enter a valid amount", Toast.LENGTH_SHORT).show();
+        }
+        else if(loanAmount < LOAN_MIN_LIMIT)
+        {
+            Toast.makeText(DashboardActivity.this,"There is a loan minimum limit of " + LOAN_MIN_LIMIT,Toast.LENGTH_SHORT).show();
         }
         else
         {
             sessionManager.saveCustomerObjForSession(customer);
             Clerk clerk = clerks.get(clerkSelectedIndex);
             Account account = customer.getAccounts().get(accountSelectedIndex);
-            clerk.addLoanTransaction(account,loanAmount);
+            clerk.addLoanTransaction(customer.getId(),account,loanAmount);
             ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
             applicationDb.overwriteAccount(customer,customer.getAccounts().get(accountSelectedIndex));
             applicationDb.saveNewLoan(clerk,customer,customer.getAccounts().get(accountSelectedIndex)
