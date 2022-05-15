@@ -28,7 +28,7 @@
                 android:id="@+id/setting_profile_image"
                 android:layout_width="130dp"
                 android:layout_height="130dp"
-                android:layout_marginStart="100dp"
+                android:layout_marginStart="110dp"
                 android:layout_marginTop="40dp"
                 android:src="@drawable/ic_id" />
 
@@ -38,10 +38,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="1dp"
+                android:fontFamily="@font/aldrich"
                 android:text="user name"
                 android:textColor="@color/black"
                 android:textSize="25sp"
-                android:fontFamily="@font/aldrich"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -200,7 +200,7 @@
             android:layout_height="wrap_content">
 
             <Button
-                android:id="@+id/add_account_b"
+                android:id="@+id/add_account_btn"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:background="@drawable/ic_profile"/>
@@ -210,12 +210,13 @@
                 android:layout_height="36dp"
                 android:src="@drawable/ic_add_account_black"/>-->
             <TextView
-                android:textStyle="bold"
-                android:layout_gravity="center_vertical"
+                android:id="@+id/txt_add_account_profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:paddingLeft="20dp"
-                android:text="@string/add_account"/>
+                android:text="@string/add_account"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

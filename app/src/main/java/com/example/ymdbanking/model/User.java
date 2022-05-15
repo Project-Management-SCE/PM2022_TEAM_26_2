@@ -1,5 +1,7 @@
 package com.example.ymdbanking.model;
 
+import android.net.Uri;
+
 /**
  * Class User for all users that extend from this class
  * e.g - Admin,Clerk,Profile
@@ -27,6 +29,8 @@ public class User
 	private String password;
 	private String phone;
 	private String username;
+	private String country;
+	private Uri imageUri;
 	private int typeID;
 
 
@@ -35,15 +39,6 @@ public class User
 	{
 		//Empty constructor
 	}
-
-//	public User(String username, String password)
-//	{
-//		this.firstName = firstName;
-//		this.lastName = lastName;
-//		this.country = country;
-//		this.username = username;
-//		this.password = password;
-//	}
 
 	public User(String email,String fullName,String id,String password,String phone,String username,int userType)
 	{
@@ -54,15 +49,14 @@ public class User
 		this.phone = phone;
 		this.username = username;
 		this.typeID = userType;
-
 	}
 
 //	public String getFirstName() {return firstName;}
 //	public void setFirstName(String firstName) {this.firstName = firstName;}
 //	public String getLastName() {return lastName;}
 //	public void setLastName(String lastName) {this.lastName = lastName;}
-//	public String getCountry() {return country;}
-//	public void setCountry(String country) {this.country = country;}
+	public String getCountry() {return country;}
+	public void setCountry(String country) {this.country = country;}
 	public String getUsername() {return username;}
 	public void setUsername(String username) {this.username = username;}
 	public String getPassword() {return password;}
@@ -81,6 +75,8 @@ public class User
 	public void setTypeID(int typeID) {
 		this.typeID = typeID;
 	}
+	public Uri getImageUri() {return imageUri;}
+	public void setImageUri(Uri imageUri) {this.imageUri = imageUri;}
 
 	@Override
 	public String toString()

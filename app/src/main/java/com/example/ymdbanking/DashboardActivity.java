@@ -216,6 +216,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                         //If there's a mismatch than we'll take the data from DB
                         customer.setAccounts(tempCustomer.getAccounts());
                     sessionManager.saveCustomerObjForSession(customer);
+                    sessionManager.editor.putString("NumAccounts",String.valueOf(customer.getAccounts().size()));
                 }
             })
             .addOnFailureListener(new OnFailureListener()
