@@ -28,7 +28,8 @@ import java.util.Locale;
 public class TransactionActivity extends AppCompatActivity
 {
 	//Enums
-	public enum TransactionTypeFilter {
+	public enum TransactionTypeFilter
+	{
 		ALL_TRANSACTIONS(0),
 		PAYMENTS(1),
 		TRANSFERS(2),
@@ -36,13 +37,18 @@ public class TransactionActivity extends AppCompatActivity
 		LOANS(4);
 
 		private final int transFilterID;
-		TransactionTypeFilter(int transFilterID) {
+
+		TransactionTypeFilter(int transFilterID)
+		{
 			this.transFilterID = transFilterID;
 		}
 
-		public TransactionTypeFilter getTransFilter(int index) {
-			for (TransactionTypeFilter filter : TransactionTypeFilter.values()) {
-				if (filter.transFilterID == index) {
+		public TransactionTypeFilter getTransFilter(int index)
+		{
+			for (TransactionTypeFilter filter : TransactionTypeFilter.values())
+			{
+				if (filter.transFilterID == index)
+				{
 					return filter;
 				}
 			}
@@ -50,46 +56,57 @@ public class TransactionActivity extends AppCompatActivity
 		}
 	}
 
-	public enum DateFilter {
+	public enum DateFilter
+	{
 		OLDEST_NEWEST(0),
 		NEWEST_OLDEST(1);
 
 		private final int dateFilterID;
-		DateFilter(int dateFilterID) {
+
+		DateFilter(int dateFilterID)
+		{
 			this.dateFilterID = dateFilterID;
 		}
 
-		public DateFilter getDateFilter(int index) {
-			for (DateFilter filter : DateFilter.values()) {
-				if (filter.dateFilterID == index) {
+		public DateFilter getDateFilter(int index)
+		{
+			for (DateFilter filter : DateFilter.values())
+			{
+				if (filter.dateFilterID == index)
+				{
 					return filter;
 				}
 			}
 			return null;
 		}
-
 	}
 
 	//Inner class
 	class TransactionComparator implements Comparator<Transaction>
 	{
-		public int compare(Transaction transOne, Transaction transTwo) {
+		public int compare(Transaction transOne, Transaction transTwo)
+		{
 
 			Date dateOne = null;
 			Date dateTwo = null;
 
-			try {
+			try
+			{
 				dateOne = Transaction.DATE_FORMAT.parse(transOne.getTimestamp());
 				dateTwo = Transaction.DATE_FORMAT.parse(transTwo.getTimestamp());
-			} catch (Exception e) {
+			} catch (Exception e)
+			{
 				e.printStackTrace();
 			}
 
-			if (dateOne.compareTo(dateTwo) > 0) {
+			if (dateOne.compareTo(dateTwo) > 0)
+			{
 				return (1);
-			} else if (dateOne.compareTo(dateTwo) < 0) {
+			} else if (dateOne.compareTo(dateTwo) < 0)
+			{
 				return (-1);
-			} else if (dateOne.compareTo(dateTwo) == 0) {
+			} else if (dateOne.compareTo(dateTwo) == 0)
+			{
 				return (1);
 			}
 			return (1);
@@ -117,18 +134,23 @@ public class TransactionActivity extends AppCompatActivity
 	private int selectedAccountIndex;
 	private SessionManager sessionManager;
 
-	Spinner.OnItemSelectedListener spnClickListener = new AdapterView.OnItemSelectedListener() {
+	Spinner.OnItemSelectedListener spnClickListener = new AdapterView.OnItemSelectedListener()
+	{
 		@Override
-		public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-			if (adapterView.getId() == spnAccounts.getId()) {
+		public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
+		{
+			if (adapterView.getId() == spnAccounts.getId())
+			{
 				selectedAccountIndex = i;
-				txtAccountName.setText("Account: " + customer.getAccounts().get(selectedAccountIndex).toTransactionString());
-				txtAccountBalance.setText("Balance: $" + String.format(Locale.getDefault(), "%.2f", customer.getAccounts().get(selectedAccountIndex).getAccountBalance()));
-			}
-			else if (adapterView.getId() == spnTransactionTypeFilter.getId()) {
+				txtAccountName.setText("Account: " +
+				                       customer.getAccounts().get(selectedAccountIndex).toTransactionString());
+				txtAccountBalance.setText("Balance: $" +
+				                          String.format(Locale.getDefault(), "%.2f", customer.getAccounts().get(selectedAccountIndex).getAccountBalance()));
+			} else if (adapterView.getId() == spnTransactionTypeFilter.getId())
+			{
 				transFilter = transFilter.getTransFilter(i);
-			}
-			else if (adapterView.getId() == spnDateFilter.getId()) {
+			} else if (adapterView.getId() == spnDateFilter.getId())
+			{
 				dateFilter = dateFilter.getDateFilter(i);
 			}
 
@@ -136,17 +158,19 @@ public class TransactionActivity extends AppCompatActivity
 		}
 
 		@Override
-		public void onNothingSelected(AdapterView<?> adapterView) {
+		public void onNothingSelected(AdapterView<?> adapterView)
+		{
 
 		}
 	};
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_transaction);
-		sessionManager = new SessionManager(TransactionActivity.this,"AccountView");
-		selectedAccountIndex = sessionManager.userSession.getInt("SelectedAccount",0);
+		sessionManager = new SessionManager(TransactionActivity.this, "AccountView");
+		selectedAccountIndex = sessionManager.userSession.getInt("SelectedAccount", 0);
 		this.setTitle("Transactions");
 
 		txtAccountName = findViewById(R.id.txt_account_name);
@@ -169,9 +193,10 @@ public class TransactionActivity extends AppCompatActivity
 	/**
 	 * method used to setup the values for the views and fields
 	 */
-	private void setValues() {
+	private void setValues()
+	{
 
-		sessionManager = new SessionManager(getApplicationContext(),SessionManager.USER_SESSION);
+		sessionManager = new SessionManager(getApplicationContext(), SessionManager.USER_SESSION);
 		customer = sessionManager.getCustomerObjFromSession();
 
 		transFilter = TransactionTypeFilter.ALL_TRANSACTIONS;
@@ -182,11 +207,14 @@ public class TransactionActivity extends AppCompatActivity
 		setupSpinners();
 		spnAccounts.setSelection(selectedAccountIndex);
 
-		txtAccountName.setText("Account: " + customer.getAccounts().get(selectedAccountIndex).toTransactionString());
-		txtAccountBalance.setText("Balance: $" + String.format(Locale.getDefault(), "%.2f", customer.getAccounts().get(selectedAccountIndex).getAccountBalance()));
+		txtAccountName.setText("Account: " +
+		                       customer.getAccounts().get(selectedAccountIndex).toTransactionString());
+		txtAccountBalance.setText("Balance: $" +
+		                          String.format(Locale.getDefault(), "%.2f", customer.getAccounts().get(selectedAccountIndex).getAccountBalance()));
 	}
 
-	private void setupSpinners() {
+	private void setupSpinners()
+	{
 
 		ArrayAdapter<Account> accountAdapter = new ArrayAdapter<Account>(this, android.R.layout.simple_spinner_item, customer.getAccounts());
 		accountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -209,7 +237,8 @@ public class TransactionActivity extends AppCompatActivity
 	/**
 	 * method used to setup the adapters
 	 */
-	private void setupTransactionAdapter(int selectedAccountIndex, TransactionTypeFilter transFilter, DateFilter dateFilter) {
+	private void setupTransactionAdapter(int selectedAccountIndex, TransactionTypeFilter transFilter, DateFilter dateFilter)
+	{
 		ArrayList<Transaction> transactions = customer.getAccounts().get(selectedAccountIndex).getTransactions();
 
 		txtDepositMsg.setVisibility(GONE);
@@ -250,19 +279,17 @@ public class TransactionActivity extends AppCompatActivity
 					displayLoans(transactions);
 				}
 
-			}
-			else
+			} else
 			{
 				txtTransactionMsg.setVisibility(VISIBLE);
 				lstTransactions.setVisibility(GONE);
 			}
-		}
-		catch (NullPointerException exception)
+		} catch (NullPointerException exception)
 		{
 			transactions = new ArrayList<>(0);
 			txtTransactionMsg.setVisibility(VISIBLE);
 			lstTransactions.setVisibility(GONE);
-			Toast.makeText(this,"No transaction for this account",Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "No transaction for this account", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -270,69 +297,88 @@ public class TransactionActivity extends AppCompatActivity
 	{
 		ArrayList<Transaction> loans = new ArrayList<>();
 
-		for (int i = 0; i < transactions.size(); i++) {
-			if (transactions.get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.LOAN) {
+		for (int i = 0; i < transactions.size(); i++)
+		{
+			if (transactions.get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.LOAN)
+			{
 				loans.add(transactions.get(i));
 			}
 		}
-		if (loans.size() == 0) {
+		if (loans.size() == 0)
+		{
 			txtPaymentsMsg.setVisibility(VISIBLE);
 			lstTransactions.setVisibility(GONE);
-		} else {
+		} else
+		{
 			lstTransactions.setVisibility(VISIBLE);
 			TransactionAdapter transactionAdapter = new TransactionAdapter(this, R.layout.lst_transactions, loans);
 			lstTransactions.setAdapter(transactionAdapter);
 		}
 	}
 
-	private void displayPayments(ArrayList<Transaction> transactions) {
+	private void displayPayments(ArrayList<Transaction> transactions)
+	{
 		ArrayList<Transaction> payments = new ArrayList<>();
 
-		for (int i = 0; i < transactions.size(); i++) {
-			if (transactions.get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.PAYMENT) {
+		for (int i = 0; i < transactions.size(); i++)
+		{
+			if (transactions.get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.PAYMENT)
+			{
 				payments.add(transactions.get(i));
 			}
 		}
-		if (payments.size() == 0) {
+		if (payments.size() == 0)
+		{
 			txtPaymentsMsg.setVisibility(VISIBLE);
 			lstTransactions.setVisibility(GONE);
-		} else {
+		} else
+		{
 			lstTransactions.setVisibility(VISIBLE);
 			TransactionAdapter transactionAdapter = new TransactionAdapter(this, R.layout.lst_transactions, payments);
 			lstTransactions.setAdapter(transactionAdapter);
 		}
 	}
 
-	private void displayTransfers(ArrayList<Transaction> transactions) {
+	private void displayTransfers(ArrayList<Transaction> transactions)
+	{
 		ArrayList<Transaction> transfers = new ArrayList<>();
 
-		for (int i = 0; i < transactions.size(); i++) {
-			if (transactions.get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.TRANSFER) {
+		for (int i = 0; i < transactions.size(); i++)
+		{
+			if (transactions.get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.TRANSFER)
+			{
 				transfers.add(transactions.get(i));
 			}
 		}
-		if (transfers.size() == 0) {
+		if (transfers.size() == 0)
+		{
 			txtTransfersMsg.setVisibility(VISIBLE);
 			lstTransactions.setVisibility(GONE);
-		} else {
+		} else
+		{
 			lstTransactions.setVisibility(VISIBLE);
 			TransactionAdapter transactionAdapter = new TransactionAdapter(this, R.layout.lst_transactions, transfers);
 			lstTransactions.setAdapter(transactionAdapter);
 		}
 	}
 
-	private void displayDeposits(ArrayList<Transaction> transactions) {
+	private void displayDeposits(ArrayList<Transaction> transactions)
+	{
 		ArrayList<Transaction> deposits = new ArrayList<>();
 
-		for (int i = 0; i < transactions.size(); i++) {
-			if (transactions.get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.DEPOSIT) {
+		for (int i = 0; i < transactions.size(); i++)
+		{
+			if (transactions.get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.DEPOSIT)
+			{
 				deposits.add(transactions.get(i));
 			}
 		}
-		if (deposits.size() == 0) {
+		if (deposits.size() == 0)
+		{
 			txtDepositMsg.setVisibility(VISIBLE);
 			lstTransactions.setVisibility(GONE);
-		} else {
+		} else
+		{
 			lstTransactions.setVisibility(VISIBLE);
 			TransactionAdapter transactionAdapter = new TransactionAdapter(this, R.layout.lst_transactions, deposits);
 			lstTransactions.setAdapter(transactionAdapter);

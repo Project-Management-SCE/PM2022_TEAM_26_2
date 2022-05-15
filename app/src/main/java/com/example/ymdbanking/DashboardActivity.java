@@ -366,7 +366,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 //            disp_username.setText(userDetails.get(SessionManager.KEY_USERNAME));
             navigationView.getMenu().findItem(R.id.nav_clerks).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_users).setVisible(false);
-            navigationView.getMenu().findItem(R.id.nav_approve_loans).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_pending_loans).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_customers).setVisible(false);
             sessionManager.saveCustomerObjForSession(customer);
         }
@@ -375,11 +375,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         {
             navigationView.getMenu().findItem(R.id.nav_clerks).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_transfer).setVisible(false);
-            navigationView.getMenu().findItem(R.id.nav_loan).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_accounts).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_payment).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_deposit).setVisible(false);
-            navigationView.getMenu().findItem(R.id.nav_transaction).setVisible(false);
+//            navigationView.getMenu().findItem(R.id.nav_transaction).setVisible(false);
+
+            navigationView.getMenu().findItem(R.id.nav_loan).setVisible(false);
             sessionManager.saveClerkObjForSession(clerk);
 
         }
@@ -388,6 +389,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         {
             navigationView.getMenu().findItem(R.id.nav_transfer).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_loan).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_pending_loans).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_accounts).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_payment).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_deposit).setVisible(false);
@@ -483,6 +485,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 displayLoanDialog();
             else
                 Toast.makeText(getApplicationContext(),"There are no accounts to loan to",Toast.LENGTH_SHORT).show();
+        }
+        else if(id == R.id.nav_pending_loans)
+        {
+            startActivity(new Intent(DashboardActivity.this,PendingLoansActivity.class));
         }
         else if(id == R.id.nav_users)
             startActivity(new Intent(DashboardActivity.this,ShowUsersActivity.class));

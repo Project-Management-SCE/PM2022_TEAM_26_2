@@ -75,7 +75,12 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         }
         else if(transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.LOAN)
         {
-            imgTransactionIcon.setImageResource(R.drawable.loan_icon);
+            if(transaction.getStatus() == Transaction.STATUS.PENDING)
+                imgTransactionIcon.setImageResource(R.drawable.pending_icon);
+            else if(transaction.getStatus() == Transaction.STATUS.APPROVED)
+                imgTransactionIcon.setImageResource(R.drawable.approved_icon);
+            else if(transaction.getStatus() == Transaction.STATUS.DENIED)
+                imgTransactionIcon.setImageResource(R.drawable.denied_icon);
             txtTransactionInfo.setVisibility(View.GONE);
             txtTransactionAmount.setTextColor(getContext().getResources().getColor(android.R.color.holo_purple));
         }
