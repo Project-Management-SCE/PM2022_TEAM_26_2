@@ -25,8 +25,8 @@ public class Clerk extends User
 		this.loansToApprove = new ArrayList<>(0);
 	}
 
-	public Clerk(String email,String fullName,String id,String password,String phone,String username,
-	             ArrayList<Customer> customers,ArrayList<Transaction> loansToApprove)
+	public Clerk(String email,String fullName,String id,String password,String phone,String username
+			,ArrayList<Customer> customers,ArrayList<Transaction> loansToApprove)
 	{
 		super(email,fullName,id,password,phone,username,typeID);
 		this.customers = customers;
@@ -34,23 +34,11 @@ public class Clerk extends User
 	}
 
 	// getters and setters
-//	public String getFirstName() {return firstName;}
-//	public void setFirstName(String firstName) {this.firstName = firstName;}
-//	public String getLastName() {return lastName;}
-//	public void setLastName(String lastName) {this.lastName = lastName;}
-//	public String getUsername() {return username;}
-//	public void setUsername(String username) {this.username = username;}
-//	public String getPassword() {return password;}
-//	public void setPassword(String password) {this.password = password;}
 	public ArrayList<Transaction> getLoansToApprove() {return loansToApprove;}
 	public void setLoansToApprove(ArrayList<Transaction> loansToApprove) {this.loansToApprove = loansToApprove;}
 	public void setCustomers(ArrayList<Customer> customers) {this.customers = customers;}
 //	public static int getTypeID() {return typeID;}
 	public ArrayList<Customer> getCustomers() {return customers;}
-	//	public String getCountry() {return country;}
-//	public void setCountry(String country) {this.country = country;}
-//	public long getDbId() {return dbId;}
-//	public void setDbId(long dbId) {this.dbId = dbId;}
 
 	// methods
 //	public ArrayList<Customer> getUsers(int id, Context context)
@@ -59,7 +47,7 @@ public class Clerk extends User
 //		return applicationDB.getClerkCustomers(id);
 //	}
 
-	public void assignProfileToCustomer(Customer customer,Context context)
+	public void assignCustomerToClerk(Customer customer,Context context)
 	{
 		customers.add(customer);
 		ApplicationDB applicationDB = new ApplicationDB(context);

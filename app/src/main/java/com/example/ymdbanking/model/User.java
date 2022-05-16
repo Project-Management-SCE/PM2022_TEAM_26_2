@@ -51,6 +51,18 @@ public class User
 		this.typeID = userType;
 	}
 
+	public User(String email,String fullName,String id,String password,String phone,String username,String country,int userType)
+	{
+		this.email = email;
+		this.fullName = fullName;
+		this.id = id;
+		this.password = password;
+		this.phone = phone;
+		this.username = username;
+		this.typeID = userType;
+		this.country = country;
+	}
+
 //	public String getFirstName() {return firstName;}
 //	public void setFirstName(String firstName) {this.firstName = firstName;}
 //	public String getLastName() {return lastName;}

@@ -22,9 +22,9 @@ public class Customer extends User
      * Constructor for creating profile objects to hold existing profiles data
      * and to view them on a list
      */
-    public Customer(String email,String fullName,String id,String password,String phone,String username)
+    public Customer(String email,String fullName,String id,String password,String phone,String username,String country)
     {
-        super(email,fullName,id,password,phone,username,typeID);
+        super(email,fullName,id,password,phone,username,country,typeID);
 
         accounts = new ArrayList<>(0);
         payees = new ArrayList<>(0);
@@ -35,9 +35,9 @@ public class Customer extends User
      * dbId field will be set later on
      */
     public Customer(String email,String fullName,String id,String password,String phone,String username,
-                    int typeID,ArrayList<Account> accounts,ArrayList<Payee> payees)
+                    String country,int typeID,ArrayList<Account> accounts,ArrayList<Payee> payees)
     {
-        super(email,fullName,id,password,phone,username,typeID);
+        super(email,fullName,id,password,phone,username,country,typeID);
         this.accounts = accounts;
         this.payees = payees;
     }

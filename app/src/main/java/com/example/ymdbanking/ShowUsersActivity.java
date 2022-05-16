@@ -256,7 +256,7 @@ public class ShowUsersActivity extends AppCompatActivity {
 
     public void addClerkToUser()
     {
-        clerk.assignProfileToCustomer(((Customer) usersList.getAdapter().getItem(selectedCustomerIndex)),getApplicationContext());
+        clerk.assignCustomerToClerk(((Customer) usersList.getAdapter().getItem(selectedCustomerIndex)),getApplicationContext());
         Toast.makeText(getApplicationContext(),"User has been assigned to you",Toast.LENGTH_SHORT).show();
         dlgClerkToUser.dismiss();
         setValues();

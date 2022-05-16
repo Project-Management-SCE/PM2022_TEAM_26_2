@@ -27,14 +27,14 @@ import com.google.firebase.database.FirebaseDatabase;
 public class SignUpActivity extends AppCompatActivity {
 
     TextView titleText,alreadyHaveAccount;
-    TextInputLayout inputName,inputEmail,inputUser,inputPass,inputConfirmPass,inputPhone,inputId;
+    TextInputLayout inputName,inputEmail,inputUser,inputPass,inputConfirmPass,inputPhone,inputId,inputCountry;
     Button btnSignUp;
     ImageView backBtn;
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+]";
     ProgressDialog progressDialog;
 
     private FirebaseAuth mAuth;
-    private String name,username,email,pass,pass_confirm,phone,id;
+    private String name,username,email,pass,pass_confirm,phone,id,country;
 
 
     @Override
@@ -52,13 +52,12 @@ public class SignUpActivity extends AppCompatActivity {
         inputConfirmPass = findViewById(R.id.signup_confirm_pass);
         inputPhone = findViewById(R.id.signup_phone);
         inputId = findViewById(R.id.signup_id);
+        inputCountry = findViewById(R.id.signup_country);
         titleText = findViewById(R.id.signup_title);
         btnSignUp = findViewById(R.id.signup_btn);
 
         //Firebase
         mAuth = FirebaseAuth.getInstance();
-
-
 
         progressDialog = new ProgressDialog(this);
 
@@ -72,6 +71,7 @@ public class SignUpActivity extends AppCompatActivity {
                 setPass_confirm(inputConfirmPass.getEditText().getText().toString().trim());
                 setPhone(inputPhone.getEditText().getText().toString().trim());
                 setId(inputId.getEditText().getText().toString().trim());
+                setCountry(inputCountry.getEditText().toString().trim());
                 checkCredentials();
             }
         });
@@ -138,7 +138,7 @@ public class SignUpActivity extends AppCompatActivity {
         DatabaseReference reference = rootNode.getReference("Users");
 
 //        UserHelperClass addNewUser = new UserHelperClass(name,id,username,email,pass,phone);
-        Customer newCustomer = new Customer(email,name,id,pass,phone,username);
+        Customer newCustomer = new Customer(email,name,id,pass,phone,username,country);
 
         reference.child(id).setValue(newCustomer).addOnCompleteListener(new OnCompleteListener<Void>()
         {
@@ -203,7 +203,6 @@ public class SignUpActivity extends AppCompatActivity {
         this.phone = phone;
     }
 
-
     public String getId() {
         return id;
     }
@@ -211,4 +210,7 @@ public class SignUpActivity extends AppCompatActivity {
     public void setId(String id) {
         this.id = id;
     }
+
+    private void setCountry(String s) {country = s;}
+
 }

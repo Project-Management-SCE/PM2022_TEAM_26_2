@@ -23,14 +23,15 @@
 
         <TextView
             android:id="@+id/signup_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/create_account"
-            android:textColor="@color/black"
-            android:textSize="44sp"
+            android:layout_marginTop="20dp"
             android:fontFamily="@font/aldrich"
+            android:text="@string/create_account"
+            android:textAlignment="center"
             android:textAllCaps="true"
-            android:layout_marginTop="20dp"/>
+            android:textColor="@color/black"
+            android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -58,9 +59,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inputType="textPersonName"/>
-
-
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/signup_username"
                 android:layout_width="match_parent"
@@ -75,14 +75,12 @@
                 app:endIconTint="@color/black"
                 app:boxStrokeWidthFocused="2dp"
                 app:boxStrokeColor="@color/black">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inputType="text"/>
-
-
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/signup_email"
                 android:layout_width="match_parent"
@@ -169,8 +167,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inputType="phone"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/signup_country"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/user_country"
+                app:hintTextColor="@color/black"
+                android:textColorHint="@color/black"
+                app:startIconDrawable="@drawable/ic_profile"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:startIconTint="@color/black"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/black"
+                app:boxStrokeWidthFocused="2dp"
+                app:boxStrokeColor="@color/black">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="text"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -192,6 +208,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inputType="phone"/>
+
+
 
 
             </com.google.android.material.textfield.TextInputLayout>
