@@ -40,38 +40,4 @@ public class CurrencyConverter extends AppCompatActivity
 	{
 		this.context = context;
 	}
-
-	public void getConversionRate(String convertFrom,String convertTo,Double amountToConvert) {
-		RequestQueue queue = Volley.newRequestQueue(context);
-		String url = "https://free.currconv.com/api/v7/convert?q="+convertFrom+"_"+convertTo+"&compact=ultra&apiKey=9de917fc5752ab3a4e57";
-		StringRequest stringRequest = new StringRequest(Request.Method.GET, url,response ->
-		{
-			JSONObject jsonObject;
-			try
-			{
-				jsonObject = new JSONObject(response);
-				double conversionRateValue = round(((Double) jsonObject.get(convertFrom+"_"+convertTo)), 2);
-				conversionValue = round((conversionRateValue*amountToConvert), 2);
-			}
-			catch (JSONException e)
-			{
-				e.printStackTrace();
-			}
-		}, error ->
-		{
-
-		});
-		queue.add(stringRequest);
-	}
-
-	public static double round(double value, int places)
-	{
-		if (places < 0)
-			throw new IllegalArgumentException();
-		BigDecimal bd = BigDecimal.valueOf(value);
-		bd = bd.setScale(places, RoundingMode.HALF_UP);
-		return bd.doubleValue();
-	}
-
-	public double getConversionValue() {return conversionValue;}
 }

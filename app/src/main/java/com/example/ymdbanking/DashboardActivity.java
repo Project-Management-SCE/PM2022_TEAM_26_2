@@ -1,7 +1,6 @@
 package com.example.ymdbanking;
 
 import android.app.Dialog;
-import android.app.DownloadManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -39,7 +38,6 @@ import com.example.ymdbanking.model.Admin;
 import com.example.ymdbanking.model.Clerk;
 import com.example.ymdbanking.model.Customer;
 import com.example.ymdbanking.model.Transaction;
-import com.google.android.gms.common.api.Api;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -48,23 +46,15 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpRequest;
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.HttpClient;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -168,14 +158,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		@Override
 		public void onClick(View view)
 		{
-//            if(view.getId() == btnAbort.getId()) {
-//                transferDialog.dismiss();
-//                Toast.makeText(DashboardActivity.this, "Transfer Cancelled", Toast.LENGTH_SHORT).show();
-//            }
+            if(view.getId() == btnAbort.getId())
+            {
+                transferDialog.dismiss();
+                Toast.makeText(DashboardActivity.this, "Transfer Cancelled", Toast.LENGTH_SHORT).show();
+            }
 			if(view.getId() == btnApprove.getId())
 			{
 				getConversionRate();
-//				makeTransfer();
 			}
 		}
 	};
@@ -421,6 +411,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			navigationView.getMenu().findItem(R.id.nav_deposit).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_change_clerk).setVisible(false);
 			navigationView.getMenu().findItem(R.id.nav_loan).setVisible(false);
+			navigationView.getMenu().findItem(R.id.nav_messages).setVisible(false);
 			sessionManager.saveClerkObjForSession(clerk);
 
 		}
@@ -435,6 +426,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			navigationView.getMenu().findItem(R.id.nav_deposit).setVisible(false);
 			navigationView.getMenu().findItem(R.id.nav_transaction).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_change_clerk).setVisible(false);
+			navigationView.getMenu().findItem(R.id.nav_messages).setVisible(false);
 			sessionManager.saveAdminObjForSession(admin);
 		}
 		disp_phone.setText(phone);
@@ -547,6 +539,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 				Toast.makeText(DashboardActivity.this,
 						"You can't change your clerk because you don't have one",Toast.LENGTH_SHORT).show();
 		}
+		else if(id == R.id.nav_messages)
+			startActivity(new Intent(DashboardActivity.this,ShowMessagesActivity.class));
 		else if(id == R.id.nav_users)
 			startActivity(new Intent(DashboardActivity.this,ShowUsersActivity.class));
 		else if(id == R.id.nav_customers)
@@ -707,8 +701,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 					public void onComplete(@NonNull Task<DataSnapshot> task)
 					{
 						for(DataSnapshot ds : task.getResult().getChildren())
-							if(!ds.getKey().equals(customer.getId()) &&
-							   ds.child("typeID").getValue(int.class) == 3)
+							if(!ds.getKey().equals(customer.getId()) && ds.child("typeID").getValue(int.class) == 3)
 							{
 								customersForTransfer.add(ds.getValue(Customer.class));
 								customersForTransfer.get(customersForTransfer.size() -
@@ -1029,7 +1022,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		return accountsToTransfer;
 	}
 
-	public double getConversionRate()
+	public void getConversionRate()
 	{
 		CurrencyConverter converter = new CurrencyConverter(DashboardActivity.this);
 		int receivingProfIndex = spnReceivingCustomer.getSelectedItemPosition();
@@ -1073,7 +1066,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 				applyConversionRate(sendingCurrency,receivingCurrency,transferAmount);
 			}
 		}
-		return converter.getConversionValue();
 	}
 
 	public void applyConversionRate(String convertFrom,String convertTo,Double amountToConvert) {

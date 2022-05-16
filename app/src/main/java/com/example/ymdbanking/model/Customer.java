@@ -12,6 +12,7 @@ public class Customer extends User
     private final static int typeID = 3;
     private ArrayList<Account> accounts;
     private ArrayList<Payee> payees;
+    private ArrayList<Message> messages;
 
     public Customer()
     {
@@ -28,6 +29,7 @@ public class Customer extends User
 
         accounts = new ArrayList<>(0);
         payees = new ArrayList<>(0);
+        messages = new ArrayList<>(0);
     }
 
     /**
@@ -35,19 +37,13 @@ public class Customer extends User
      * dbId field will be set later on
      */
     public Customer(String email,String fullName,String id,String password,String phone,String username,
-                    String country,int typeID,ArrayList<Account> accounts,ArrayList<Payee> payees)
+                    String country,int typeID,ArrayList<Account> accounts,ArrayList<Payee> payees,ArrayList<Message> messages)
     {
         super(email,fullName,id,password,phone,username,country,typeID);
         this.accounts = accounts;
         this.payees = payees;
+        this.messages = messages;
     }
-
-    /**
-     * getters used to access the private fields of the profile
-     */
-    public ArrayList<Account> getAccounts() { return accounts; }
-    public void setAccounts(ArrayList<Account> accounts) {this.accounts = accounts;}
-    public ArrayList<Payee> getPayees() { return payees; }
 
     /**
      * Method to add account to this profile user
@@ -106,10 +102,24 @@ public class Customer extends User
         payees.add(payee);
     }
 
-//    public int getNumberOfAccounts() { return this.accounts.size(); }
-    public void setPayeesFromDB(ArrayList<Payee> payees) {
+    public void addMessage(String receivingUser,String msg)
+    {
+        String messageID = "M" + (messages.size() + 1);
+        Message message = new Message(getUsername(),receivingUser,msg,messageID);
+        messages.add(message);
+    }
+
+    /**
+     * getters used to access the private fields of the customer
+     */
+    public ArrayList<Account> getAccounts() { return accounts; }
+    public void setAccounts(ArrayList<Account> accounts) {this.accounts = accounts;}
+    public ArrayList<Payee> getPayees() { return payees; }
+    public void setPayees(ArrayList<Payee> payees) {
         this.payees = payees;
     }
+    public ArrayList<Message> getMessages() {return messages;}
+    public void setMessages(ArrayList<Message> messages) {this.messages = messages;}
 
     @Override
     public String toString()

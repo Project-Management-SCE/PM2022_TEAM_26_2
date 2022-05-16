@@ -10,6 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.YMDBanking">
         <activity
+            android:name=".ShowMessagesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SendMessageActivity"
+            android:exported="false" />
+        <activity
             android:name=".PendingLoansActivity"
             android:exported="false" />
         <activity

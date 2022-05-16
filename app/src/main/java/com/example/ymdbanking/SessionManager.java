@@ -7,6 +7,7 @@ import com.example.ymdbanking.model.Account;
 import com.example.ymdbanking.model.Admin;
 import com.example.ymdbanking.model.Clerk;
 import com.example.ymdbanking.model.Customer;
+import com.example.ymdbanking.model.Message;
 import com.example.ymdbanking.model.User;
 import com.google.gson.Gson;
 
@@ -52,6 +53,8 @@ public class SessionManager
     public static final String KEY_CLERK_PASSWORD = "password";
     public static final String KEY_CLERK_PHONE = "phone";
     private static final String LIST_CLERKS = "clerkList";
+
+    private static final String LIST_MESSAGES = "messages";
 
 
     public SessionManager(Context _context,String sessionName)
@@ -205,9 +208,18 @@ public class SessionManager
         return gson.fromJson(json, ArrayList.class);
     }
 
-    /*
-    Clerk -> Session functions
-     */
+    public void saveMessagesForSession(ArrayList<Message> messages)
+    {
+        Gson gson = new Gson();
+        String json = gson.toJson(messages);
+        editor.putString(LIST_MESSAGES,json);
+        editor.commit();
+    }
 
-
+    public ArrayList<Message> getMessagesFromSession()
+    {
+        Gson gson = new Gson();
+        String json = userSession.getString(LIST_MESSAGES,null);
+        return gson.fromJson(json,ArrayList.class);
+    }
 }
