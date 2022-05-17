@@ -116,6 +116,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	private ArrayList<Account> accountsToTransfer;
 	private ArrayAdapter<Account> accountsToTransferAdapter;
 
+	private final String[] depositMethods = {"Cash","Credit"};
+	private ArrayAdapter<String> depositMethodAdapter;
+	private Spinner spnDepositMethod;
+	private TextView txtSelectDepositMethod;
+	private TextView txtSelectAccountDeposit;
+
 	private boolean flag;
 	private Clerk customerClerk;
 
@@ -740,13 +746,20 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			}
 		});
 
-		spnAccounts = depositDialog.findViewById(R.id.dep_spn_accounts);
+		txtSelectAccountDeposit = depositDialog.findViewById(R.id.txt_deposit_title);
+		txtSelectDepositMethod = depositDialog.findViewById(R.id.txt_select_deposit_method);
+		spnAccounts = depositDialog.findViewById(R.id.spn_accounts_deposit_dialog);
+		spnDepositMethod = depositDialog.findViewById(R.id.spn_method_deposit_dialog);
 
 		accountAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,customer.getAccounts());
 		accountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
 		spnAccounts.setAdapter(accountAdapter);
 		spnAccounts.setSelection(0);
+
+		depositMethodAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,depositMethods);
+		depositMethodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spnDepositMethod.setAdapter(depositMethodAdapter);
+		spnDepositMethod.setSelection(0);
 
 		edtDepositAmount = depositDialog.findViewById(R.id.edt_deposit_amount);
 
@@ -850,6 +863,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	private void makeDeposit()
 	{
 		int selectedAccountIndex = spnAccounts.getSelectedItemPosition();
+		int selectedDepositMethod = spnDepositMethod.getSelectedItemPosition();
 		double depositAmount = 0;
 		boolean isNum = false;
 
@@ -874,6 +888,19 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			}
 			else
 			{
+				//If customer chose cash deposit
+				if(depositMethodAdapter.getItem(selectedDepositMethod).equals(depositMethods[0]))
+				{
+					Toast.makeText(DashboardActivity.this,"The delivery guy is on his way to you",Toast.LENGTH_SHORT).show();
+					try
+					{
+						Thread.sleep(10000);
+					}
+					catch(InterruptedException e)
+					{
+						e.printStackTrace();
+					}
+				}
 				customer.getAccounts().get(selectedAccountIndex).addDepositTransaction(customer.getId(),depositAmount);
 				sessionManager.saveCustomerObjForSession(customer);
 

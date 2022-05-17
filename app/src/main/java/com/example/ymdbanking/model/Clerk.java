@@ -12,6 +12,7 @@ public class Clerk extends User
 	private final static int typeID = 2;
 	private ArrayList<Customer> customers;
 	private ArrayList<Transaction> loansToApprove;
+	private ArrayList<Transaction> cashDepositsToApprove;
 
 	public Clerk()
 	{
@@ -63,7 +64,6 @@ public class Clerk extends User
 	{
 		String accNo = "A" + (customer.getAccounts().size() + 1);
 		Account account = new Account(accountName, accNo, accountBalance);
-//		customer.getAccounts().put(accNo,account);
 		customer.getAccounts().add(account);
 	}
 
@@ -96,10 +96,37 @@ public class Clerk extends User
 		}
 	}
 
+	public void addCashDepositTransaction(String customerId,Account destinationAccount,double amount)
+	{
+		int receivingAccDepositCount = 0;
+		try
+		{
+			for (int i = 0; i < destinationAccount.getTransactions().size(); i++)
+			{
+				if (destinationAccount.getTransactions().get(i).getTransactionType() ==
+				    Transaction.TRANSACTION_TYPE.DEPOSIT)
+				{
+					receivingAccDepositCount++;
+				}
+			}
+			Transaction transaction = new Transaction("T" + (destinationAccount.getTransactions().size() + 1) + "-D" + (receivingAccDepositCount + 1), destinationAccount, amount,customerId);
+			destinationAccount.getTransactions().add(transaction);
+			addCashDepositForPending(transaction);
+		}
+		catch(NullPointerException e)
+		{
+			destinationAccount.setTransactions(new ArrayList<Transaction>());
+			Transaction transaction = new Transaction("T1" + "-D1", destinationAccount, amount,customerId);
+			destinationAccount.getTransactions().add(transaction);
+			addCashDepositForPending(transaction);
+		}
+	}
+
 	public void addLoanForPending(Transaction pendingLoan)
 	{
 		loansToApprove.add(pendingLoan);
 	}
+	public void addCashDepositForPending(Transaction pendingDeposit) {cashDepositsToApprove.add(pendingDeposit);}
 
 	@Override
 	public String toString()
