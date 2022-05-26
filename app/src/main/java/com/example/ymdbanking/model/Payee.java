@@ -6,27 +6,24 @@ public class Payee
 
     private String payeeID;
     private String payeeName;
-    private long dbId;
 
-    public Payee (String payeeID, String payeeName) {
+    public Payee()
+    {
+        //Empty constructor
+    }
+
+    public Payee (String payeeID, String payeeName)
+    {
         this.payeeID = payeeID;
         this.payeeName = payeeName;
     }
-
-    public Payee (String payeeID, String payeeName, long dbId) {
-        this(payeeID, payeeName);
-        this.dbId = dbId;
-    }
-
 
     public String getPayeeName() {
         return payeeName;
     }
     public String getPayeeID() { return payeeID; }
-
-    public void setDbId(long dbId) {
-        this.dbId = dbId;
-    }
+    public void setPayeeID(String payeeID) {this.payeeID = payeeID;}
+    public void setPayeeName(String payeeName) {this.payeeName = payeeName;}
 
     public String toString() { return (payeeName + " (" + payeeID + ")"); }
 }

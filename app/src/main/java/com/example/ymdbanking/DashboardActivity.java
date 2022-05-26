@@ -519,6 +519,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			else
 				Toast.makeText(getApplicationContext(),"There are no accounts to deposit to",Toast.LENGTH_SHORT).show();
 		}
+		else if(id == R.id.nav_payment)
+		{
+			startActivity(new Intent(DashboardActivity.this,PaymentActivity.class));
+		}
 		else if(id == R.id.nav_transfer)
 		{
 			if(customer.getAccounts().size() > 0)
