@@ -74,6 +74,11 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             txtTransactionInfo.setVisibility(View.GONE);
             txtTransactionAmount.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
         }
+        else if(transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.CASH_DEPOSIT)
+        {
+            imgTransactionIcon.setImageResource(R.drawable.lst_deposit_icon);
+            txtTransactionAmount.setTextColor(getContext().getResources().getColor(R.color.colorPrimaryDark));
+        }
         else if(transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.LOAN)
         {
             if(transaction.getStatus() == Transaction.STATUS.PENDING)

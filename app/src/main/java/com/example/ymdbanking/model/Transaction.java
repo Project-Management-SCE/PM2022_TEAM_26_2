@@ -16,18 +16,18 @@ public class Transaction
 		PAYMENT,
 		TRANSFER,
 		DEPOSIT,
+		CASH_DEPOSIT,
 		LOAN
 	}
 
 	public enum STATUS
 	{
-        APPROVED,
+		APPROVED,
 		PENDING,
 		DENIED
 	}
 
 	public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd - hh:mm a");
-
 	private String transactionID;
 	private String timestamp;
 	private String sendingAccount;
@@ -37,8 +37,6 @@ public class Transaction
 	private double amount;
 	private TRANSACTION_TYPE transactionType;
 	private STATUS status;
-
-//    private long dbId;
 
 	public Transaction()
 	{
@@ -52,7 +50,7 @@ public class Transaction
 	 * @param payee         - receiving side of payment
 	 * @param amount        - amount to transfer to payee
 	 */
-	public Transaction(String transactionID, String payee, double amount)
+	public Transaction(String transactionID,String payee,double amount)
 	{
 		this.transactionID = transactionID;
 		timestamp = DATE_FORMAT.format(new Date());
@@ -61,20 +59,13 @@ public class Transaction
 		transactionType = TRANSACTION_TYPE.PAYMENT;
 	}
 
-	public Transaction(String transactionID, String timestamp, String payee, double amount, long dbId)
-	{
-		this(transactionID, payee, amount);
-		this.timestamp = timestamp;
-//		this.dbId = dbId;
-	}
-
 	/**
-	 * Transactions constructors for deposit
+	 * Transaction constructor for deposit
 	 *
 	 * @param transactionID - transaction ID
 	 * @param amount        - amount to deposit to account
 	 */
-	public Transaction(String transactionID, double amount, Account destinationAccount,String destinationCustomerId)
+	public Transaction(String transactionID,double amount,Account destinationAccount,String destinationCustomerId)
 	{
 		this.transactionID = transactionID;
 		timestamp = DATE_FORMAT.format(new Date());
@@ -84,10 +75,18 @@ public class Transaction
 		this.destinationCustomerId = destinationCustomerId;
 	}
 
-	public Transaction(String transactionID, String timestamp, Account destinationAccount,String destinationCustomerId,double amount)
+	/**
+	 * Transaction constructor for cash deposit
+	 */
+	public Transaction(double amount,Account destinationAccount,String destinationCustomerId,String transactionID)
 	{
-		this(transactionID, amount, destinationAccount,destinationCustomerId);
-		this.timestamp = timestamp;
+		this.transactionID = transactionID;
+		timestamp = DATE_FORMAT.format(new Date());
+		this.amount = amount;
+		transactionType = TRANSACTION_TYPE.CASH_DEPOSIT;
+		this.destinationAccount = destinationAccount.getAccountNo();
+		this.destinationCustomerId = destinationCustomerId;
+		status = STATUS.PENDING;
 	}
 
 	/**
@@ -97,7 +96,7 @@ public class Transaction
 	 * @param amount             - amount of the loan
 	 * @param DestinationAccount - receiving account for loan
 	 */
-	public Transaction(String transactionID, Account DestinationAccount, double amount,String destinationCustomerId)
+	public Transaction(String transactionID,Account DestinationAccount,double amount,String destinationCustomerId)
 	{
 		this.transactionID = transactionID;
 		timestamp = DATE_FORMAT.format(new Date());
@@ -108,13 +107,6 @@ public class Transaction
 		this.destinationCustomerId = destinationCustomerId;
 	}
 
-//	public Transaction(String transactionID, Account DestinationAccount, String timestamp, double amount, long dbId)
-//	{
-//		this(transactionID, DestinationAccount, amount);
-//		this.timestamp = timestamp;
-//		this.dbId = dbId;
-//	}
-
 	/**
 	 * Transaction constructors for transfer
 	 *
@@ -123,7 +115,7 @@ public class Transaction
 	 * @param destinationAccount - receiving account
 	 * @param amount             - amount to transfer to destinationAccount
 	 */
-	public Transaction(String transactionID,String sendingAccount, String destinationAccount, double amount)
+	public Transaction(String transactionID,String sendingAccount,String destinationAccount,double amount)
 	{
 		this.transactionID = transactionID;
 		this.timestamp = DATE_FORMAT.format(new Date());
@@ -133,13 +125,6 @@ public class Transaction
 		transactionType = TRANSACTION_TYPE.TRANSFER;
 		this.destinationCustomerId = destinationCustomerId;
 	}
-
-//	public Transaction(String transactionID, String timestamp, String sendingAccount, String destinationCustomerId, String destinationAccount, double amount, long dbId)
-//	{
-//		this(transactionID, sendingAccount, destinationAccount, amount);
-//		this.timestamp = timestamp;
-//		this.dbId = dbId;
-//	}
 
 	/**
 	 * getters used to access the private fields of the transaction
@@ -173,7 +158,4 @@ public class Transaction
 	public STATUS getStatus() {return status;}
 
 	public String getDestinationCustomerId() {return destinationCustomerId;}
-
-	//	public void setDbId(long dbId) { this.dbId = dbId; }
-
 }

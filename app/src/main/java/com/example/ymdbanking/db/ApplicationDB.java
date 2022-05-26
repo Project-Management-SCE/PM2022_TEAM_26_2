@@ -173,7 +173,7 @@ public class ApplicationDB
 
 	public void saveNewLoan(Clerk clerk,Customer customer,Transaction loan)
 	{
-		database.getReference("Loans").child(clerk.getId()).child(customer.getId())
+		database.getReference("PendingTransactions").child("Loans").child(clerk.getId()).child(customer.getId())
 				.child(loan.getTransactionID()).setValue(loan);
 	}
 
@@ -199,7 +199,6 @@ public class ApplicationDB
 										.child(KEY_PAYEES).child(payee.getPayeeID()).setValue(newPayee);
 							}
 						}
-
 					}
 				})
 				.addOnFailureListener(new OnFailureListener()
@@ -229,15 +228,15 @@ public class ApplicationDB
 					admins.add(ds.getValue(Admin.class));
 			}
 		})
-				.addOnFailureListener(new OnFailureListener()
-				{
-					@Override
-					public void onFailure(@NonNull Exception e)
-					{
-						Toast.makeText(context, "ERROR - Can't get all admins from DB: " + e.toString(), Toast.LENGTH_SHORT).show();
-						Log.d("DB_ERROR",e.toString());
-					}
-				});
+		.addOnFailureListener(new OnFailureListener()
+		{
+			@Override
+			public void onFailure(@NonNull Exception e)
+			{
+				Toast.makeText(context, "ERROR - Can't get all admins from DB: " + e.toString(), Toast.LENGTH_SHORT).show();
+				Log.d("DB_ERROR",e.toString());
+			}
+		});
 
 		return admins;
 	}
@@ -274,24 +273,24 @@ public class ApplicationDB
 	{
 		ArrayList<Customer> customers = new ArrayList<>();
 		database.getReference("Clerks").child(clerk.getUsername()).child("customers").get()
-				.addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
-				{
-					@Override
-					public void onComplete(@NonNull Task<DataSnapshot> task)
-					{
-						for(DataSnapshot ds : task.getResult().getChildren())
-							customers.add(ds.getValue(Customer.class));
-					}
-				})
-				.addOnFailureListener(new OnFailureListener()
-				{
-					@Override
-					public void onFailure(@NonNull Exception e)
-					{
-						Toast.makeText(context, "ERROR - Can't get clerk's customers from DB", Toast.LENGTH_SHORT).show();
-						Log.d("DB_ERROR",e.toString());
-					}
-				});
+			.addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+		{
+			@Override
+			public void onComplete(@NonNull Task<DataSnapshot> task)
+			{
+				for(DataSnapshot ds : task.getResult().getChildren())
+					customers.add(ds.getValue(Customer.class));
+			}
+		})
+		.addOnFailureListener(new OnFailureListener()
+		{
+			@Override
+			public void onFailure(@NonNull Exception e)
+			{
+				Toast.makeText(context, "ERROR - Can't get clerk's customers from DB", Toast.LENGTH_SHORT).show();
+				Log.d("DB_ERROR",e.toString());
+			}
+		});
 
 		return customers;
 	}
@@ -308,7 +307,7 @@ public class ApplicationDB
 					customers.add(ds.getValue(Customer.class));
 			}
 		})
-			.addOnFailureListener(new OnFailureListener()
+		.addOnFailureListener(new OnFailureListener()
 		{
 			@Override
 			public void onFailure(@NonNull Exception e)

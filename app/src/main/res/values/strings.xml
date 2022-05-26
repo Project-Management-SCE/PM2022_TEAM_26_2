@@ -137,6 +137,8 @@
     <string name="change_clerk">Change Clerk</string>
     <string name="user_country">Country</string>
     <string name="chat">Chat</string>
+    <string name="select_cash_deposit">Select Cash Deposit</string>
+    <string name="approve_transactions">Approve Transactions</string>
 
     <string-array name="days">
         <item>Sunday</item>

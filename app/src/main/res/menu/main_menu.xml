@@ -48,9 +48,9 @@
                         android:icon="@drawable/icon_transfer_24"
                         android:title="@string/make_a_transfer" />
                     <item
-                        android:id="@+id/nav_pending_loans"
+                        android:id="@+id/nav_pending_transactions"
                         android:icon="@drawable/ic_loan_req"
-                        android:title="@string/approve_loans" />
+                        android:title="@string/approve_transactions" />
                     <item
                         android:id="@+id/nav_loan"
                         android:icon="@drawable/ic_loan_req"

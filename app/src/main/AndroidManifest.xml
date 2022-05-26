@@ -16,7 +16,7 @@
             android:name=".SendMessageActivity"
             android:exported="false" />
         <activity
-            android:name=".PendingLoansActivity"
+            android:name=".PendingTransactionsActivity"
             android:exported="false" />
         <activity
             android:name=".ClerkOverviewActivity"

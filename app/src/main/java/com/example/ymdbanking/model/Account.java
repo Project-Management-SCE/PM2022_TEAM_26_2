@@ -85,12 +85,13 @@ public class Account
 
     /**
      * Method to implement a deposit to profile's account
-     * @param customerId
+     * @param customerId - account's owner id
      * @param amount - amount to deposit in account
      */
-    public void addDepositTransaction(String customerId, double amount)
+    public void addDepositTransaction(String customerId, double amount,String method)
     {
-        accountBalance += amount;
+        if(method.equals("Credit"))
+            accountBalance += amount;
 
         //TODO: Could be a better way - ie. each time a deposit is added, add it to the master count (global variable - persisted?)
         int depositsCount = 0;
@@ -103,9 +104,12 @@ public class Account
             }
         }
 
-        Transaction deposit = new Transaction("T" + (transactions.size() + 1) + "-D" + (depositsCount+1),amount,this,customerId);
+        Transaction deposit;
+        if(method.equals("Credit"))
+            deposit = new Transaction("T" + (transactions.size() + 1) + "-D" + (depositsCount+1),amount,this,customerId);
+        else
+            deposit = new Transaction(amount,this,customerId,"T" + (transactions.size() + 1) + "-D" + (depositsCount+1));
         transactions.add(deposit);
-//        transactions.put(deposit.getTransactionID(),deposit);
     }
 
     public void addLoanTransaction(String customerId,double amount)

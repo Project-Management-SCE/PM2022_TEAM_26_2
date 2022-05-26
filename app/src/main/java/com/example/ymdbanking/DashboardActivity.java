@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -121,6 +122,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	private Spinner spnDepositMethod;
 	private TextView txtSelectDepositMethod;
 	private TextView txtSelectAccountDeposit;
+	private ProgressBar pbDepositDialog;
 
 	private boolean flag;
 	private Clerk customerClerk;
@@ -403,7 +405,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 //            disp_username.setText(userDetails.get(SessionManager.KEY_USERNAME));
 			navigationView.getMenu().findItem(R.id.nav_clerks).setVisible(false);
 			navigationView.getMenu().findItem(R.id.nav_users).setVisible(false);
-			navigationView.getMenu().findItem(R.id.nav_pending_loans).setVisible(false);
+			navigationView.getMenu().findItem(R.id.nav_pending_transactions).setVisible(false);
 			navigationView.getMenu().findItem(R.id.nav_customers).setVisible(false);
 			sessionManager.saveCustomerObjForSession(customer);
 		}
@@ -426,7 +428,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		{
 			navigationView.getMenu().findItem(R.id.nav_transfer).setVisible(false);
 			navigationView.getMenu().findItem(R.id.nav_loan).setVisible(false);
-			navigationView.getMenu().findItem(R.id.nav_pending_loans).setVisible(false);
+			navigationView.getMenu().findItem(R.id.nav_pending_transactions).setVisible(false);
 			navigationView.getMenu().findItem(R.id.nav_accounts).setVisible(false);
 			navigationView.getMenu().findItem(R.id.nav_payment).setVisible(false);
 			navigationView.getMenu().findItem(R.id.nav_deposit).setVisible(false);
@@ -531,9 +533,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			else
 				Toast.makeText(getApplicationContext(),"There are no accounts to loan to",Toast.LENGTH_SHORT).show();
 		}
-		else if(id == R.id.nav_pending_loans)
+		else if(id == R.id.nav_pending_transactions)
 		{
-			startActivity(new Intent(DashboardActivity.this,PendingLoansActivity.class));
+			startActivity(new Intent(DashboardActivity.this,PendingTransactionsActivity.class));
 		}
 		else if(id == R.id.nav_change_clerk)
 		{
@@ -750,6 +752,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		txtSelectDepositMethod = depositDialog.findViewById(R.id.txt_select_deposit_method);
 		spnAccounts = depositDialog.findViewById(R.id.spn_accounts_deposit_dialog);
 		spnDepositMethod = depositDialog.findViewById(R.id.spn_method_deposit_dialog);
+		pbDepositDialog = depositDialog.findViewById(R.id.pb_deposit_dialog);
+		pbDepositDialog.setVisibility(View.INVISIBLE);
 
 		accountAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,customer.getAccounts());
 		accountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -770,6 +774,108 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		btnSuccess.setOnClickListener(depositClickListener);
 
 		depositDialog.show();
+	}
+
+	private void makeDeposit()
+	{
+		int selectedAccountIndex = spnAccounts.getSelectedItemPosition();
+		int selectedDepositMethod = spnDepositMethod.getSelectedItemPosition();
+		double depositAmount = 0;
+		boolean isNum = false;
+
+		try
+		{
+			depositAmount = Double.parseDouble(edtDepositAmount.getText().toString());
+			isNum = true;
+		} catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		if(!isNum)
+		{
+			Toast.makeText(this,"Please enter a valid amount",Toast.LENGTH_SHORT).show();
+		}
+		else
+		{
+			if(depositAmount < DEPOSIT_MIN_LIMIT)
+			{
+				Toast.makeText(getApplicationContext(),"There's a minimum deposit limit of " +
+				                                       DEPOSIT_MIN_LIMIT,Toast.LENGTH_SHORT).show();
+			}
+			else
+			{
+				String selectedMethod = depositMethodAdapter.getItem(selectedDepositMethod);
+				customer.getAccounts().get(selectedAccountIndex).addDepositTransaction(customer.getId(),depositAmount,selectedMethod);
+				sessionManager.saveCustomerObjForSession(customer);
+
+				//If customer chose cash deposit
+				if(selectedMethod.equals(depositMethods[0]))
+				{
+					Toast.makeText(DashboardActivity.this,"The delivery guy is on his way to you",Toast.LENGTH_SHORT).show();
+					try
+					{
+						pbDepositDialog.setVisibility(View.VISIBLE);
+						Thread.sleep(1000);
+						Toast.makeText(DashboardActivity.this,"Express cash deposit delivery is on it's wat to us",Toast.LENGTH_SHORT).show();
+
+						final String[] clerkID = new String[1];
+						//Finding which clerk is this customer's clerk by looping through the ID's and matching to this customer
+						FirebaseDatabase.getInstance().getReference("ClerkCustomers").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+						{
+							@Override
+							public void onComplete(@NonNull Task<DataSnapshot> task)
+							{
+								for(DataSnapshot ds : task.getResult().getChildren())
+								{
+									if(ds.child(customer.getId()).exists())
+										clerkID[0] = ds.getKey();
+								}
+								Transaction transaction = customer.getAccounts().get(selectedAccountIndex).getTransactions().get(customer.getAccounts().get(selectedAccountIndex).getTransactions().size() - 1);
+
+								FirebaseDatabase.getInstance().getReference("PendingTransactions").child("CashDeposits")
+									.child(clerkID[0]).child(customer.getId()).child(transaction.getTransactionID()).setValue(transaction);
+								Toast.makeText(DashboardActivity.this,"Express cash deposit is now pending for approval by your clerk",Toast.LENGTH_SHORT).show();
+								pbDepositDialog.setVisibility(View.INVISIBLE);
+							}
+						})
+						.addOnFailureListener(new OnFailureListener()
+						{
+							@Override
+							public void onFailure(@NonNull Exception e)
+							{
+								Toast.makeText(DashboardActivity.this,"Can't add cash deposit to pending transactions",Toast.LENGTH_SHORT).show();
+								Log.d("CASH DEPOSIT ERROR",e.toString());
+							}
+						});
+					}
+					catch(InterruptedException e)
+					{
+						e.printStackTrace();
+					}
+				}
+				//If customer chose credit
+				else
+				{
+//					customer.getAccounts().get(selectedAccountIndex).addDepositTransaction(customer.getId(),depositAmount,depositMethods[1]);
+//					sessionManager.saveCustomerObjForSession(customer);
+					ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
+					applicationDb.overwriteAccount(customer,customer.getAccounts().get(selectedAccountIndex));
+					Toast.makeText(this,"Deposit of $" + String.format(Locale.getDefault(),"%.2f",depositAmount) +
+					                    " " + "made successfully",Toast.LENGTH_SHORT).show();
+				}
+
+				accountAdapter = new ArrayAdapter<Account>(this,android.R.layout.simple_spinner_item,customer.getAccounts());
+				accountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+				spnAccounts.setAdapter(accountAdapter);
+
+				//TODO: Add checkbox if the user wants to make more than one deposit
+
+				depositDialog.dismiss();
+				drawerLayout.closeDrawers();
+				//manualNavigation(manualNavID.ACCOUNTS_ID, null);
+				startActivity(new Intent(DashboardActivity.this,DashboardActivity.class));
+			}
+		}
 	}
 
 	private void displayTransferDialog()
@@ -860,71 +966,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		startActivity(new Intent(DashboardActivity.this,DashboardActivity.class));
 	}
 
-	private void makeDeposit()
-	{
-		int selectedAccountIndex = spnAccounts.getSelectedItemPosition();
-		int selectedDepositMethod = spnDepositMethod.getSelectedItemPosition();
-		double depositAmount = 0;
-		boolean isNum = false;
-
-		try
-		{
-			depositAmount = Double.parseDouble(edtDepositAmount.getText().toString());
-			isNum = true;
-		} catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		if(!isNum)
-		{
-			Toast.makeText(this,"Please enter a valid amount",Toast.LENGTH_SHORT).show();
-		}
-		else
-		{
-			if(depositAmount < DEPOSIT_MIN_LIMIT)
-			{
-				Toast.makeText(getApplicationContext(),"There's a minimum deposit limit of " +
-				                                       DEPOSIT_MIN_LIMIT,Toast.LENGTH_SHORT).show();
-			}
-			else
-			{
-				//If customer chose cash deposit
-				if(depositMethodAdapter.getItem(selectedDepositMethod).equals(depositMethods[0]))
-				{
-					Toast.makeText(DashboardActivity.this,"The delivery guy is on his way to you",Toast.LENGTH_SHORT).show();
-					try
-					{
-						Thread.sleep(10000);
-					}
-					catch(InterruptedException e)
-					{
-						e.printStackTrace();
-					}
-				}
-				customer.getAccounts().get(selectedAccountIndex).addDepositTransaction(customer.getId(),depositAmount);
-				sessionManager.saveCustomerObjForSession(customer);
-
-				ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
-				applicationDb.overwriteAccount(customer,customer.getAccounts().get(selectedAccountIndex));
-
-				Toast.makeText(this,
-						"Deposit of $" + String.format(Locale.getDefault(),"%.2f",depositAmount) +
-						" " + "made successfully",Toast.LENGTH_SHORT).show();
-
-				accountAdapter = new ArrayAdapter<Account>(this,android.R.layout.simple_spinner_item,customer.getAccounts());
-				accountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-				spnAccounts.setAdapter(accountAdapter);
-
-				//TODO: Add checkbox if the user wants to make more than one deposit
-
-				depositDialog.dismiss();
-				drawerLayout.closeDrawers();
-				//manualNavigation(manualNavID.ACCOUNTS_ID, null);
-				startActivity(new Intent(DashboardActivity.this,DashboardActivity.class));
-			}
-		}
-	}
-
 	private void displayLoanDialog()
 	{
 		loanDialog = new Dialog(this);
@@ -936,7 +977,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			public void onCancel(DialogInterface dialogInterface)
 			{
 				startActivity(new Intent(getApplicationContext(),DashboardActivity.class));
-				Toast.makeText(getApplicationContext(),"Deposit Cancelled",Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(),"Loan Cancelled",Toast.LENGTH_SHORT).show();
 			}
 		});
 //        clerks = sessionManager.getClerksFromSession();
@@ -993,13 +1034,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			clerk.addLoanTransaction(customer.getId(),account,loanAmount);
 			ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
 			applicationDb.overwriteAccount(customer,customer.getAccounts().get(accountSelectedIndex));
-			applicationDb.saveNewLoan(clerk,customer,customer.getAccounts().get(accountSelectedIndex)
-					                                         .getTransactions().get(
-							customer.getAccounts().get(accountSelectedIndex).getTransactions().size() -
-							1));
-			Toast.makeText(this,
-					"Loan of $" + String.format(Locale.getDefault(),"%.2f",loanAmount) + " " +
-					"is pending",Toast.LENGTH_SHORT).show();
+			applicationDb.saveNewLoan(clerk,customer,
+					customer.getAccounts().get(accountSelectedIndex).getTransactions().get(customer.getAccounts().get(accountSelectedIndex).getTransactions().size() - 1));
+			Toast.makeText(this,"Loan of $" + String.format(Locale.getDefault(),"%.2f",loanAmount) +
+			                    " " + "is pending",Toast.LENGTH_SHORT).show();
 			loanDialog.dismiss();
 			drawerLayout.closeDrawers();
 			startActivity(new Intent(DashboardActivity.this,DashboardActivity.class));
@@ -1036,15 +1074,15 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 				spnReceivingAccount.setAdapter(accountsToTransferAdapter);
 			}
 		})
-				.addOnFailureListener(new OnFailureListener()
-				{
-					@Override
-					public void onFailure(@NonNull Exception e)
-					{
-						Toast.makeText(getApplicationContext(),"ERROR - Can't get customer's accounts from DB",Toast.LENGTH_SHORT).show();
-						Log.d("DB_ERROR",e.toString());
-					}
-				});
+		.addOnFailureListener(new OnFailureListener()
+		{
+			@Override
+			public void onFailure(@NonNull Exception e)
+			{
+				Toast.makeText(getApplicationContext(),"ERROR - Can't get customer's accounts from DB",Toast.LENGTH_SHORT).show();
+				Log.d("DB_ERROR",e.toString());
+			}
+		});
 
 		return accountsToTransfer;
 	}
