@@ -22,6 +22,8 @@ import com.example.ymdbanking.model.Customer;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.utils.URIBuilder;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.UploadTask;
@@ -31,14 +33,14 @@ import java.util.HashMap;
 
 public class UserProfileActivity extends AppCompatActivity
 {
-
-	TextView disp_username,disp_email,disp_phone,disp_numAccounts;
+	TextView disp_username, disp_email, disp_phone, disp_numAccounts;
 	HashMap<String, String> userDetails;
-	ImageView profilePic,backBtn;
+	ImageView profilePic, backBtn;
 	Button addAccountBtn;
 	Customer customer;
 	private static final int PICK_IMAGE = 100;
 	Uri imageUri;
+	private SessionManager sessionManager;
 
 
 	@Override
@@ -59,7 +61,7 @@ public class UserProfileActivity extends AppCompatActivity
 		backBtn = findViewById(R.id.profile_backBtn);
 
 		//User Session
-		SessionManager sessionManager = new SessionManager(UserProfileActivity.this,SessionManager.USER_SESSION);
+		sessionManager = new SessionManager(UserProfileActivity.this,SessionManager.USER_SESSION);
 		userDetails = sessionManager.getUserDetailFromSession();
 		customer = sessionManager.getCustomerObjFromSession();
 
@@ -67,11 +69,7 @@ public class UserProfileActivity extends AppCompatActivity
 		disp_email.setText(customer.getEmail());
 		disp_phone.setText(customer.getPhone());
 		disp_numAccounts.setText(sessionManager.userSession.getString("NumAccounts",null));
-		profilePic.setImageURI(customer.getImageUri());
-
-//		disp_username.setText(userDetails.get(SessionManager.KEY_USERNAME));
-//		disp_email.setText(userDetails.get(SessionManager.KEY_EMAIL));
-//		disp_phone.setText(userDetails.get(SessionManager.KEY_PHONE));
+		getPictureFromDB();
 
 		profilePic.setOnClickListener(new View.OnClickListener()
 		{
@@ -92,6 +90,39 @@ public class UserProfileActivity extends AppCompatActivity
 		});
 	}
 
+	private void getPictureFromDB()
+	{
+		FirebaseStorage.getInstance().getReference("ProfilePic/" + customer.getId()).getDownloadUrl()
+			.addOnCompleteListener(new OnCompleteListener<Uri>()
+		{
+			@Override
+			public void onComplete(@NonNull Task<Uri> task)
+			{
+				profilePic.setImageURI(task.getResult());
+			}
+		})
+//		FirebaseDatabase.getInstance().getReference("Users").child(customer.getId()).child("imageUri")
+//			.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+//		{
+//			@Override
+//			public void onComplete(@NonNull Task<DataSnapshot> task)
+//			{
+//				DataSnapshot ds = task.getResult();
+//				imageUri = Uri.parse(ds.getValue(String.class));
+//				profilePic.setImageURI(imageUri);
+//			}
+//		})
+		.addOnFailureListener(new OnFailureListener()
+		{
+			@Override
+			public void onFailure(@NonNull Exception e)
+			{
+				Toast.makeText(UserProfileActivity.this,"Can't get profile picture from DB",Toast.LENGTH_SHORT).show();
+				Log.d("GET_PROFILE_PIC_ERROR",e.toString());
+			}
+		});
+	}
+
 	private void openGallery()
 	{
 		Intent intent = new Intent();
@@ -101,28 +132,46 @@ public class UserProfileActivity extends AppCompatActivity
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data){
-		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == RESULT_OK && requestCode == PICK_IMAGE){
+	protected void onActivityResult(int requestCode,int resultCode,Intent data)
+	{
+		super.onActivityResult(requestCode,resultCode,data);
+		if(resultCode == RESULT_OK && requestCode == PICK_IMAGE)
+		{
 			imageUri = data.getData();
 			profilePic.setImageURI(imageUri);
 		}
 
 		if(imageUri != null)
 		{
-			FirebaseStorage.getInstance().getReference().child("ProfilePic").child(customer.getId()).putFile(imageUri)
-				.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>()
-			{
-				@Override
-				public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task)
-				{
-					FirebaseDatabase.getInstance().getReference("Users").child(customer.getId()).child("image")
-						.setValue(imageUri).addOnCompleteListener(new OnCompleteListener<Void>()
+			FirebaseStorage.getInstance().getReference().child(
+					"ProfilePic/" + customer.getId()).putFile(imageUri)
+					.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>()
 					{
 						@Override
-						public void onComplete(@NonNull Task<Void> task)
+						public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task)
 						{
-							Toast.makeText(UserProfileActivity.this,"New profile picture saved",Toast.LENGTH_SHORT).show();
+							customer.setImageUri(imageUri.toString());
+							sessionManager.saveCustomerObjForSession(customer);
+							Toast.makeText(UserProfileActivity.this,"New profile picture saved on phone",Toast.LENGTH_SHORT).show();
+							FirebaseDatabase.getInstance().getReference("Users").child(customer.getId()).child("imageUri")
+								.setValue(imageUri.getPath()).addOnCompleteListener(new OnCompleteListener<Void>()
+							{
+								@Override
+								public void onComplete(@NonNull Task<Void> task)
+								{
+									Toast.makeText(UserProfileActivity.this,"New profile picture saved on DB",Toast.LENGTH_SHORT).show();
+									Toast.makeText(UserProfileActivity.this,"Looks good ;)",Toast.LENGTH_SHORT).show();
+								}
+							})
+							.addOnFailureListener(new OnFailureListener()
+							{
+								@Override
+								public void onFailure(@NonNull Exception e)
+								{
+									Toast.makeText(UserProfileActivity.this,"Can't save new profile picture",Toast.LENGTH_SHORT).show();
+									Log.d("SET PROFILE PIC ERROR",e.toString());
+								}
+							});
 						}
 					})
 					.addOnFailureListener(new OnFailureListener()
@@ -130,21 +179,10 @@ public class UserProfileActivity extends AppCompatActivity
 						@Override
 						public void onFailure(@NonNull Exception e)
 						{
-							Toast.makeText(UserProfileActivity.this,"Can't save new profile picture",Toast.LENGTH_SHORT).show();
+							Toast.makeText(UserProfileActivity.this,"Can't save new profile picture in DB",Toast.LENGTH_SHORT).show();
 							Log.d("SET PROFILE PIC ERROR",e.toString());
 						}
 					});
-				}
-			})
-			.addOnFailureListener(new OnFailureListener()
-			{
-				@Override
-				public void onFailure(@NonNull Exception e)
-				{
-					Toast.makeText(UserProfileActivity.this,"Can't save new profile picture in DB",Toast.LENGTH_SHORT).show();
-					Log.d("SET PROFILE PIC ERROR",e.toString());
-				}
-			});
 		}
 	}
 }

@@ -82,13 +82,6 @@ public class ApplicationDB
 	 */
 	public void saveCustomerToClerkList(Customer customer,Clerk clerk)
 	{
-//		HashMap<String,Object> cust = new HashMap<>();
-//		cust.put("email",customer.getEmail());
-//		cust.put("fullName",customer.getFullName());
-//		cust.put("id",customer.getId());
-//		cust.put("password",customer.getPassword());
-//		cust.put("phone",customer.getPhone());
-//		cust.put("username",customer.getUsername());
 		database.getReference("ClerkCustomers").child(clerk.getId())
 				.child(customer.getId()).setValue(customer);
 	}
@@ -111,8 +104,6 @@ public class ApplicationDB
 		}
 		else if(transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.PAYMENT)
 		{
-//			HashMap<String,Transaction> tran = new HashMap<>();
-//			tran.put(transaction.getTransactionID(),transaction);
 			database.getReference("Payees").child(sendingCustomer.getId()).child(transaction.getPayeeId())
 					.child(transaction.getTransactionID()).setValue(transaction);
 		}
@@ -135,11 +126,8 @@ public class ApplicationDB
 	 */
 	public void saveNewAccount(Customer customer,Account account)
 	{
-//		HashMap<String,Account> newAccount = new HashMap<>();
-//		newAccount.put(account.getAccountNo(),account);
 		database.getReference("Accounts").child(customer.getId()).child(account.getAccountNo())
 				.setValue(account);
-
 	}
 
 	/**

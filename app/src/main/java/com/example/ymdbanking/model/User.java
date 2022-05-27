@@ -30,7 +30,7 @@ public class User
 	private String phone;
 	private String username;
 	private String country;
-	private Uri imageUri;
+	private String imageUri;
 	private int typeID;
 
 
@@ -49,6 +49,7 @@ public class User
 		this.phone = phone;
 		this.username = username;
 		this.typeID = userType;
+		imageUri = null;
 	}
 
 	public User(String email,String fullName,String id,String password,String phone,String username,String country,int userType)
@@ -61,12 +62,9 @@ public class User
 		this.username = username;
 		this.typeID = userType;
 		this.country = country;
+		imageUri = null;
 	}
 
-//	public String getFirstName() {return firstName;}
-//	public void setFirstName(String firstName) {this.firstName = firstName;}
-//	public String getLastName() {return lastName;}
-//	public void setLastName(String lastName) {this.lastName = lastName;}
 	public String getCountry() {return country;}
 	public void setCountry(String country) {this.country = country;}
 	public String getUsername() {return username;}
@@ -87,8 +85,8 @@ public class User
 	public void setTypeID(int typeID) {
 		this.typeID = typeID;
 	}
-	public Uri getImageUri() {return imageUri;}
-	public void setImageUri(Uri imageUri) {this.imageUri = imageUri;}
+	public String getImageUri() {return imageUri;}
+	public void setImageUri(String imageUri) {this.imageUri = imageUri;}
 
 	@Override
 	public String toString()

@@ -138,7 +138,7 @@ public class SignUpActivity extends AppCompatActivity {
         DatabaseReference reference = rootNode.getReference("Users");
 
 //        UserHelperClass addNewUser = new UserHelperClass(name,id,username,email,pass,phone);
-        Customer newCustomer = new Customer(email,name,id,pass,phone,username,country);
+        User newCustomer = new Customer(email,name,id,pass,phone,username,country);
 
         reference.child(id).setValue(newCustomer).addOnCompleteListener(new OnCompleteListener<Void>()
         {
