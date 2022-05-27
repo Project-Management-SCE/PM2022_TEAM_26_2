@@ -129,7 +129,6 @@ public class Account
 
         Transaction loan = new Transaction("T" + (transactions.size() + 1) + "-L" + (depositsCount+1),this,amount,customerId);
         transactions.add(loan);
-//        transactions.put(loan.getTransactionID(),loan);
     }
 
     /**
@@ -146,7 +145,5 @@ public class Account
      */
     public String toTransactionString() { return (accountName + " (" + accountNo + ")"); }
 
-    public void setTransactions(ArrayList<Transaction> transactions) {
-        this.transactions = transactions;
-    }
+    public void setTransactions(ArrayList<Transaction> transactions) {this.transactions = transactions;}
 }

@@ -167,18 +167,18 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		@Override
 		public void onClick(View view)
 		{
-            if(view.getId() == btnAbort.getId())
-            {
-                transferDialog.dismiss();
-                Toast.makeText(DashboardActivity.this, "Transfer Cancelled", Toast.LENGTH_SHORT).show();
-            }
+			if(view.getId() == btnAbort.getId())
+			{
+				transferDialog.dismiss();
+				Toast.makeText(DashboardActivity.this,"Transfer Cancelled",Toast.LENGTH_SHORT).show();
+			}
 			if(view.getId() == btnApprove.getId())
 			{
 				getConversionRate();
 			}
 		}
 	};
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -279,15 +279,15 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 				sessionManager.saveClerksForSession(clerks);
 			}
 		})
-		.addOnFailureListener(new OnFailureListener()
-		{
-			@Override
-			public void onFailure(@NonNull Exception e)
-			{
-				Toast.makeText(getApplicationContext(),"ERROR - Can't get all clerks from DB",Toast.LENGTH_SHORT).show();
-				Log.d("DB_ERROR",e.toString());
-			}
-		});
+				.addOnFailureListener(new OnFailureListener()
+				{
+					@Override
+					public void onFailure(@NonNull Exception e)
+					{
+						Toast.makeText(getApplicationContext(),"ERROR - Can't get all clerks from DB",Toast.LENGTH_SHORT).show();
+						Log.d("DB_ERROR",e.toString());
+					}
+				});
 	}
 
 	private ArrayList<Transaction> getLoansForClerk(Clerk clerk)
@@ -334,15 +334,15 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 					transactions.add(ds.getValue(Transaction.class));
 			}
 		})
-        .addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Toast.makeText(getApplicationContext(),"ERROR - Can't get transactions from DB for this account",Toast.LENGTH_SHORT).show();
-                Log.d("DB_ERROR",e.toString());
-            }
-        });
+				.addOnFailureListener(new OnFailureListener()
+				{
+					@Override
+					public void onFailure(@NonNull Exception e)
+					{
+						Toast.makeText(getApplicationContext(),"ERROR - Can't get transactions from DB for this account",Toast.LENGTH_SHORT).show();
+						Log.d("DB_ERROR",e.toString());
+					}
+				});
 		return transactions;
 	}
 
@@ -418,7 +418,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			navigationView.getMenu().findItem(R.id.nav_accounts).setVisible(false);
 			navigationView.getMenu().findItem(R.id.nav_payment).setVisible(false);
 			navigationView.getMenu().findItem(R.id.nav_deposit).setVisible(false);
-            navigationView.getMenu().findItem(R.id.nav_change_clerk).setVisible(false);
+			navigationView.getMenu().findItem(R.id.nav_change_clerk).setVisible(false);
 			navigationView.getMenu().findItem(R.id.nav_loan).setVisible(false);
 			navigationView.getMenu().findItem(R.id.nav_messages).setVisible(false);
 			sessionManager.saveClerkObjForSession(clerk);
@@ -613,7 +613,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	private void changeClerk(Clerk oldClerk,Clerk newClerk)
 	{
 		FirebaseDatabase.getInstance().getReference("ClerkCustomers")
-			.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+				.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
 		{
 			@Override
 			public void onComplete(@NonNull Task<DataSnapshot> task)
@@ -622,7 +622,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 				{
 					if(ds.getKey().equals(oldClerk.getId()) && ds.child(customer.getId()).exists())
 					{
-						HashMap<String,String> customerHashMap = new HashMap<>();
+						HashMap<String, String> customerHashMap = new HashMap<>();
 						customerHashMap.put("email",customer.getEmail());
 						customerHashMap.put("fullName",customer.getFullName());
 						customerHashMap.put("id",customer.getId());
@@ -641,21 +641,21 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 				}
 			}
 		})
-		.addOnFailureListener(new OnFailureListener()
-		{
-			@Override
-			public void onFailure(@NonNull Exception e)
-			{
-				Toast.makeText(DashboardActivity.this,"Can't change clerks",Toast.LENGTH_SHORT).show();
-				Log.d("CHANGE CLERK ERROR",e.toString());
-			}
-		});
+				.addOnFailureListener(new OnFailureListener()
+				{
+					@Override
+					public void onFailure(@NonNull Exception e)
+					{
+						Toast.makeText(DashboardActivity.this,"Can't change clerks",Toast.LENGTH_SHORT).show();
+						Log.d("CHANGE CLERK ERROR",e.toString());
+					}
+				});
 	}
 
 	private void checkIfHasClerk()
 	{
 		FirebaseDatabase.getInstance().getReference("ClerkCustomers")
-			.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+				.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
 		{
 			@Override
 			public void onComplete(@NonNull Task<DataSnapshot> task)
@@ -673,14 +673,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 					}
 			}
 		})
-		.addOnFailureListener(new OnFailureListener()
-		{
-			@Override
-			public void onFailure(@NonNull Exception e)
-			{
-				flag = false;
-			}
-		});
+				.addOnFailureListener(new OnFailureListener()
+				{
+					@Override
+					public void onFailure(@NonNull Exception e)
+					{
+						flag = false;
+					}
+				});
 	}
 
 	private void setViewForTransfer()
@@ -720,7 +720,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 					public void onComplete(@NonNull Task<DataSnapshot> task)
 					{
 						for(DataSnapshot ds : task.getResult().getChildren())
-							if(!ds.getKey().equals(customer.getId()) && ds.child("typeID").getValue(int.class) == 3)
+							if(!ds.getKey().equals(customer.getId()) &&
+							   ds.child("typeID").getValue(int.class) == 3)
 							{
 								customersForTransfer.add(ds.getValue(Customer.class));
 								customersForTransfer.get(customersForTransfer.size() -
@@ -841,25 +842,26 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 									if(ds.child(customer.getId()).exists())
 										clerkID[0] = ds.getKey();
 								}
-								Transaction transaction = customer.getAccounts().get(selectedAccountIndex).getTransactions().get(customer.getAccounts().get(selectedAccountIndex).getTransactions().size() - 1);
+								Transaction transaction = customer.getAccounts().get(selectedAccountIndex).getTransactions().get(
+										customer.getAccounts().get(selectedAccountIndex).getTransactions().size() -
+										1);
 
 								FirebaseDatabase.getInstance().getReference("PendingTransactions").child("CashDeposits")
-									.child(clerkID[0]).child(customer.getId()).child(transaction.getTransactionID()).setValue(transaction);
+										.child(clerkID[0]).child(customer.getId()).child(transaction.getTransactionID()).setValue(transaction);
 								Toast.makeText(DashboardActivity.this,"Express cash deposit is now pending for approval by your clerk",Toast.LENGTH_SHORT).show();
 								pbDepositDialog.setVisibility(View.INVISIBLE);
 							}
 						})
-						.addOnFailureListener(new OnFailureListener()
-						{
-							@Override
-							public void onFailure(@NonNull Exception e)
-							{
-								Toast.makeText(DashboardActivity.this,"Can't add cash deposit to pending transactions",Toast.LENGTH_SHORT).show();
-								Log.d("CASH DEPOSIT ERROR",e.toString());
-							}
-						});
-					}
-					catch(InterruptedException e)
+								.addOnFailureListener(new OnFailureListener()
+								{
+									@Override
+									public void onFailure(@NonNull Exception e)
+									{
+										Toast.makeText(DashboardActivity.this,"Can't add cash deposit to pending transactions",Toast.LENGTH_SHORT).show();
+										Log.d("CASH DEPOSIT ERROR",e.toString());
+									}
+								});
+					} catch(InterruptedException e)
 					{
 						e.printStackTrace();
 					}
@@ -871,7 +873,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 //					sessionManager.saveCustomerObjForSession(customer);
 					ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
 					applicationDb.overwriteAccount(customer,customer.getAccounts().get(selectedAccountIndex));
-					Toast.makeText(this,"Deposit of $" + String.format(Locale.getDefault(),"%.2f",depositAmount) +
+					Toast.makeText(this,"Deposit of $" +
+					                    String.format(Locale.getDefault(),"%.2f",depositAmount) +
 					                    " " + "made successfully",Toast.LENGTH_SHORT).show();
 				}
 
@@ -927,8 +930,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		{
 //			transferAmount = Double.parseDouble(transfer_amount.getText().toString());
 			isNum = true;
-		}
-		catch(Exception e)
+		} catch(Exception e)
 		{
 			Toast.makeText(getApplicationContext(),"Please enter an amount to transfer",Toast.LENGTH_SHORT).show();
 		}
@@ -936,7 +938,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		{
 			if(transferAmount < DEPOSIT_MIN_LIMIT)
 			{
-				Toast.makeText(getApplicationContext(),"The minimum amount for a transfer is " + DEPOSIT_MIN_LIMIT,Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(),"The minimum amount for a transfer is " +
+				                                       DEPOSIT_MIN_LIMIT,Toast.LENGTH_SHORT).show();
 			}
 			else if(transferAmount >
 			        customer.getAccounts().get(spnSendingAccount.getSelectedItemPosition()).getAccountBalance())
@@ -1046,7 +1049,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
 			applicationDb.overwriteAccount(customer,customer.getAccounts().get(accountSelectedIndex));
 			applicationDb.saveNewLoan(clerk,customer,
-					customer.getAccounts().get(accountSelectedIndex).getTransactions().get(customer.getAccounts().get(accountSelectedIndex).getTransactions().size() - 1));
+					customer.getAccounts().get(accountSelectedIndex).getTransactions().get(
+							customer.getAccounts().get(accountSelectedIndex).getTransactions().size()  - 1));
 			Toast.makeText(this,"Loan of $" + String.format(Locale.getDefault(),"%.2f",loanAmount) +
 			                    " " + "is pending",Toast.LENGTH_SHORT).show();
 			loanDialog.dismiss();
@@ -1085,24 +1089,22 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 				spnReceivingAccount.setAdapter(accountsToTransferAdapter);
 			}
 		})
-		.addOnFailureListener(new OnFailureListener()
-		{
-			@Override
-			public void onFailure(@NonNull Exception e)
-			{
-				Toast.makeText(getApplicationContext(),"ERROR - Can't get customer's accounts from DB",Toast.LENGTH_SHORT).show();
-				Log.d("DB_ERROR",e.toString());
-			}
-		});
+				.addOnFailureListener(new OnFailureListener()
+				{
+					@Override
+					public void onFailure(@NonNull Exception e)
+					{
+						Toast.makeText(getApplicationContext(),"ERROR - Can't get customer's accounts from DB",Toast.LENGTH_SHORT).show();
+						Log.d("DB_ERROR",e.toString());
+					}
+				});
 
 		return accountsToTransfer;
 	}
 
 	public void getConversionRate()
 	{
-		CurrencyConverter converter = new CurrencyConverter(DashboardActivity.this);
 		int receivingProfIndex = spnReceivingCustomer.getSelectedItemPosition();
-		int receivingAccIndex = spnReceivingAccount.getSelectedItemPosition();
 		boolean isNum = false;
 		double transferAmount = 0;
 		String receivingCurrency = null;
@@ -1117,8 +1119,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		{
 			transferAmount = Double.parseDouble(transfer_amount.getText().toString());
 			isNum = true;
-		}
-		catch(Exception e)
+		} catch(Exception e)
 		{
 			Toast.makeText(getApplicationContext(),"Please enter an amount to transfer",Toast.LENGTH_SHORT).show();
 		}
@@ -1126,10 +1127,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		{
 			if(transferAmount < DEPOSIT_MIN_LIMIT)
 			{
-				Toast.makeText(getApplicationContext(),"The minimum amount for a transfer is " + DEPOSIT_MIN_LIMIT,Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(),"The minimum amount for a transfer is " +
+				                                       DEPOSIT_MIN_LIMIT,Toast.LENGTH_SHORT).show();
 			}
-			else if(transferAmount >
-			        customer.getAccounts().get(spnSendingAccount.getSelectedItemPosition()).getAccountBalance())
+			else if(transferAmount > customer.getAccounts().get(spnSendingAccount.getSelectedItemPosition()).getAccountBalance())
 			{
 				Account acc = (Account) spnSendingAccount.getSelectedItem();
 				Toast.makeText(getApplicationContext(),"The account," + " " + acc.toString() + " " +
@@ -1137,44 +1138,44 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			}
 			else
 			{
-//				converter.getConversionRate(sendingCurrency,receivingCurrency,transferAmount);
-//				transferAmount = converter.getConversionValue();
 				applyConversionRate(sendingCurrency,receivingCurrency,transferAmount);
 			}
 		}
 	}
 
-	public void applyConversionRate(String convertFrom,String convertTo,Double amountToConvert) {
+	public void applyConversionRate(String convertFrom,String convertTo,Double amountToConvert)
+	{
 		RequestQueue queue = Volley.newRequestQueue(DashboardActivity.this);
-		String url = "https://free.currconv.com/api/v7/convert?q="+convertFrom+"_"+convertTo+"&compact=ultra&apiKey=9de917fc5752ab3a4e57";
+		String url = "https://free.currconv.com/api/v7/convert?q=" + convertFrom + "_" + convertTo +
+		             "&compact=ultra&apiKey=9de917fc5752ab3a4e57";
 		StringRequest stringRequest = new StringRequest(Request.Method.GET,url,response ->
 		{
 			JSONObject jsonObject;
 			try
 			{
 				jsonObject = new JSONObject(response);
-				double conversionRateValue = round(((Double) jsonObject.get(convertFrom+"_"+convertTo)), 2);
-//				conversionValue = round((conversionRateValue*amountToConvert), 2);
-				transferAmount = round((conversionRateValue*amountToConvert), 2);
+				double conversionRateValue = round(((Double) jsonObject.get(
+						convertFrom + "_" + convertTo)),2);
+				transferAmount = round((conversionRateValue * amountToConvert),2);
 				makeTransfer();
-			}
-			catch (JSONException e)
+			} catch(JSONException e)
 			{
 				e.printStackTrace();
 			}
-		}, error ->
+		},error ->
 		{
-
+			Toast.makeText(DashboardActivity.this,"There was a problem with the conversion",Toast.LENGTH_SHORT).show();
+			Log.d("CONVERSION_ERROR",error.toString());
 		});
 		queue.add(stringRequest);
 	}
 
-	public static double round(double value, int places)
+	public static double round(double value,int places)
 	{
-		if (places < 0)
+		if(places < 0)
 			throw new IllegalArgumentException();
 		BigDecimal bd = BigDecimal.valueOf(value);
-		bd = bd.setScale(places, RoundingMode.HALF_UP);
+		bd = bd.setScale(places,RoundingMode.HALF_UP);
 		return bd.doubleValue();
 	}
 }
