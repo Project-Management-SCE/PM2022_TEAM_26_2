@@ -63,10 +63,10 @@ public class Account
     /**
      * Method to implement payment to payee
      * Adds a payment to transactions
-     * @param payee - payee's name
+     * @param payee - payee object
      * @param amount - the amount to transfer to payee
      */
-    public void addPaymentTransaction (String payee, double amount)
+    public void addPaymentTransaction (Payee payee, double amount)
     {
         accountBalance -= amount;
 
@@ -78,7 +78,7 @@ public class Account
             }
         }
 
-        Transaction payment = new Transaction("T" + (transactions.size() + 1) + "-P" + (paymentCount+1), payee, amount);
+        Transaction payment = new Transaction(amount,"T" + (transactions.size() + 1) + "-P" + (paymentCount+1), payee.getPayeeID(),payee.getPayeeName());
         transactions.add(payment);
 //        transactions.put(payment.getTransactionID(),payment);
     }

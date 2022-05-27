@@ -35,6 +35,7 @@ public class LoginActivity extends AppCompatActivity
 {
 
 	private Toolbar toolbar;
+	public static int userTypeID;
 
 	TextView creatNewAccount;
 	TextView alreadyHaveAccount;
@@ -129,7 +130,7 @@ public class LoginActivity extends AppCompatActivity
 								String phone = snapshot.child(id_login).child("phone").getValue(String.class);
 								String country = snapshot.child(id_login).child("country").getValue(String.class);
 								int typeID = snapshot.child(id_login).child("typeID").getValue(int.class);
-
+								setUserTypeID(typeID);
 								//Create a User Session
 								SessionManager sessionManager = new SessionManager(LoginActivity.this,SessionManager.USER_SESSION);
 								sessionManager.createLoginSession(fullName,id,username,email,password,phone,String.valueOf(typeID));
@@ -184,4 +185,8 @@ public class LoginActivity extends AppCompatActivity
 			}
 		});
 	}
+
+	public static int getUserTypeID() {return userTypeID;}
+	public static void setUserTypeID(int userTypeID) {LoginActivity.userTypeID = userTypeID;}
+
 }

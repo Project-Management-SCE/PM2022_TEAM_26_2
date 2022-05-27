@@ -33,7 +33,8 @@ public class Transaction
 	private String sendingAccount;
 	private String destinationCustomerId;
 	private String destinationAccount;
-	private String payee;
+	private String payeeId;
+	private String payeeName;
 	private double amount;
 	private TRANSACTION_TYPE transactionType;
 	private STATUS status;
@@ -47,14 +48,15 @@ public class Transaction
 	 * Transaction constructors for payment
 	 *
 	 * @param transactionID - transaction ID
-	 * @param payee         - receiving side of payment
+	 * @param payeeId         - receiving side of payment
 	 * @param amount        - amount to transfer to payee
 	 */
-	public Transaction(String transactionID,String payee,double amount)
+	public Transaction(double amount,String transactionID,String payeeId,String payeeName)
 	{
 		this.transactionID = transactionID;
 		timestamp = DATE_FORMAT.format(new Date());
-		this.payee = payee;
+		this.payeeId = payeeId;
+		this.payeeName = payeeName;
 		this.amount = amount;
 		transactionType = TRANSACTION_TYPE.PAYMENT;
 	}
@@ -143,7 +145,7 @@ public class Transaction
 		return destinationAccount;
 	}
 
-	public String getPayee() { return payee; }
+	public String getPayeeId() { return payeeId; }
 
 	public double getAmount()
 	{

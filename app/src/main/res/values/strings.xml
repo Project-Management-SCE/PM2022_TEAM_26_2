@@ -139,6 +139,7 @@
     <string name="chat">Chat</string>
     <string name="select_cash_deposit">Select Cash Deposit</string>
     <string name="approve_transactions">Approve Transactions</string>
+    <string name="select_user_change_clerk">Select user to change his clerk</string>
 
     <string-array name="days">
         <item>Sunday</item>

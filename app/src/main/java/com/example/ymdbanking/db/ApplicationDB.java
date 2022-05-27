@@ -111,16 +111,10 @@ public class ApplicationDB
 		}
 		else if(transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.PAYMENT)
 		{
-			HashMap<String,Transaction> tran = new HashMap<>();
-			tran.put(transaction.getTransactionID(),transaction);
-			database.getReference("Payees").child(sendingCustomer.getId()).setValue(tran);
-//			tran.put("sending_account",transaction.getSendingAccount());
-//			tran.put("destination_account",transaction.getDestinationAccount());
-//			tran.put("payee",transaction.getPayee());
-//			database.getReference("Accounts").child(sendingCustomer.getId())
-//					.child(transaction.getSendingAccount()).setValue(tran);
-//			database.getReference("Accounts").child(sendingCustomer.getId())
-//					.child(transaction.getSendingAccount()).setValue(transaction);
+//			HashMap<String,Transaction> tran = new HashMap<>();
+//			tran.put(transaction.getTransactionID(),transaction);
+			database.getReference("Payees").child(sendingCustomer.getId()).child(transaction.getPayeeId())
+					.child(transaction.getTransactionID()).setValue(transaction);
 		}
 		else if(transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.DEPOSIT ||
 		        transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.LOAN ||

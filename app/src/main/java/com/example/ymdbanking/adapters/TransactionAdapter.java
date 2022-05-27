@@ -59,7 +59,7 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         if (transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.PAYMENT)
         {
             imgTransactionIcon.setImageResource(R.drawable.lst_payment_icon);
-            txtTransactionInfo.setText("To Payee: " + transaction.getPayee());
+            txtTransactionInfo.setText("To Payee: " + transaction.getPayeeId());
             txtTransactionAmount.setTextColor(Color.RED);
         }
         else if (transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.TRANSFER)

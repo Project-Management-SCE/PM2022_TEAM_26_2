@@ -49,6 +49,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.core.view.Change;
 
 
 import org.json.JSONException;
@@ -199,12 +200,12 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		mAuth = FirebaseAuth.getInstance();
 
 		sessionManager = new SessionManager(this,SessionManager.USER_SESSION);
-		sessionId = sessionManager.userSession.getString(SessionManager.KEY_TYPE_ID,null);
-		if(sessionId.equals("1"))
+//		sessionId = sessionManager.userSession.getString(SessionManager.KEY_TYPE_ID,null);
+		if(LoginActivity.getUserTypeID() == 1)
 			admin = sessionManager.getAdminObjFromSession();
-		else if(sessionId.equals("2"))
+		else if(LoginActivity.getUserTypeID() == 2)
 			clerk = sessionManager.getClerkObjFromSession();
-		else if(sessionId.equals("3"))
+		else if(LoginActivity.getUserTypeID() == 3)
 		{
 			customer = sessionManager.getCustomerObjFromSession();
 			setValuesForCustomer();
@@ -278,15 +279,15 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 				sessionManager.saveClerksForSession(clerks);
 			}
 		})
-				.addOnFailureListener(new OnFailureListener()
-				{
-					@Override
-					public void onFailure(@NonNull Exception e)
-					{
-						Toast.makeText(getApplicationContext(),"ERROR - Can't get all clerks from DB",Toast.LENGTH_SHORT).show();
-						Log.d("DB_ERROR",e.toString());
-					}
-				});
+		.addOnFailureListener(new OnFailureListener()
+		{
+			@Override
+			public void onFailure(@NonNull Exception e)
+			{
+				Toast.makeText(getApplicationContext(),"ERROR - Can't get all clerks from DB",Toast.LENGTH_SHORT).show();
+				Log.d("DB_ERROR",e.toString());
+			}
+		});
 	}
 
 	private ArrayList<Transaction> getLoansForClerk(Clerk clerk)
@@ -397,7 +398,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		disp_username.setText(userDetails.get(SessionManager.KEY_USERNAME));
 
 		//If user is customer
-		if(sessionId.equals("3"))
+		if(LoginActivity.getUserTypeID() == 3)
 		{
 			//User's navigation drawer
 //            View headerView = navigationView.getHeaderView(0);
@@ -410,7 +411,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			sessionManager.saveCustomerObjForSession(customer);
 		}
 		//If user is clerk
-		else if(sessionId.equals("2"))
+		else if(LoginActivity.getUserTypeID() == 2)
 		{
 			navigationView.getMenu().findItem(R.id.nav_clerks).setVisible(false);
 			navigationView.getMenu().findItem(R.id.nav_transfer).setVisible(false);
@@ -424,7 +425,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 		}
 		//If user is admin
-		else if(sessionId.equals("1"))
+		else if(LoginActivity.getUserTypeID() == 1)
 		{
 			navigationView.getMenu().findItem(R.id.nav_transfer).setVisible(false);
 			navigationView.getMenu().findItem(R.id.nav_loan).setVisible(false);
@@ -433,7 +434,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			navigationView.getMenu().findItem(R.id.nav_payment).setVisible(false);
 			navigationView.getMenu().findItem(R.id.nav_deposit).setVisible(false);
 			navigationView.getMenu().findItem(R.id.nav_transaction).setVisible(false);
-            navigationView.getMenu().findItem(R.id.nav_change_clerk).setVisible(false);
 			navigationView.getMenu().findItem(R.id.nav_messages).setVisible(false);
 			sessionManager.saveAdminObjForSession(admin);
 		}
@@ -543,13 +543,20 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		}
 		else if(id == R.id.nav_change_clerk)
 		{
-			if(flag)
+			if(LoginActivity.getUserTypeID() == 1)
 			{
-				displayChangeClerkDialog();
+				startActivity(new Intent(DashboardActivity.this,ChangeClerkActivity.class));
 			}
-			else
-				Toast.makeText(DashboardActivity.this,
-						"You can't change your clerk because you don't have one",Toast.LENGTH_SHORT).show();
+			else if(LoginActivity.getUserTypeID() == 3)
+			{
+				if(flag)
+				{
+					displayChangeClerkDialog();
+				}
+				else
+					Toast.makeText(DashboardActivity.this,
+							"You can't change your clerk because you don't have one",Toast.LENGTH_SHORT).show();
+			}
 		}
 		else if(id == R.id.nav_messages)
 			startActivity(new Intent(DashboardActivity.this,ShowMessagesActivity.class));

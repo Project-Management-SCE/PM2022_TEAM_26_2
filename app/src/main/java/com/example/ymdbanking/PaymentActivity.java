@@ -104,7 +104,7 @@ public class PaymentActivity extends AppCompatActivity
 		customer.setPayees(new ArrayList<>());
 
 		getPayees();
-		setValues();
+//		setValues();
 	}
 
 	/**
@@ -224,9 +224,7 @@ public class PaymentActivity extends AppCompatActivity
 			{
 
 				int selectedPayeeIndex = spnSelectPayee.getSelectedItemPosition();
-				String selectedPayee = customer.getPayees().get(selectedPayeeIndex).toString();
-
-				customer.getAccounts().get(selectedAccountIndex).addPaymentTransaction(selectedPayee,paymentAmount);
+				customer.getAccounts().get(selectedAccountIndex).addPaymentTransaction(customer.getPayees().get(selectedPayeeIndex),paymentAmount);
 
 				accounts = customer.getAccounts();
 				spnSelectAccount.setAdapter(accountAdapter);
@@ -309,9 +307,9 @@ public class PaymentActivity extends AppCompatActivity
 			public void onComplete(@NonNull Task<DataSnapshot> task)
 			{
 				for(DataSnapshot ds : task.getResult().getChildren())
-				{
 					customer.getPayees().add(ds.getValue(Payee.class));
-				}
+
+				setValues();
 			}
 		})
 		.addOnFailureListener(new OnFailureListener()
