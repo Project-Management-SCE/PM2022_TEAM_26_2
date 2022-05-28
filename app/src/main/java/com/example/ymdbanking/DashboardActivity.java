@@ -308,7 +308,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 					@Override
 					public void onFailure(@NonNull Exception e)
 					{
-
+						Toast.makeText(DashboardActivity.this,"Can't get loans for clerk " + clerk.getFullName(),Toast.LENGTH_SHORT).show();
+						Log.d("GET_LOANS_ERROR",e.toString());
 					}
 				});
 
@@ -632,9 +633,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 						customerHashMap.put("username",customer.getUsername());
 						ds.child(customer.getId()).getRef().removeValue();
 						ds.getRef().getRoot().child("ClerkCustomers").child(newClerk.getId()).child(customer.getId()).setValue(customerHashMap);
-//						ds.getRef().removeValue();
-//						ds.getRef().setValue(newClerk.getId());
-//						ds.child(customer.getId()).getRef().setValue(customer);
 
 						Toast.makeText(DashboardActivity.this,"Your clerk has been changed",Toast.LENGTH_SHORT).show();
 					}
@@ -673,14 +671,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 					}
 			}
 		})
-				.addOnFailureListener(new OnFailureListener()
-				{
-					@Override
-					public void onFailure(@NonNull Exception e)
-					{
-						flag = false;
-					}
-				});
+		.addOnFailureListener(new OnFailureListener()
+		{
+			@Override
+			public void onFailure(@NonNull Exception e)
+			{
+				flag = false;
+			}
+		});
 	}
 
 	private void setViewForTransfer()
@@ -852,16 +850,17 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 								pbDepositDialog.setVisibility(View.INVISIBLE);
 							}
 						})
-								.addOnFailureListener(new OnFailureListener()
-								{
-									@Override
-									public void onFailure(@NonNull Exception e)
-									{
-										Toast.makeText(DashboardActivity.this,"Can't add cash deposit to pending transactions",Toast.LENGTH_SHORT).show();
-										Log.d("CASH DEPOSIT ERROR",e.toString());
-									}
-								});
-					} catch(InterruptedException e)
+						.addOnFailureListener(new OnFailureListener()
+						{
+							@Override
+							public void onFailure(@NonNull Exception e)
+							{
+								Toast.makeText(DashboardActivity.this,"Can't add cash deposit to pending transactions",Toast.LENGTH_SHORT).show();
+								Log.d("CASH DEPOSIT ERROR",e.toString());
+							}
+						});
+					}
+					catch(InterruptedException e)
 					{
 						e.printStackTrace();
 					}
@@ -869,8 +868,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 				//If customer chose credit
 				else
 				{
-//					customer.getAccounts().get(selectedAccountIndex).addDepositTransaction(customer.getId(),depositAmount,depositMethods[1]);
-//					sessionManager.saveCustomerObjForSession(customer);
 					ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
 					applicationDb.overwriteAccount(customer,customer.getAccounts().get(selectedAccountIndex));
 					Toast.makeText(this,"Deposit of $" +
@@ -881,8 +878,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 				accountAdapter = new ArrayAdapter<Account>(this,android.R.layout.simple_spinner_item,customer.getAccounts());
 				accountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 				spnAccounts.setAdapter(accountAdapter);
-
-				//TODO: Add checkbox if the user wants to make more than one deposit
 
 				depositDialog.dismiss();
 				drawerLayout.closeDrawers();
@@ -1178,4 +1173,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		bd = bd.setScale(places,RoundingMode.HALF_UP);
 		return bd.doubleValue();
 	}
+
+
 }

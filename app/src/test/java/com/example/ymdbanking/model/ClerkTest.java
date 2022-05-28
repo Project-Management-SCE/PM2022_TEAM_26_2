@@ -68,28 +68,28 @@ public class ClerkTest extends TestCase
 		clerk.setCustomers(new ArrayList<>(0));
 	}
 
-	public void testAssignCustomerToClerk()
-	{
-		//Add customer to arrayList for test
-		clerk.assignCustomerToClerk(new Customer("daniel@gmail.com","Daniel Arbiv","123456789",
-				"123456","0501232130","daniel","USA"),null);
-		//Validate customer's info in customers arrayList
-		Customer customer = clerk.getCustomers().get(clerk.getCustomers().size() - 1);
-		//Validate email
-		assertEquals("daniel@gmail.com",customer.getEmail());
-		//Validate fullName
-		assertEquals("Daniel Arbiv",customer.getFullName());
-		//Validate id
-		assertEquals("123456789",customer.getId());
-		//Validate password
-		assertEquals("123456",customer.getPassword());
-		//Validate phone
-		assertEquals("0501232130",customer.getPhone());
-		//Validate username
-		assertEquals("daniel",customer.getUsername());
-		//Validate country
-		assertEquals("USA",customer.getCountry());
-	}
+//	public void testAssignCustomerToClerk()
+//	{
+//		//Add customer to arrayList for test
+//		clerk.assignCustomerToClerk(new Customer("daniel@gmail.com","Daniel Arbiv","123456789",
+//				"123456","0501232130","daniel","USA"),null);
+//		//Validate customer's info in customers arrayList
+//		Customer customer = clerk.getCustomers().get(clerk.getCustomers().size() - 1);
+//		//Validate email
+//		assertEquals("daniel@gmail.com",customer.getEmail());
+//		//Validate fullName
+//		assertEquals("Daniel Arbiv",customer.getFullName());
+//		//Validate id
+//		assertEquals("123456789",customer.getId());
+//		//Validate password
+//		assertEquals("123456",customer.getPassword());
+//		//Validate phone
+//		assertEquals("0501232130",customer.getPhone());
+//		//Validate username
+//		assertEquals("daniel",customer.getUsername());
+//		//Validate country
+//		assertEquals("USA",customer.getCountry());
+//	}
 
 	public void testAddLoanTransaction()
 	{
