@@ -118,7 +118,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	private ArrayList<Account> accountsToTransfer;
 	private ArrayAdapter<Account> accountsToTransferAdapter;
 
-	private final String[] depositMethods = {"Cash","Credit"};
+	private final String[] depositMethods = {"Credit","Cash"};
 	private ArrayAdapter<String> depositMethodAdapter;
 	private Spinner spnDepositMethod;
 	private TextView txtSelectDepositMethod;
@@ -639,15 +639,15 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 				}
 			}
 		})
-				.addOnFailureListener(new OnFailureListener()
-				{
-					@Override
-					public void onFailure(@NonNull Exception e)
-					{
-						Toast.makeText(DashboardActivity.this,"Can't change clerks",Toast.LENGTH_SHORT).show();
-						Log.d("CHANGE CLERK ERROR",e.toString());
-					}
-				});
+		.addOnFailureListener(new OnFailureListener()
+		{
+			@Override
+			public void onFailure(@NonNull Exception e)
+			{
+				Toast.makeText(DashboardActivity.this,"Can't change clerks",Toast.LENGTH_SHORT).show();
+				Log.d("CHANGE CLERK ERROR",e.toString());
+			}
+		});
 	}
 
 	private void checkIfHasClerk()
@@ -1174,5 +1174,344 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		return bd.doubleValue();
 	}
 
+	public String getAccountName() {return accountName;}
+	public void setAccountName(String accountName) {this.accountName = accountName;}
 
+	public String getDepositAmount() {return depositAmount;}
+	public void setDepositAmount(String depositAmount) {this.depositAmount = depositAmount;}
+
+	public Customer getCustomer() {return customer;}
+	public void setCustomer(Customer customer) {this.customer = customer;}
+
+	public Clerk getClerk() {return clerk;}
+	public void setClerk(Clerk clerk) {this.clerk = clerk;}
+
+	public Admin getAdmin() {return admin;}
+	public void setAdmin(Admin admin) {this.admin = admin;}
+
+	public ArrayList<Clerk> getClerks() {return clerks;}
+	public void setClerks(ArrayList<Clerk> clerks) {this.clerks = clerks;}
+
+	public double getTransferAmount() {return transferAmount;}
+	public void setTransferAmount(double transferAmount) {this.transferAmount = transferAmount;}
+
+	public ArrayList<Customer> getCustomersForTransfer() {return customersForTransfer;}
+	public void setCustomersForTransfer(ArrayList<Customer> customersForTransfer) {this.customersForTransfer = customersForTransfer;}
+
+	public ArrayAdapter<Customer> getCustomerAdapter() {return customerAdapter;}
+	public void setCustomerAdapter(ArrayAdapter<Customer> customerAdapter) {this.customerAdapter = customerAdapter;}
+
+	public ArrayList<Account> getAccountsToTransfer() {return accountsToTransfer;}
+	public void setAccountsToTransfer(ArrayList<Account> accountsToTransfer) {this.accountsToTransfer = accountsToTransfer;}
+
+	public ArrayAdapter<Account> getAccountsToTransferAdapter() {return accountsToTransferAdapter;}
+	public void setAccountsToTransferAdapter(ArrayAdapter<Account> accountsToTransferAdapter) {this.accountsToTransferAdapter = accountsToTransferAdapter;}
+
+	public String[] getDepositMethods() {return depositMethods;}
+	public void setDepositMethodAdapter(ArrayAdapter<String> depositMethodAdapter) {this.depositMethodAdapter = depositMethodAdapter;}
+
+	public Dialog getDepositDialog()
+	{
+		return depositDialog;
+	}
+
+	public void setDepositDialog(Dialog depositDialog)
+	{
+		this.depositDialog = depositDialog;
+	}
+
+	public EditText getEdtDepositAmount()
+	{
+		return edtDepositAmount;
+	}
+
+	public void setEdtDepositAmount(EditText edtDepositAmount)
+	{
+		this.edtDepositAmount = edtDepositAmount;
+	}
+
+	public Button getBtnCancel()
+	{
+		return btnCancel;
+	}
+
+	public void setBtnCancel(Button btnCancel)
+	{
+		this.btnCancel = btnCancel;
+	}
+
+	public Button getBtnSuccess()
+	{
+		return btnSuccess;
+	}
+
+	public void setBtnSuccess(Button btnSuccess)
+	{
+		this.btnSuccess = btnSuccess;
+	}
+
+	public Spinner getAccounts()
+	{
+		return accounts;
+	}
+
+	public void setAccounts(Spinner accounts)
+	{
+		this.accounts = accounts;
+	}
+
+	public Dialog getTransferDialog()
+	{
+		return transferDialog;
+	}
+
+	public void setTransferDialog(Dialog transferDialog)
+	{
+		this.transferDialog = transferDialog;
+	}
+
+	public TextInputEditText getTransfer_amount()
+	{
+		return transfer_amount;
+	}
+
+	public void setTransfer_amount(TextInputEditText transfer_amount)
+	{
+		this.transfer_amount = transfer_amount;
+	}
+
+	public Button getBtnApprove()
+	{
+		return btnApprove;
+	}
+
+	public void setBtnApprove(Button btnApprove)
+	{
+		this.btnApprove = btnApprove;
+	}
+
+	public Button getBtnAbort()
+	{
+		return btnAbort;
+	}
+
+	public void setBtnAbort(Button btnAbort)
+	{
+		this.btnAbort = btnAbort;
+	}
+
+	public Spinner getSendingAccount()
+	{
+		return sendingAccount;
+	}
+
+	public void setSendingAccount(Spinner sendingAccount)
+	{
+		this.sendingAccount = sendingAccount;
+	}
+
+	public Spinner getReceivingAccount()
+	{
+		return receivingAccount;
+	}
+
+	public void setReceivingAccount(Spinner receivingAccount)
+	{
+		this.receivingAccount = receivingAccount;
+	}
+
+	public String getmInput()
+	{
+		return mInput;
+	}
+
+	public void setmInput(String mInput)
+	{
+		this.mInput = mInput;
+	}
+
+	public Spinner getSpnAccounts()
+	{
+		return spnAccounts;
+	}
+
+	public void setSpnAccounts(Spinner spnAccounts)
+	{
+		this.spnAccounts = spnAccounts;
+	}
+
+	public ArrayAdapter<Account> getAccountAdapter()
+	{
+		return accountAdapter;
+	}
+
+	public void setAccountAdapter(ArrayAdapter<Account> accountAdapter)
+	{
+		this.accountAdapter = accountAdapter;
+	}
+
+	public SessionManager getSessionManager()
+	{
+		return sessionManager;
+	}
+
+	public void setSessionManager(SessionManager sessionManager)
+	{
+		this.sessionManager = sessionManager;
+	}
+
+	public String getTAG()
+	{
+		return TAG;
+	}
+
+	public void setTAG(String TAG)
+	{
+		this.TAG = TAG;
+	}
+
+	public Dialog getLoanDialog()
+	{
+		return loanDialog;
+	}
+
+	public void setLoanDialog(Dialog loanDialog)
+	{
+		this.loanDialog = loanDialog;
+	}
+
+	public Spinner getTopSpinner()
+	{
+		return topSpinner;
+	}
+
+	public void setTopSpinner(Spinner topSpinner)
+	{
+		this.topSpinner = topSpinner;
+	}
+
+	public Spinner getBottomSpinner()
+	{
+		return bottomSpinner;
+	}
+
+	public void setBottomSpinner(Spinner bottomSpinner)
+	{
+		this.bottomSpinner = bottomSpinner;
+	}
+
+	public EditText getEdtLoanAmount()
+	{
+		return edtLoanAmount;
+	}
+
+	public void setEdtLoanAmount(EditText edtLoanAmount)
+	{
+		this.edtLoanAmount = edtLoanAmount;
+	}
+
+	public String getSessionId()
+	{
+		return sessionId;
+	}
+
+	public void setSessionId(String sessionId)
+	{
+		this.sessionId = sessionId;
+	}
+
+	public Spinner getSpnSendingAccount()
+	{
+		return spnSendingAccount;
+	}
+
+	public void setSpnSendingAccount(Spinner spnSendingAccount)
+	{
+		this.spnSendingAccount = spnSendingAccount;
+	}
+
+	public Spinner getSpnReceivingCustomer()
+	{
+		return spnReceivingCustomer;
+	}
+
+	public void setSpnReceivingCustomer(Spinner spnReceivingCustomer)
+	{
+		this.spnReceivingCustomer = spnReceivingCustomer;
+	}
+
+	public Spinner getSpnReceivingAccount()
+	{
+		return spnReceivingAccount;
+	}
+
+	public void setSpnReceivingAccount(Spinner spnReceivingAccount)
+	{
+		this.spnReceivingAccount = spnReceivingAccount;
+	}
+
+	public ArrayAdapter<String> getDepositMethodAdapter()
+	{
+		return depositMethodAdapter;
+	}
+
+	public Spinner getSpnDepositMethod()
+	{
+		return spnDepositMethod;
+	}
+
+	public void setSpnDepositMethod(Spinner spnDepositMethod)
+	{
+		this.spnDepositMethod = spnDepositMethod;
+	}
+
+	public TextView getTxtSelectDepositMethod()
+	{
+		return txtSelectDepositMethod;
+	}
+
+	public void setTxtSelectDepositMethod(TextView txtSelectDepositMethod)
+	{
+		this.txtSelectDepositMethod = txtSelectDepositMethod;
+	}
+
+	public TextView getTxtSelectAccountDeposit()
+	{
+		return txtSelectAccountDeposit;
+	}
+
+	public void setTxtSelectAccountDeposit(TextView txtSelectAccountDeposit)
+	{
+		this.txtSelectAccountDeposit = txtSelectAccountDeposit;
+	}
+
+	public ProgressBar getPbDepositDialog()
+	{
+		return pbDepositDialog;
+	}
+
+	public void setPbDepositDialog(ProgressBar pbDepositDialog)
+	{
+		this.pbDepositDialog = pbDepositDialog;
+	}
+
+	public boolean isFlag()
+	{
+		return flag;
+	}
+
+	public void setFlag(boolean flag)
+	{
+		this.flag = flag;
+	}
+
+	public Clerk getCustomerClerk()
+	{
+		return customerClerk;
+	}
+
+	public void setCustomerClerk(Clerk customerClerk)
+	{
+		this.customerClerk = customerClerk;
+	}
 }
