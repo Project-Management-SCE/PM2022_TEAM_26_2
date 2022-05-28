@@ -160,4 +160,8 @@ public class Transaction
 	public STATUS getStatus() {return status;}
 
 	public String getDestinationCustomerId() {return destinationCustomerId;}
+
+	public String getPayeeName() {return payeeName;}
+
+	public void setPayeeName(String payeeName) {this.payeeName = payeeName;}
 }

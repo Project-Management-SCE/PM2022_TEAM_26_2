@@ -12,6 +12,11 @@ public class Payee
         //Empty constructor
     }
 
+    /**
+     *
+     * @param payeeID - payee's ID
+     * @param payeeName - name for payee
+     */
     public Payee (String payeeID, String payeeName)
     {
         this.payeeID = payeeID;
