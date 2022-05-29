@@ -10,7 +10,7 @@ pipeline
 				docker 
 				{ 
 					image 'androidsdk/android-31:latest'
-					reuseNode true  
+					reuseNode true
 				}
 			}
 			steps 
@@ -34,6 +34,7 @@ pipeline
 			steps 
 			{
                 sh './gradlew test'
+				junit '**/build/test-results/**/TEST-*.xml'
 			}			
 		}
 		
