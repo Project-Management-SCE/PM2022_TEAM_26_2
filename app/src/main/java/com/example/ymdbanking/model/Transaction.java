@@ -164,4 +164,6 @@ public class Transaction
 	public String getPayeeName() {return payeeName;}
 
 	public void setPayeeName(String payeeName) {this.payeeName = payeeName;}
+
+	public void setStatus(STATUS status) {this.status = status;}
 }

@@ -233,6 +233,7 @@ public class PendingTransactionsActivity extends AppCompatActivity
 				double newbalance = ds.child("accountBalance").getValue(double.class);
 				//Adding loan amount to account current balance
 				newbalance += loan.getAmount();
+				loan.setStatus(Transaction.STATUS.APPROVED);
 
 				//Setting account balance in DB to new balance
 				FirebaseDatabase.getInstance().getReference("Accounts").child(loan.getDestinationCustomerId())
@@ -244,6 +245,10 @@ public class PendingTransactionsActivity extends AppCompatActivity
 						//Setting status field in DB to APPROVED
 						FirebaseDatabase.getInstance().getReference("PendingTransactions").child("Loans").child(clerk.getId())
 								.child(loan.getDestinationCustomerId()).child(loan.getTransactionID()).child("status").setValue(Transaction.STATUS.APPROVED.toString());
+
+						FirebaseDatabase.getInstance().getReference("Accounts").child(loan.getDestinationCustomerId())
+								.child(loan.getDestinationAccount()).child("transactions").child(String.valueOf(selectedTransactionIndex))
+								.child("status").setValue(Transaction.STATUS.APPROVED);
 
 						Toast.makeText(PendingTransactionsActivity.this,"Loan applied on account " + loan.getDestinationAccount(),Toast.LENGTH_SHORT).show();
 						pendingLoans.remove(selectedTransactionIndex);
