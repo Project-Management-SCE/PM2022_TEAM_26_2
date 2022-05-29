@@ -56,9 +56,10 @@
                 app:boxStrokeColor="@color/black">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_fullname_signup"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="textPersonName"/>
+                    android:inputType="textPersonName" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -75,10 +76,12 @@
                 app:endIconTint="@color/black"
                 app:boxStrokeWidthFocused="2dp"
                 app:boxStrokeColor="@color/black">
+
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_username_signup"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="text"/>
+                    android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -97,9 +100,10 @@
                 app:boxStrokeColor="@color/black">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_email_signup"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="textEmailAddress"/>
+                    android:inputType="textEmailAddress" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -119,9 +123,10 @@
                 app:boxStrokeColor="@color/black">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_password_signup"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="textPassword"/>
+                    android:inputType="textPassword" />
 
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -141,9 +146,10 @@
                 app:boxStrokeColor="@color/black">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_confirm_pass_signup"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="textPassword"/>
+                    android:inputType="textPassword" />
 
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -164,9 +170,10 @@
                 app:boxStrokeColor="@color/black">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_phone_signup"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="phone"/>
+                    android:inputType="phone" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -183,10 +190,12 @@
                 app:endIconTint="@color/black"
                 app:boxStrokeWidthFocused="2dp"
                 app:boxStrokeColor="@color/black">
+
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_country_signup"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="text"/>
+                    android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -205,9 +214,10 @@
                 app:boxStrokeColor="@color/black">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_id_signup"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="phone"/>
+                    android:inputType="phone" />
 
 
 

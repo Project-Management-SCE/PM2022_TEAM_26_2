@@ -4,13 +4,26 @@ import android.content.Context;
 
 import junit.framework.TestCase;
 
+import org.junit.Before;
+
 import java.util.ArrayList;
 
 public class ClerkTest extends TestCase
 {
-	String email = "daniel@gmail.com",fullName = "Daniel Arbiv",id = "123456789",
-			password = "123456",phone = "05050000",username = "daniel";
-	Clerk clerk = new Clerk(email,fullName,id,password,phone,username);
+	String email,fullName,id,password,phone,username;
+	Clerk clerk;
+
+	@Before
+	public void setUp()
+	{
+		email = "adir@gmail.com";
+		fullName = "Adir Shaish";
+		id = "12121212";
+		password = "123456";
+		phone = "123456789";
+		username = "adir";
+		clerk = new Clerk(email,fullName,id,password,phone,username);
+	}
 
 	public void testGetLoansToApprove()
 	{
@@ -68,29 +81,6 @@ public class ClerkTest extends TestCase
 		clerk.setCustomers(new ArrayList<>(0));
 	}
 
-//	public void testAssignCustomerToClerk()
-//	{
-//		//Add customer to arrayList for test
-//		clerk.assignCustomerToClerk(new Customer("daniel@gmail.com","Daniel Arbiv","123456789",
-//				"123456","0501232130","daniel","USA"),null);
-//		//Validate customer's info in customers arrayList
-//		Customer customer = clerk.getCustomers().get(clerk.getCustomers().size() - 1);
-//		//Validate email
-//		assertEquals("daniel@gmail.com",customer.getEmail());
-//		//Validate fullName
-//		assertEquals("Daniel Arbiv",customer.getFullName());
-//		//Validate id
-//		assertEquals("123456789",customer.getId());
-//		//Validate password
-//		assertEquals("123456",customer.getPassword());
-//		//Validate phone
-//		assertEquals("0501232130",customer.getPhone());
-//		//Validate username
-//		assertEquals("daniel",customer.getUsername());
-//		//Validate country
-//		assertEquals("USA",customer.getCountry());
-//	}
-
 	public void testAddLoanTransaction()
 	{
 		//Reset arrayList for test
@@ -121,16 +111,38 @@ public class ClerkTest extends TestCase
 		clerk.setLoansToApprove(new ArrayList<>(0));
 	}
 
-	public void testAddCashDepositTransaction()
-	{
-
-	}
-
 	public void testAddLoanForPending()
 	{
-	}
+		//Transaction details
+		String transactionID = "T1-L1",customerId = "123456789";
+		double loanAmount = 10000;
+		//Account details
+		String accountName = "Daniel-1",accountNo = "A-1";
+		double accountBalance = 2000;
+		//Init account
+		Account account = new Account(accountName,accountNo,accountBalance);
+		//Init transaction
+		Transaction transaction = new Transaction(transactionID,account,loanAmount,customerId);
+		//Add to clerk's pending loans arrayList
+		clerk.addLoanForPending(transaction);
+		//Get transaction to validate
+		transaction = clerk.getLoansToApprove().get(clerk.getLoansToApprove().size() - 1);
+		//Validate the element addition to arrayList
+		int expectedSize = 1;
+		int actualSize = clerk.getLoansToApprove().size();
+		assertEquals(expectedSize,actualSize);
+		//Validate transactionID
+		assertEquals(transactionID,transaction.getTransactionID());
+		//Validate customerId
+		assertEquals(customerId,transaction.getDestinationCustomerId());
+		//Validate loanAmount
+		assertEquals(loanAmount,transaction.getAmount());
+		//Validate transaction type is loan
+		assertEquals(Transaction.TRANSACTION_TYPE.LOAN,transaction.getTransactionType());
+		//Validate transaction status is pending
+		assertEquals(Transaction.STATUS.PENDING,transaction.getStatus());
 
-	public void testAddCashDepositForPending()
-	{
+		//Reset arrayList for test
+		clerk.setLoansToApprove(new ArrayList<>(0));
 	}
 }

@@ -1,19 +1,24 @@
 //package com.example.ymdbanking;
 //
+//import static androidx.test.espresso.Espresso.closeSoftKeyboard;
 //import static androidx.test.espresso.Espresso.onView;
+//import static androidx.test.espresso.action.ViewActions.clearText;
 //import static androidx.test.espresso.action.ViewActions.click;
 //import static androidx.test.espresso.action.ViewActions.typeText;
 //import static androidx.test.espresso.matcher.ViewMatchers.withId;
+//import static androidx.test.espresso.matcher.ViewMatchers.withResourceName;
 //import static org.junit.Assert.assertEquals;
 //
 //import android.app.Dialog;
 //import android.content.Context;
 //import android.content.Intent;
+//import android.util.Log;
 //import android.widget.ArrayAdapter;
 //import android.widget.EditText;
 //import android.widget.Spinner;
 //
 //import androidx.test.core.app.ActivityScenario;
+//import androidx.test.espresso.action.ViewActions;
 //import androidx.test.ext.junit.rules.ActivityScenarioRule;
 //import androidx.test.platform.app.InstrumentationRegistry;
 //
@@ -24,7 +29,7 @@
 //import org.junit.Rule;
 //import org.junit.Test;
 //
-//public class CurrencyConversionTest
+//public class DepositInstrumentedTest
 //{
 //	private DashboardActivity dashboardActivity;
 //	private Dialog dlgDeposit;
@@ -36,13 +41,13 @@
 //	private Customer customer;
 //
 //	@Rule
-//	public ActivityScenarioRule<DashboardActivity> activityScenarioRule = new ActivityScenarioRule<DashboardActivity>(DashboardActivity.class);
+//	public ActivityScenarioRule<LoginActivity> activityScenarioRule = new ActivityScenarioRule<LoginActivity>(LoginActivity.class);
 //
 //	@Before
 //	public void setUp() throws Exception
 //	{
-//		Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-//		context.startActivity(new Intent(context,DashboardActivity.class));
+////		Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+////		context.startActivity(new Intent(context,DashboardActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 ////		dashboardActivity = new DashboardActivity();
 ////		customer = new Customer("daniel@gmail.com","Daniel Arbiv","123456789","123456",
 ////				"12345678","daniel","USA");
@@ -67,7 +72,20 @@
 ////		spnDepositMethod.setSelection(1);
 ////		dlgDeposit.show();
 //
+//		//Login
+//		onView(withId(R.id.login_email)).perform(clearText());
+//		onView(withId(R.id.login_id)).perform(clearText());
+//		onView(withId(R.id.login_pass)).perform(clearText());
+//
+//		onView(withId(R.id.login_email)).perform(typeText("daniel@gmail.com"));
+//		onView(withId(R.id.login_id)).perform(typeText("123456789"));
+//		onView(withId(R.id.login_pass)).perform(typeText("123456"));
+//		onView(withId(R.id.login_pass)).perform(ViewActions.closeSoftKeyboard());
+//		onView(withId(R.id.login_btn)).perform(click());
+//
+//		//Dashboard
 //		onView(withId(R.id.menu_icon)).perform(click());
+////		onView(withId(R.id.nav_transaction)).perform(click());
 //		onView(withId(R.id.nav_deposit)).perform(click());
 //		onView(withId(R.id.edt_deposit_amount)).perform(typeText("1000"));
 //		onView(withId(R.id.btn_deposit)).perform(click());
@@ -78,6 +96,6 @@
 //	{
 //		double expectedAmount = 2000;
 //		double actualAmount = customer.getAccounts().get(customer.getAccounts().size() - 1).getAccountBalance();
-//		assertEquals(expectedAmount,actualAmount);
+//		assertEquals(expectedAmount,actualAmount,0.0001);
 //	}
 //}

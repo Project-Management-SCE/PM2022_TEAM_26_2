@@ -81,41 +81,41 @@ public class Clerk extends User
 		}
 	}
 
-	public void addCashDepositTransaction(String customerId,Account destinationAccount,double amount)
-	{
-		int receivingAccDepositCount = 0;
-		try
-		{
-			for(int i = 0; i < destinationAccount.getTransactions().size(); i++)
-			{
-				if(destinationAccount.getTransactions().get(i).getTransactionType() ==
-				   Transaction.TRANSACTION_TYPE.DEPOSIT)
-				{
-					receivingAccDepositCount++;
-				}
-			}
-			Transaction transaction = new Transaction(
-					"T" + (destinationAccount.getTransactions().size() + 1) + "-D" +
-					(receivingAccDepositCount + 1),destinationAccount,amount,customerId);
-			destinationAccount.getTransactions().add(transaction);
-			addCashDepositForPending(transaction);
-		}
-		catch(NullPointerException e)
-		{
-			destinationAccount.setTransactions(new ArrayList<Transaction>());
-			Transaction transaction = new Transaction(
-					"T1" + "-D1",destinationAccount,amount,customerId);
-			destinationAccount.getTransactions().add(transaction);
-			addCashDepositForPending(transaction);
-		}
-	}
+//	public void addCashDepositTransaction(String customerId,Account destinationAccount,double amount)
+//	{
+//		int receivingAccDepositCount = 0;
+//		try
+//		{
+//			for(int i = 0; i < destinationAccount.getTransactions().size(); i++)
+//			{
+//				if(destinationAccount.getTransactions().get(i).getTransactionType() ==
+//				   Transaction.TRANSACTION_TYPE.DEPOSIT)
+//				{
+//					receivingAccDepositCount++;
+//				}
+//			}
+//			Transaction transaction = new Transaction(
+//					"T" + (destinationAccount.getTransactions().size() + 1) + "-D" +
+//					(receivingAccDepositCount + 1),destinationAccount,amount,customerId);
+//			destinationAccount.getTransactions().add(transaction);
+//			addCashDepositForPending(transaction);
+//		}
+//		catch(NullPointerException e)
+//		{
+//			destinationAccount.setTransactions(new ArrayList<Transaction>());
+//			Transaction transaction = new Transaction(
+//					"T1" + "-D1",destinationAccount,amount,customerId);
+//			destinationAccount.getTransactions().add(transaction);
+//			addCashDepositForPending(transaction);
+//		}
+//	}
 
 	public void addLoanForPending(Transaction pendingLoan)
 	{
 		loansToApprove.add(pendingLoan);
 	}
 
-	public void addCashDepositForPending(Transaction pendingDeposit) {cashDepositsToApprove.add(pendingDeposit);}
+//	public void addCashDepositForPending(Transaction pendingDeposit) {cashDepositsToApprove.add(pendingDeposit);}
 
 	@Override
 	public String toString()
