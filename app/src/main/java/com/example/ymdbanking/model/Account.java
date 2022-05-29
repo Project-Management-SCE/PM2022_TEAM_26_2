@@ -2,6 +2,8 @@ package com.example.ymdbanking.model;
 
 import android.icu.text.Edits;
 
+import com.example.ymdbanking.AccountsOverViewActivity;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,6 +19,9 @@ public class Account
     private String accountNo;
     private double accountBalance;
     private ArrayList<Transaction> transactions;
+
+    private static final double DEPOSIT_MIN_LIMIT = AccountsOverViewActivity.getDepositMinLimit();
+    private static final double LOAN_MIN_LIMIT = AccountsOverViewActivity.getLoanMinLimit();
 //    private long dbID;
 
     public Account()
@@ -90,44 +95,47 @@ public class Account
      */
     public void addDepositTransaction(String customerId, double amount,String method)
     {
-        if(method.equals("Credit"))
-            accountBalance += amount;
-
-        //TODO: Could be a better way - ie. each time a deposit is added, add it to the master count (global variable - persisted?)
-        int depositsCount = 0;
-
-        for (int i = 0; i < transactions.size(); i++)
+        if(amount >= DEPOSIT_MIN_LIMIT)
         {
-            if (transactions.get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.DEPOSIT)
-            {
-                depositsCount++;
-            }
-        }
+            if(method.equals("Credit"))
+                accountBalance += amount;
 
-        Transaction deposit;
-        if(method.equals("Credit"))
-            deposit = new Transaction("T" + (transactions.size() + 1) + "-D" + (depositsCount+1),amount,this,customerId);
-        else
-            deposit = new Transaction(amount,this,customerId,"T" + (transactions.size() + 1) + "-D" + (depositsCount+1));
-        transactions.add(deposit);
+            int depositsCount = 0;
+
+            for(int i = 0; i < transactions.size(); i++)
+            {
+                if(transactions.get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.DEPOSIT)
+                {
+                    depositsCount++;
+                }
+            }
+
+            Transaction deposit;
+            if(method.equals("Credit"))
+                deposit = new Transaction("T" + (transactions.size() + 1) + "-D" +
+                                          (depositsCount + 1),amount,this,customerId);
+            else
+                deposit = new Transaction(amount,this,customerId,
+                        "T" + (transactions.size() + 1) + "-D" + (depositsCount + 1));
+            transactions.add(deposit);
+        }
     }
 
     public void addLoanTransaction(String customerId,double amount)
     {
         accountBalance += amount;
 
-        //TODO: Could be a better way - ie. each time a deposit is added, add it to the master count (global variable - persisted?)
-        int depositsCount = 0;
+        int loansCount = 0;
 
         for (int i = 0; i < transactions.size(); i++)
         {
             if (transactions.get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.LOAN)
             {
-                depositsCount++;
+                loansCount++;
             }
         }
 
-        Transaction loan = new Transaction("T" + (transactions.size() + 1) + "-L" + (depositsCount+1),this,amount,customerId);
+        Transaction loan = new Transaction("T" + (transactions.size() + 1) + "-L" + (loansCount+1),this,amount,customerId);
         transactions.add(loan);
     }
 

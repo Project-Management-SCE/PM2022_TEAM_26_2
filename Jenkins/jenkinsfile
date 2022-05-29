@@ -35,7 +35,10 @@ pipeline
 			{
                 sh './gradlew test'
 				junit '**/build/test-results/**/TEST-*.xml'
+<<<<<<< HEAD
 				JUnitResultArchiver '**/target/surefire-reports/TEST-*.xml'
+=======
+>>>>>>> 45814935181c4d8bab7f88847ff7b68e4186d01d
 			}			
 		}
 		
@@ -59,6 +62,7 @@ pipeline
 			}
 		}
 	}
+
 }
 		
 		

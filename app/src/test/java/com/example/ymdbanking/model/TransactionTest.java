@@ -10,8 +10,6 @@ import java.util.ArrayList;
 public class TransactionTest
 {
 	private Customer customer;
-	private Transaction transaction;
-	private Account account;
 
 	@Before
 	public void setUp()
@@ -25,11 +23,6 @@ public class TransactionTest
 		String username = "daniel";
 		String country = "USA";
 		customer = new Customer(email,fullName,id,password,phone,username,country);
-//		//Setting Account info
-//		String accountName = "Daniel-1";
-//		String accountNo = "A1";
-//		double initBalance = 2000;
-//		account = new Account(accountName,accountNo,initBalance);
 	}
 
 	@Test
@@ -41,8 +34,6 @@ public class TransactionTest
 		customer.addAccount(accountName,initBalance);
 		//Sending Account
 		Account sendingAccount = customer.getAccounts().get(customer.getAccounts().size() - 1);
-//		String accountName1 = "Daniel-1",accountNo1 = "A-1";
-//		double initBalance1 = 2000;
 		//Receiving account
 		String accountName2 = "Mazal-1",accountNo2 = "A-1";
 		double initBalance2 = 2500;
@@ -63,10 +54,8 @@ public class TransactionTest
 		customer.addAccount(accountName,initBalance);
 		//Sending Account
 		Account sendingAccount = customer.getAccounts().get(customer.getAccounts().size() - 1);
-//		String accountName1 = "Daniel-1",accountNo1 = "A1";
-//		double initBalance1 = 2000;
 		//Receiving account
-		String accountName2 = "Mazal-1",accountNo2 = "A-1";
+		String accountName2 = "Mazal-1",accountNo2 = "A1";
 		double initBalance2 = 2500;
 		Account receivingAccount = new Account(accountName2,accountNo2,initBalance2);
 		//Transfer amount is over account's balance by 1
@@ -77,4 +66,65 @@ public class TransactionTest
 		double actualAmount = receivingAccount.getAccountBalance();
 		assertEquals(expectedAmount,actualAmount,0.0001);
 	}
+
+	@Test
+	public void testDeposit()
+	{
+		//Account details
+		String accountName = "Daniel-1",accountNo = "A1";
+		double initBalance = 2000;
+		customer.addAccount(accountName,initBalance);
+		//Account
+		Account account = customer.getAccounts().get(customer.getAccounts().size() - 1);
+		double depositAmount = 100;
+
+		account.addDepositTransaction(customer.getId(),depositAmount,"Credit");
+		double expected = 2100;
+		double actual = account.getAccountBalance();
+		assertEquals(expected,actual,0.0001);
+	}
+
+	@Test
+	public void testDepositUnderLimit()
+	{
+		//Account details
+		String accountName = "Daniel-1",accountNo = "A1";
+		double initBalance = 2000;
+		customer.addAccount(accountName,initBalance);
+		//Account
+		Account account = customer.getAccounts().get(customer.getAccounts().size() - 1);
+		//Deposit min limit is 100
+		double depositAmount = 99;
+
+		account.addDepositTransaction(customer.getId(),depositAmount,"Credit");
+		//account's balance should not change
+		double expected = 2000;
+		double actual = account.getAccountBalance();
+		assertEquals(expected,actual,0.0001);
+	}
+
+//	@Test
+//	public void testLoan()
+//	{
+//		//Account details
+//		String accountName = "Daniel-1",accountNo = "A1";
+//		double initBalance = 2000;
+//		customer.addAccount(accountName,initBalance);
+//		//Account
+//		Account account = customer.getAccounts().get(customer.getAccounts().size() - 1);
+//
+//		//Clerk details
+//		String email = "adir@gmail.com";
+//		String fullName = "Adir Shaish";
+//		String id = "12121212";
+//		String password = "123456";
+//		String phone = "123456789";
+//		String username = "adir";
+//		Clerk clerk = new Clerk(email,fullName,id,password,phone,username);
+//
+//		//Create loan transaction
+//		double loanAmount = 10000;
+//		account.addLoanTransaction(customer.getId(),loanAmount);
+//
+//	}
 }
