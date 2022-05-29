@@ -35,6 +35,7 @@ pipeline
 			{
                 sh './gradlew test'
 				junit '**/build/test-results/**/TEST-*.xml'
+				sh 'jenkins-plugin-cli --plugins metrics:4.1.6.2'
 			}			
 		}
 		
