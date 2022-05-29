@@ -50,8 +50,7 @@ pipeline
 			}
 			steps 
 			{
-				junit '**/target/surefire-reports/TEST-*.xml'
-				archive 'target/*.jar'
+				junit testDataPublishers: [[$class: 'AutomateTestDataPublisher']], testResults: 'target/surefire-reports/TEST-*.xml'
 			}			
 		}
 		
