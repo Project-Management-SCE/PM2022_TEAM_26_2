@@ -35,7 +35,7 @@ pipeline
 			{
                 sh './gradlew test'
 				junit '**/build/test-results/**/TEST-*.xml'
-				JUnitResultArchiver '**/target/surefire-reports/TEST-*.xml'
+				junit '**/target/surefire-reports/TEST-*.xml'
 			}			
 		}
 		
