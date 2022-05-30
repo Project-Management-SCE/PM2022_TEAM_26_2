@@ -57,10 +57,26 @@ pipeline
 				}
 			}
 		}
+		
+		stage('SonarQube')
+		{
+			steps
+			{
+				script
+				{
+					if(env.GIT_BRANCH == 'master')
+					{
+						withSonarQubeEnv('Sonar_TEST')
+						{
+							mvn 'package -DskipTest -U sonar:sonar -Dsonar.host.url="http://34.72.27.231:9000/"
+						}
+					}
+				}
+				timeout(time:5,unit:'MINUTES')
+				{
+					waitForQualityGate abortPipeline: true
+				}
+			}
+		}
 	}
-
 }
-		
-		
-		
-		
