@@ -35,6 +35,7 @@ pipeline
 			{
                 sh './gradlew test'
 				junit '**/build/test-results/**/TEST-*.xml'
+				scanForIssues tool: checkStyle(pattern: '**/target/checkstyle-results.xml')
 			}			
 		}
 		
@@ -68,7 +69,7 @@ pipeline
 					{
 						withSonarQubeEnv('Sonar_TEST')
 						{
-							mvn 'package -DskipTest -U sonar:sonar -Dsonar.host.url='http://34.72.27.231:9000/'
+							mvn 'package -DskipTest -U sonar:sonar -Dsonar.host.url="http://34.72.27.231:9000/"
 						}
 					}
 				}
