@@ -92,21 +92,23 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="invisible">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/balance"
                         android:fontFamily="@font/aldrich"
+                        android:text="@string/balance"
                         android:textColor="@color/black"
                         android:textSize="20sp" />
+
                     <TextView
+                        android:id="@+id/disp_balance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingTop="10dp"
-                        android:id="@+id/disp_balance"
                         android:fontFamily="@font/aldrich"
+                        android:paddingTop="10dp"
                         android:text="@string/_360"
                         android:textColor="@color/black"
                         android:textSize="20sp"
@@ -119,23 +121,24 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="invisible">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/aldrich"
                         android:text="@string/messages"
                         android:textColor="@color/black"
-                        android:fontFamily="@font/aldrich"
                         android:textSize="20sp" />
 
                     <TextView
+                        android:id="@+id/disp_msg_counter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/aldrich"
                         android:paddingTop="10dp"
                         android:text="@string/_0"
-                        android:fontFamily="@font/aldrich"
-                        android:id="@+id/disp_msg_counter"
                         android:textColor="@color/black"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -193,17 +196,18 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
             android:orientation="horizontal"
             android:paddingLeft="25dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:visibility="invisible">
 
             <Button
                 android:id="@+id/add_account_btn"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:background="@drawable/ic_profile"/>
+                android:background="@drawable/ic_profile" />
 
             <!--<ImageView
                 android:layout_width="36dp"

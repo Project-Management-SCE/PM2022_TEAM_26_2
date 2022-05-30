@@ -195,8 +195,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		navigationView = findViewById(R.id.navigation_view);
 		contentView = findViewById(R.id.content);
 
-		testB = findViewById(R.id.test_btn);
-
 		mAuth = FirebaseAuth.getInstance();
 
 		sessionManager = new SessionManager(this,SessionManager.USER_SESSION);
@@ -214,20 +212,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			checkIfHasClerk();
 		}
 		navigationDrawer();
-
-		testB.setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public void onClick(View view)
-			{
-				Log.d(TAG,"onClick: opening dialog.");
-
-				DialogFragment dialog
-						= new DialogFragment();
-				dialog.show(getSupportFragmentManager(),
-						"MyCustomDialog");
-			}
-		});
 	}
 
 	private void setValuesForCustomer()
@@ -246,6 +230,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 						if(customer.getAccounts().size() != tempCustomer.getAccounts().size())
 							//If there's a mismatch than we'll take the data from DB
 							customer.setAccounts(tempCustomer.getAccounts());
+
+						TextView customerEmail = findViewById(R.id.disp_email);
+						customerEmail.setText(customer.getEmail());
 						sessionManager.saveCustomerObjForSession(customer);
 						sessionManager.editor.putString("NumAccounts",String.valueOf(customer.getAccounts().size()));
 					}

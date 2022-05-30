@@ -57,6 +57,7 @@
                 android:paddingLeft="20dp"
                 android:text="xxsas@gmail.com"/>
         </LinearLayout>
+
         <LinearLayout
             android:layout_marginTop="25dp"
             android:orientation="horizontal"
@@ -78,41 +79,6 @@
                 android:text="@string/_266_225_225"
                 tools:ignore="RtlSymmetry" />
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_marginTop="25dp"
-            android:orientation="horizontal"
-            android:paddingLeft="25dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:id="@+id/add_account_btn"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:background="@drawable/ic_profile"/>
-
-            <!--<ImageView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:src="@drawable/ic_add_account_black"/>-->
-            <TextView
-                android:textStyle="bold"
-                android:layout_gravity="center_vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="20dp"
-                android:text="@string/add_account"/>
-
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/test_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Button"
-            />
-
 
     </LinearLayout>
 
