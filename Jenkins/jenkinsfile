@@ -35,7 +35,7 @@ pipeline
 			{
                 sh './gradlew test'
 				junit '**/build/test-results/**/TEST-*.xml'
-				scanForIssues tool: checkStyle(pattern: '**/target/checkstyle-results.xml')
+				scanForIssues tool: checkStyle(pattern: '**/checkstyle-results.xml')
 			}			
 		}
 		

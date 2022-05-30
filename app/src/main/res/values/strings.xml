@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DMY_Banking</string>
+    <string name="app_name">YMD_Banking</string>
     <string name="login">Login</string>
     <string name="email">Email</string>
     <string name="forgot_password">Forgot Password?</string>
