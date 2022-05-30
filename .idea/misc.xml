@@ -16,6 +16,7 @@
         <entry key="..\:/Users/danie/Desktop/PM2022_TEAM_26_2/app/src/main/res/layout/activity_login.xml" value="0.1796875" />
         <entry key="..\:/Users/danie/Desktop/PM2022_TEAM_26_2/app/src/main/res/layout/activity_payment.xml" value="0.1796875" />
         <entry key="..\:/Users/danie/Desktop/PM2022_TEAM_26_2/app/src/main/res/layout/activity_pending_loans.xml" value="0.14356884057971014" />
+        <entry key="..\:/Users/danie/Desktop/PM2022_TEAM_26_2/app/src/main/res/layout/activity_set_new_password.xml" value="0.1796875" />
         <entry key="..\:/Users/danie/Desktop/PM2022_TEAM_26_2/app/src/main/res/layout/activity_show_messages.xml" value="0.1796875" />
         <entry key="..\:/Users/danie/Desktop/PM2022_TEAM_26_2/app/src/main/res/layout/activity_show_users.xml" value="0.13496376811594202" />
         <entry key="..\:/Users/danie/Desktop/PM2022_TEAM_26_2/app/src/main/res/layout/activity_signup.xml" value="0.22" />
@@ -26,6 +27,7 @@
         <entry key="..\:/Users/danie/Desktop/PM2022_TEAM_26_2/app/src/main/res/layout/add_payee_dialog.xml" value="0.1796875" />
         <entry key="..\:/Users/danie/Desktop/PM2022_TEAM_26_2/app/src/main/res/layout/assign_customer_dialog.xml" value="0.13496376811594202" />
         <entry key="..\:/Users/danie/Desktop/PM2022_TEAM_26_2/app/src/main/res/layout/change_clerk_dialog.xml" value="0.22" />
+        <entry key="..\:/Users/danie/Desktop/PM2022_TEAM_26_2/app/src/main/res/layout/conent_home.xml" value="0.1796875" />
         <entry key="..\:/Users/danie/Desktop/PM2022_TEAM_26_2/app/src/main/res/layout/customer_dialog.xml" value="0.13360507246376813" />
         <entry key="..\:/Users/danie/Desktop/PM2022_TEAM_26_2/app/src/main/res/layout/deposit_dialog.xml" value="0.22" />
         <entry key="..\:/Users/danie/Desktop/PM2022_TEAM_26_2/app/src/main/res/layout/loan_dialog.xml" value="0.13451086956521738" />

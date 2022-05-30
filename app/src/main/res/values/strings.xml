@@ -20,12 +20,11 @@
     <string name="enter_user_name">Enter User Name</string>
     <string name="enter_password">Enter Password</string>
     <string name="remember_me">Remember Me</string>
-    <string name="sign_in">Sign In</string>
     <string name="create_account">Create Account</string>
     <string name="full_name">Full Name</string>
 
     <string name="next">next</string>
-    <string name="sign_up">Sign Up</string>
+    <string name="sign_up">Signup</string>
     <string name="forgot_password_title">Forgot Password</string>
     <string name="forgot_pass_detail">Enter Your Account\'s Email for which you want to reset your password</string>
     <string name="new_credentials">New Credentials</string>
