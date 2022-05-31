@@ -383,7 +383,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		String phone = userDetails.get(SessionManager.KEY_PHONE);
 		View headerView = navigationView.getHeaderView(0);
 		disp_username = headerView.findViewById(R.id.menu_userName);
-		disp_username.setText(customer.getUsername());
+		disp_username.setText(userDetails.get(SessionManager.KEY_USERNAME));
 
 		//If user is customer
 		if(LoginActivity.getUserTypeID() == 3)
@@ -423,6 +423,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			navigationView.getMenu().findItem(R.id.nav_deposit).setVisible(false);
 			navigationView.getMenu().findItem(R.id.nav_transaction).setVisible(false);
 			navigationView.getMenu().findItem(R.id.nav_messages).setVisible(false);
+			navigationView.getMenu().findItem(R.id.nav_customers).setVisible(false);
+
 			sessionManager.saveAdminObjForSession(admin);
 		}
 		disp_phone.setText(phone);
