@@ -264,83 +264,93 @@ public class ShowUsersActivity extends AppCompatActivity {
 
     public void deleteUser()
     {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        //Deletes user's account from firebase authentication
-        user.delete().addOnCompleteListener(new OnCompleteListener<Void>()
-        {
-            @Override
-            public void onComplete(@NonNull Task<Void> task)
-            {
-                //Deletes user's accounts from Accounts collection
-                FirebaseDatabase.getInstance().getReference("Accounts")
-                    .child(customers.get(selectedCustomerIndex).getId()).removeValue();
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        //Deletes user's account from firebase authentication
+//        if(user != null)
+//        {
+//            user.delete().addOnCompleteListener(new OnCompleteListener<Void>()
+//            {
+//                @Override
+//                public void onComplete(@NonNull Task<Void> task)
+//                {
+                    //Deletes user's accounts from Accounts collection
+                    FirebaseDatabase.getInstance().getReference("Accounts")
+                            .child(customers.get(selectedCustomerIndex).getId()).removeValue();
 
-                //Deletes user from Users collection
-                FirebaseDatabase.getInstance().getReference("Users").child(customers.get(selectedCustomerIndex).getId())
-                    .removeValue().addOnCompleteListener(new OnCompleteListener<Void>()
-                {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task)
+                    //Deletes user from Users collection
+                    FirebaseDatabase.getInstance().getReference("Users").child(customers.get(selectedCustomerIndex).getId())
+                            .removeValue().addOnCompleteListener(new OnCompleteListener<Void>()
                     {
-                        //Deletes user's data from rest of collections
-                        FirebaseDatabase.getInstance().getReference().get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task)
                         {
-                            @Override
-                            public void onComplete(@NonNull Task<DataSnapshot> task)
+                            //Deletes user's data from rest of collections
+                            FirebaseDatabase.getInstance().getReference().get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
                             {
-                                //Iterating through collection to find user's data
-                                for(DataSnapshot ds : task.getResult().getChildren())
+                                @Override
+                                public void onComplete(@NonNull Task<DataSnapshot> task)
                                 {
-                                    //If we're on Users or Accounts collection than skip a loop
-                                    if(ds.getKey().equals("Users") || ds.getKey().equals("Accounts"))
-                                        continue;
-
-                                    //Iterating through collection's children to see if we have a child with user's id
-                                    for(DataSnapshot dsa : ds.getChildren())
+                                    //Iterating through collection to find user's data
+                                    for(DataSnapshot ds : task.getResult().getChildren())
                                     {
-                                        if(dsa.child(customers.get(selectedCustomerIndex).getId()).exists())
+                                        //If we're on Users or Accounts collection than skip a loop
+                                        if(ds.getKey().equals("Users") ||
+                                           ds.getKey().equals("Accounts"))
+                                            continue;
+
+                                        //Iterating through collection's children to see if we have a child with user's id
+                                        for(DataSnapshot dsa : ds.getChildren())
                                         {
-                                            //If user's id exists than we'll remove it from the collection
-                                            dsa.child(customers.get(selectedCustomerIndex).getId()).getRef().removeValue();
+                                            if(dsa.child(customers.get(selectedCustomerIndex).getId()).exists())
+                                            {
+                                                //If user's id exists than we'll remove it from the collection
+                                                dsa.child(customers.get(selectedCustomerIndex).getId()).getRef().removeValue();
+                                            }
                                         }
                                     }
                                 }
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener()
-                        {
-                            @Override
-                            public void onFailure(@NonNull Exception e)
+                            })
+                                    .addOnFailureListener(new OnFailureListener()
+                                    {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e)
+                                        {
+                                            Toast.makeText(getApplicationContext(),"Can't delete user from DB",Toast.LENGTH_SHORT).show();
+                                            Log.d("DB_REMOVE_USER_ERROR",e.toString());
+                                        }
+                                    });
+
+                            Toast.makeText(getApplicationContext(),
+                                    "User - " + customers.get(selectedCustomerIndex).getUsername()
+                                    + " ID - " + customers.get(selectedCustomerIndex).getId() +
+                                    " has been deleted from DB",Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                            .addOnFailureListener(new OnFailureListener()
                             {
-                                Toast.makeText(getApplicationContext(),"Can't delete user from DB",Toast.LENGTH_SHORT).show();
-                                Log.d("DB_REMOVE_USER_ERROR",e.toString());
-                            }
-                        });
+                                @Override
+                                public void onFailure(@NonNull Exception e)
+                                {
+                                    Toast.makeText(getApplicationContext(),"Can't delete user from DB",Toast.LENGTH_SHORT).show();
+                                    Log.d("DB_REMOVE_USER_ERROR",e.toString());
+                                }
+                            });
+                }
+//            })
+//            .addOnFailureListener(new OnFailureListener()
+//            {
+//                @Override
+//                public void onFailure(@NonNull Exception e)
+//                {
+//                    Toast.makeText(getApplicationContext(),"Can't delete user from DB",Toast.LENGTH_SHORT).show();
+//                    Log.d("DB_REMOVE_USER_ERROR",e.toString());
+//                }
+//            });
+//        }
+//        else
+//        {
+//            Toast.makeText(getApplicationContext(),"Can't delete user",Toast.LENGTH_SHORT).show();
+//        }
+//    }
 
-                        Toast.makeText(getApplicationContext(),"User - " + customers.get(selectedCustomerIndex).getUsername()
-                                                               + " ID - " + customers.get(selectedCustomerIndex).getId() + " has been deleted from DB",Toast.LENGTH_SHORT).show();
-                    }
-                })
-                    .addOnFailureListener(new OnFailureListener()
-                {
-                    @Override
-                    public void onFailure(@NonNull Exception e)
-                    {
-                        Toast.makeText(getApplicationContext(),"Can't delete user from DB",Toast.LENGTH_SHORT).show();
-                        Log.d("DB_REMOVE_USER_ERROR",e.toString());
-                    }
-                });
-            }
-        })
-        .addOnFailureListener(new OnFailureListener()
-        {
-            @Override
-            public void onFailure(@NonNull Exception e)
-            {
-                Toast.makeText(getApplicationContext(),"Can't delete user from DB",Toast.LENGTH_SHORT).show();
-                Log.d("DB_REMOVE_USER_ERROR",e.toString());
-            }
-        });
-
-    }
 }
