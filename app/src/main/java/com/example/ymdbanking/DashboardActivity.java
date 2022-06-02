@@ -3,6 +3,7 @@ package com.example.ymdbanking;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -57,7 +58,9 @@ import org.json.JSONObject;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.BreakIterator;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -121,9 +124,9 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	private final String[] depositMethods = {"Credit","Cash"};
 	private ArrayAdapter<String> depositMethodAdapter;
 	private Spinner spnDepositMethod;
-	private TextView txtSelectDepositMethod;
-	private TextView txtSelectAccountDeposit;
 	private ProgressBar pbDepositDialog;
+	private ImageView imgTime;
+	private TextView txtWelcome;
 
 	private boolean flag;
 	private Clerk customerClerk;
@@ -178,6 +181,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			}
 		}
 	};
+	private Dialog helpDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -189,6 +193,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 		//Hooks
 		menuIcon = findViewById(R.id.menu_icon);
+		imgTime = findViewById(R.id.img_time);
+		txtWelcome = findViewById(R.id.txt_welcome);
 
 		//Menu Hooks
 		drawerLayout = findViewById(R.id.drawer_layout);
@@ -211,7 +217,96 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			setValuesForTransfer();
 			checkIfHasClerk();
 		}
+		setViews();
 		navigationDrawer();
+	}
+
+	private void setViews()
+	{
+		StringBuilder welcomeString = new StringBuilder();
+
+		Calendar calendar = Calendar.getInstance();
+
+		int timeOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+
+		if(timeOfDay >= 5 && timeOfDay < 12)
+		{
+			welcomeString.append(getString(R.string.good_morning));
+			imgTime.setImageResource(R.drawable.morning_icon_96);
+		}
+		else if(timeOfDay >= 12 && timeOfDay < 17)
+		{
+			welcomeString.append(getString(R.string.good_afternoon));
+			imgTime.setImageResource(R.drawable.day_icon_96);
+		}
+		else
+		{
+			welcomeString.append(getString(R.string.good_evening));
+			imgTime.setImageResource(R.drawable.night_icon_96);
+		}
+		// if admin user
+		if(LoginActivity.getUserTypeID() == 1)
+		{
+			welcomeString.append(", ")
+					.append(admin.getFullName())
+					.append(" Welcome to the Bank App Demo ")
+					.append(getString(R.string.happy))
+					.append(" ");
+
+		}
+		else if(LoginActivity.getUserTypeID() == 2)
+		{
+			welcomeString.append(", ")
+					.append(clerk.getFullName())
+					.append(" Welcome to the Bank App ")
+					.append(getString(R.string.happy))
+					.append(" ");
+		}
+		// if regular user
+		else if(LoginActivity.getUserTypeID() == 3)
+		{
+			welcomeString.append(", ")
+					.append(customer.getFullName())
+					.append(" Welcome to the Bank App ")
+					.append(getString(R.string.happy))
+					.append(" ");
+		}
+		int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+		String[] days = getResources().getStringArray(R.array.days);
+		String dow = "";
+
+		switch(day)
+		{
+			case Calendar.SUNDAY:
+				dow = days[0];
+				break;
+			case Calendar.MONDAY:
+				dow = days[1];
+				break;
+			case Calendar.TUESDAY:
+				dow = days[2];
+				break;
+			case Calendar.WEDNESDAY:
+				dow = days[3];
+				break;
+			case Calendar.THURSDAY:
+				dow = days[4];
+				break;
+			case Calendar.FRIDAY:
+				dow = days[5];
+				break;
+			case Calendar.SATURDAY:
+				dow = days[6];
+				break;
+			default:
+				break;
+		}
+
+		welcomeString.append(dow)
+				.append(".");
+
+		txtWelcome.setText(welcomeString.toString());
 	}
 
 	private void setValuesForCustomer()
@@ -295,7 +390,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 					@Override
 					public void onFailure(@NonNull Exception e)
 					{
-						Toast.makeText(DashboardActivity.this,"Can't get loans for clerk " + clerk.getFullName(),Toast.LENGTH_SHORT).show();
+						Toast.makeText(DashboardActivity.this,"Can't get loans for clerk " +
+						                                      clerk.getFullName(),Toast.LENGTH_SHORT).show();
 						Log.d("GET_LOANS_ERROR",e.toString());
 					}
 				});
@@ -554,6 +650,10 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			startActivity(new Intent(DashboardActivity.this,ShowUsersActivity.class));
 		else if(id == R.id.nav_customers)
 			startActivity(new Intent(DashboardActivity.this,CustomerOverviewActivity.class));
+		else if(id == R.id.nav_help)
+		{
+			displayHelpDialog();
+		}
 		else if(id == R.id.nav_logout)
 		{
 			mAuth.signOut();
@@ -628,15 +728,15 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 				}
 			}
 		})
-		.addOnFailureListener(new OnFailureListener()
-		{
-			@Override
-			public void onFailure(@NonNull Exception e)
-			{
-				Toast.makeText(DashboardActivity.this,"Can't change clerks",Toast.LENGTH_SHORT).show();
-				Log.d("CHANGE CLERK ERROR",e.toString());
-			}
-		});
+				.addOnFailureListener(new OnFailureListener()
+				{
+					@Override
+					public void onFailure(@NonNull Exception e)
+					{
+						Toast.makeText(DashboardActivity.this,"Can't change clerks",Toast.LENGTH_SHORT).show();
+						Log.d("CHANGE CLERK ERROR",e.toString());
+					}
+				});
 	}
 
 	private void checkIfHasClerk()
@@ -660,14 +760,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 					}
 			}
 		})
-		.addOnFailureListener(new OnFailureListener()
-		{
-			@Override
-			public void onFailure(@NonNull Exception e)
-			{
-				flag = false;
-			}
-		});
+				.addOnFailureListener(new OnFailureListener()
+				{
+					@Override
+					public void onFailure(@NonNull Exception e)
+					{
+						flag = false;
+					}
+				});
 	}
 
 	private void setViewForTransfer()
@@ -747,8 +847,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			}
 		});
 
-		txtSelectAccountDeposit = depositDialog.findViewById(R.id.txt_deposit_title);
-		txtSelectDepositMethod = depositDialog.findViewById(R.id.txt_select_deposit_method);
+		TextView txtSelectAccountDeposit = depositDialog.findViewById(R.id.txt_deposit_title);
+		TextView txtSelectDepositMethod = depositDialog.findViewById(R.id.txt_select_deposit_method);
 		spnAccounts = depositDialog.findViewById(R.id.spn_accounts_deposit_dialog);
 		spnDepositMethod = depositDialog.findViewById(R.id.spn_method_deposit_dialog);
 		pbDepositDialog = depositDialog.findViewById(R.id.pb_deposit_dialog);
@@ -841,17 +941,16 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 									pbDepositDialog.setVisibility(View.INVISIBLE);
 								}
 							})
-							.addOnFailureListener(new OnFailureListener()
-							{
-								@Override
-								public void onFailure(@NonNull Exception e)
-								{
-									Toast.makeText(DashboardActivity.this,"Can't add cash deposit to pending transactions",Toast.LENGTH_SHORT).show();
-									Log.d("CASH DEPOSIT ERROR",e.toString());
-								}
-							});
-						}
-						catch(InterruptedException e)
+									.addOnFailureListener(new OnFailureListener()
+									{
+										@Override
+										public void onFailure(@NonNull Exception e)
+										{
+											Toast.makeText(DashboardActivity.this,"Can't add cash deposit to pending transactions",Toast.LENGTH_SHORT).show();
+											Log.d("CASH DEPOSIT ERROR",e.toString());
+										}
+									});
+						} catch(InterruptedException e)
 						{
 							e.printStackTrace();
 						}
@@ -1042,7 +1141,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			applicationDb.overwriteAccount(customer,customer.getAccounts().get(accountSelectedIndex));
 			applicationDb.saveNewLoan(clerk,customer,
 					customer.getAccounts().get(accountSelectedIndex).getTransactions().get(
-							customer.getAccounts().get(accountSelectedIndex).getTransactions().size()  - 1));
+							customer.getAccounts().get(accountSelectedIndex).getTransactions().size() -
+							1));
 			Toast.makeText(this,"Loan of $" + String.format(Locale.getDefault(),"%.2f",loanAmount) +
 			                    " " + "is pending",Toast.LENGTH_SHORT).show();
 			loanDialog.dismiss();
@@ -1129,7 +1229,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 				Toast.makeText(getApplicationContext(),"The minimum amount for a transfer is " +
 				                                       DEPOSIT_MIN_LIMIT,Toast.LENGTH_SHORT).show();
 			}
-			else if(transferAmount > customer.getAccounts().get(spnSendingAccount.getSelectedItemPosition()).getAccountBalance())
+			else if(transferAmount >
+			        customer.getAccounts().get(spnSendingAccount.getSelectedItemPosition()).getAccountBalance())
 			{
 				Account acc = (Account) spnSendingAccount.getSelectedItem();
 				Toast.makeText(getApplicationContext(),"The account," + " " + acc.toString() + " " +
@@ -1178,10 +1279,75 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		return bd.doubleValue();
 	}
 
+	public void displayHelpDialog()
+	{
+		helpDialog = new Dialog(this);
+		helpDialog.setContentView(R.layout.help_dialog);
+		helpDialog.setCanceledOnTouchOutside(true);
+		helpDialog.setOnCancelListener(new DialogInterface.OnCancelListener()
+		{
+			@Override
+			public void onCancel(DialogInterface dialogInterface)
+			{
+				Toast.makeText(DashboardActivity.this, "Help request cancelled", Toast.LENGTH_SHORT).show();
+			}
+		});
+		btnCancel = helpDialog.findViewById(R.id.btn_cancel_help_dialog);
+		btnSuccess = helpDialog.findViewById(R.id.btn_send_help_dialog);
+		btnCancel.setOnClickListener(helpClickListener);
+		btnSuccess.setOnClickListener(helpClickListener);
+		helpDialog.show();
+	}
+
+	View.OnClickListener helpClickListener = new View.OnClickListener()
+	{
+		@Override
+		public void onClick(View v)
+		{
+			if(v.getId() == R.id.btn_cancel_help_dialog)
+			{
+				Toast.makeText(DashboardActivity.this,"Cancelled by user",Toast.LENGTH_SHORT).show();
+				helpDialog.dismiss();
+			}
+			else if(v.getId() == R.id.btn_send_help_dialog)
+			{
+				sendUserReport();
+			}
+		}
+	};
+
+	private void sendUserReport()
+	{
+		EditText edtUserReport = helpDialog.findViewById(R.id.edt_complaint_help_dialog);
+		Log.i("Send email", "");
+		String[] TO = {"daniel4800@gmail.com"};
+		String[] CC = {""};
+		Intent emailIntent = new Intent(Intent.ACTION_SEND);
+
+		emailIntent.setData(Uri.parse("mailto:"));
+		emailIntent.setType("text/plain");
+		emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
+		emailIntent.putExtra(Intent.EXTRA_CC, CC);
+		emailIntent.putExtra(Intent.EXTRA_SUBJECT, "User report");
+		emailIntent.putExtra(Intent.EXTRA_TEXT, edtUserReport.getText().toString());
+		try
+		{
+			startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+			finish();
+			Log.i("Finished sending email", "");
+		}
+		catch (android.content.ActivityNotFoundException ex)
+		{
+			Toast.makeText(DashboardActivity.this, "There is no email client installed", Toast.LENGTH_SHORT).show();
+		}
+	}
+
 	public Customer getCustomer() {return customer;}
+
 	public void setCustomer(Customer customer) {this.customer = customer;}
 
 	public Clerk getClerk() {return clerk;}
+
 	public void setClerk(Clerk clerk) {this.clerk = clerk;}
 
 	public Spinner getAccounts()

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".DashboardActivity"
-    android:background="@color/app_bg"
+    android:background="@color/white"
     android:id="@+id/drawer_layout">
 
     <com.google.android.material.navigation.NavigationView
@@ -80,6 +80,32 @@
                 tools:ignore="RtlSymmetry" />
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/txt_welcome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:textAlignment="center"
+            android:textAppearance="@android:style/TextAppearance.Holo.Large"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/img_time"
+            tools:text="WELCOME TEXT" />
+
+        <ImageView
+            android:id="@+id/img_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/morning_icon_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </LinearLayout>
 
 </androidx.drawerlayout.widget.DrawerLayout>
