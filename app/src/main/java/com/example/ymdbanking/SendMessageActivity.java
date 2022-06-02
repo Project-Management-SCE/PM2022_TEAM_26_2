@@ -127,8 +127,8 @@ public class SendMessageActivity extends AppCompatActivity
 		int msgSize = customer.getMessages().size();
 
 //		sessionManager.editor.putInt("NumMessages",msgSize);
-		Message message = new Message(customer.getUsername(),usersForChat.get(selectedUserIndex).getUsername(),
-				edtMessage.getText().toString(),customer.getMessages().get(selectedUserIndex).getMessageId());
+		Message message = new Message(customer.getUsername(),usersForChat.get(selectedUserIndex - 1).getUsername(),
+				edtMessage.getText().toString(),customer.getMessages().get(selectedUserIndex - 1).getMessageId());
 
 		//Writing message at sending user's 'Chats' under 'To'
 		FirebaseDatabase.getInstance().getReference("Chats").child(customer.getId()).child("To").child(usersForChat.get(selectedUserIndex).getId())
