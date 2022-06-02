@@ -19,55 +19,61 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Locale;
 
-public class ForgotPassActivity extends AppCompatActivity {
+public class ForgotPassActivity extends AppCompatActivity
+{
 
-    TextInputLayout inputId;
-    Button nextBtn;
-
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_forgot_pass);
-
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        //Hooks
-
-        inputId = findViewById(R.id.forgot_passId);
-        nextBtn = findViewById(R.id.next_btn);
+	TextInputLayout inputId;
+	Button nextBtn;
 
 
-        nextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_forgot_pass);
 
-                String check_id = inputId.getEditText().getText().toString().trim();
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-                Query checkUser = FirebaseDatabase.getInstance().getReference("Users").orderByChild("id").equalTo(check_id);
-                checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+		//Hooks
 
-                        if(snapshot.exists())
-                        {
-                            Intent intent = new Intent(getApplicationContext(), SetNewPasswordActivity.class);
-                            intent.putExtra("id",check_id);
-                            startActivity(intent);
-                        }
-                        else
-                            Toast.makeText(ForgotPassActivity.this, "No such users exist!", Toast.LENGTH_SHORT).show();
-                    }
+		inputId = findViewById(R.id.forgot_passId);
+		nextBtn = findViewById(R.id.next_btn);
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(ForgotPassActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
 
-            }
-        });
+		nextBtn.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View view)
+			{
 
-    }
+				String check_id = inputId.getEditText().getText().toString().trim();
+
+				Query checkUser = FirebaseDatabase.getInstance().getReference("Users").orderByChild("id").equalTo(check_id);
+				checkUser.addListenerForSingleValueEvent(new ValueEventListener()
+				{
+					@Override
+					public void onDataChange(@NonNull DataSnapshot snapshot)
+					{
+
+						if(snapshot.exists())
+						{
+							Intent intent = new Intent(getApplicationContext(),SetNewPasswordActivity.class);
+							intent.putExtra("id",check_id);
+							startActivity(intent);
+						}
+						else
+							Toast.makeText(ForgotPassActivity.this,"No such users exist!",Toast.LENGTH_SHORT).show();
+					}
+
+					@Override
+					public void onCancelled(@NonNull DatabaseError error)
+					{
+						Toast.makeText(ForgotPassActivity.this,error.getMessage(),Toast.LENGTH_SHORT).show();
+					}
+				});
+
+			}
+		});
+
+	}
 }

@@ -174,19 +174,19 @@ public class LoginActivity extends AppCompatActivity
 					}
 				});
 
-				btnForgot.setOnClickListener(new View.OnClickListener()
-				{
-					@Override
-					public void onClick(View view)
-					{
-						startActivity(new Intent(getApplicationContext(),ForgotPassActivity.class));
-					}
-				});
+			}
+		});
+
+		btnForgot.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View view)
+			{
+				startActivity(new Intent(getApplicationContext(),ForgotPassActivity.class));
 			}
 		});
 	}
 
 	public static int getUserTypeID() {return userTypeID;}
 	public static void setUserTypeID(int userTypeID) {LoginActivity.userTypeID = userTypeID;}
-
 }

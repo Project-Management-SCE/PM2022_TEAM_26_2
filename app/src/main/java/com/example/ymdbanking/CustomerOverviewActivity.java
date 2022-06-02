@@ -35,30 +35,16 @@ import java.util.ArrayList;
 
 public class CustomerOverviewActivity extends AppCompatActivity
 {
-	private FloatingActionButton fab;
 	private ListView lstProfiles;
-	private TextView txtTitle;
-	private TextView txtCustomerFullName;
-	private TextView txtCustomerEmail;
-	private TextView txtCustomerUsername;
 	private int selectedCustomerIndex;
 	private Clerk clerk;
-	private Admin admin;
 	private Customer customer;
-	private ArrayList<Customer> customers;
 	private ArrayAdapter<Customer> customerAdapter;
 	private Dialog customerDialog;
 	private Dialog accountDialog;
-	private Button btnAssignCustomer;
-	private Button btnCancelAssign;
 	private SessionManager sessionManager;
-	private TextView txtTitleAccount;
 	private EditText edtAccountName;
 	private EditText edtAccountInitAmount;
-	private Button btnSuccess;
-	private Button btnCancel;
-	private Button btnShowAccounts;
-	private TextView txtCustomerId;
 
 
 	public View.OnClickListener customerDialogClickListener = new View.OnClickListener()
@@ -102,8 +88,8 @@ public class CustomerOverviewActivity extends AppCompatActivity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_customers_overview);
-		customers = new ArrayList<>();
-		txtTitle = findViewById(R.id.txt_profile_fragment_title);
+		ArrayList<Customer> customers = new ArrayList<>();
+		TextView txtTitle = findViewById(R.id.txt_profile_fragment_title);
 		lstProfiles = findViewById(R.id.lst_profiles_overview);
 		setValues();
 	}
@@ -122,19 +108,19 @@ public class CustomerOverviewActivity extends AppCompatActivity
 				Toast.makeText(getApplicationContext(), "Customer's info closed", Toast.LENGTH_SHORT).show();
 			}
 		});
-		txtCustomerEmail = customerDialog.findViewById(R.id.txt_email_customer_dialog);
-		txtCustomerFullName = customerDialog.findViewById(R.id.txt_fullname_customer_dialog);
-		txtCustomerId = customerDialog.findViewById(R.id.txt_id_customer_dialog);
-		txtCustomerUsername = customerDialog.findViewById(R.id.txt_username_customer_assign_dialog);
+		TextView txtCustomerEmail = customerDialog.findViewById(R.id.txt_email_customer_dialog);
+		TextView txtCustomerFullName = customerDialog.findViewById(R.id.txt_fullname_customer_dialog);
+		TextView txtCustomerId = customerDialog.findViewById(R.id.txt_id_customer_dialog);
+		TextView txtCustomerUsername = customerDialog.findViewById(R.id.txt_username_customer_assign_dialog);
 		//txtCustomerAccountNum = customerDialog.findViewById(R.id.txt_accounts_num_customer_dialog);
 		txtCustomerEmail.setText(customerAdapter.getItem(index).getEmail());
 		txtCustomerFullName.setText(customerAdapter.getItem(index).getFullName());
 		txtCustomerId.setText(customerAdapter.getItem(index).getId());
 		txtCustomerUsername.setText(customerAdapter.getItem(index).getUsername());
 		//txtCustomerAccountNum.setText(customerAdapter.getItem(index).getNumberOfAccounts());
-		btnAssignCustomer = customerDialog.findViewById(R.id.btn_success_customer_dialog);
-		btnShowAccounts = customerDialog.findViewById(R.id.btn_show_accounts_customer_dialog);
-		btnCancelAssign = customerDialog.findViewById(R.id.btn_cancel_customer_dialog);
+		Button btnAssignCustomer = customerDialog.findViewById(R.id.btn_success_customer_dialog);
+		Button btnShowAccounts = customerDialog.findViewById(R.id.btn_show_accounts_customer_dialog);
+		Button btnCancelAssign = customerDialog.findViewById(R.id.btn_cancel_customer_dialog);
 		btnAssignCustomer.setOnClickListener(customerDialogClickListener);
 		btnShowAccounts.setOnClickListener(customerDialogClickListener);
 		btnCancelAssign.setOnClickListener(customerDialogClickListener);
@@ -163,11 +149,11 @@ public class CustomerOverviewActivity extends AppCompatActivity
 				Toast.makeText(getApplicationContext(), "Account creation canceled", Toast.LENGTH_SHORT).show();
 			}
 		});
-		txtTitleAccount = accountDialog.findViewById(R.id.txt_title_account_dialog);
+		TextView txtTitleAccount = accountDialog.findViewById(R.id.txt_title_account_dialog);
 		edtAccountName = accountDialog.findViewById(R.id.edt_name_account_dialog);
 		edtAccountInitAmount = accountDialog.findViewById(R.id.edt_init_bal_account_dialog);
-		btnSuccess = accountDialog.findViewById(R.id.btn_success_account_dialog);
-		btnCancel = accountDialog.findViewById(R.id.btn_cancel_account_dialog);
+		Button btnSuccess = accountDialog.findViewById(R.id.btn_success_account_dialog);
+		Button btnCancel = accountDialog.findViewById(R.id.btn_cancel_account_dialog);
 		btnSuccess.setOnClickListener(accountDialogClickListener);
 		btnCancel.setOnClickListener(accountDialogClickListener);
 		accountDialog.show();

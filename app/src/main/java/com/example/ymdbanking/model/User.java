@@ -49,7 +49,7 @@ public class User
 		this.phone = phone;
 		this.username = username;
 		this.typeID = userType;
-		imageUri = null;
+//		imageUri = null;
 	}
 
 	public User(String email,String fullName,String id,String password,String phone,String username,String country,int userType)
@@ -62,7 +62,7 @@ public class User
 		this.username = username;
 		this.typeID = userType;
 		this.country = country;
-		imageUri = null;
+//		imageUri = null;
 	}
 
 	public String getCountry() {return country;}

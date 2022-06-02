@@ -899,9 +899,11 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			transfer_amount = transferDialog.findViewById(R.id.transfer_amount);
 
 			btnApprove = transferDialog.findViewById(R.id.transfer_btn);
+			btnAbort = transferDialog.findViewById(R.id.btn_cancel_transfer);
 			//receiving account
 
 			btnApprove.setOnClickListener(transferClickListener);
+			btnAbort.setOnClickListener(transferClickListener);
 
 			transferDialog.show();
 		}

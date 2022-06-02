@@ -2,6 +2,7 @@ package com.example.ymdbanking;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -41,6 +42,7 @@ public class ChangeClerkActivity extends AppCompatActivity
 	private ArrayList<Clerk> clerks;
 	private int selectedUserIndex;
 	private int selectedClerkIndex;
+	boolean flag;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -75,8 +77,8 @@ public class ChangeClerkActivity extends AppCompatActivity
 					{
 						selectedUserIndex = position;
 						customer = customers.get(selectedUserIndex);
-//						checkIfHasClerk();
 						getClerks();
+						checkIfHasClerk(true);
 					}
 				});
 			}
@@ -105,7 +107,7 @@ public class ChangeClerkActivity extends AppCompatActivity
 					if(ds.child("typeID").getValue(int.class) == 2)
 						clerks.add(ds.getValue(Clerk.class));
 
-				showChangeClerkDialog();
+//				showChangeClerkDialog();
 			}
 		})
 		.addOnFailureListener(new OnFailureListener()
@@ -121,8 +123,8 @@ public class ChangeClerkActivity extends AppCompatActivity
 
 	private void showChangeClerkDialog()
 	{
-		dlgChangeClerk = new Dialog(ChangeClerkActivity.this);
-		dlgChangeClerk.setContentView(R.layout.change_clerk_dialog);
+//		dlgChangeClerk = new Dialog(ChangeClerkActivity.this);
+//		dlgChangeClerk.setContentView(R.layout.change_clerk_dialog);
 		dlgChangeClerk.setCanceledOnTouchOutside(true);
 		dlgChangeClerk.setOnCancelListener(new DialogInterface.OnCancelListener()
 		{
@@ -133,9 +135,9 @@ public class ChangeClerkActivity extends AppCompatActivity
 			}
 		});
 
-		txtClerkName = dlgChangeClerk.findViewById(R.id.txt_clerk_name);
-		dlgChangeClerk = new Dialog(ChangeClerkActivity.this);
-		dlgChangeClerk.setContentView(R.layout.change_clerk_dialog);
+//		txtClerkName = dlgChangeClerk.findViewById(R.id.txt_clerk_name);
+//		dlgChangeClerk = new Dialog(ChangeClerkActivity.this);
+//		dlgChangeClerk.setContentView(R.layout.change_clerk_dialog);
 
 		ArrayAdapter<Clerk> clerkAdapter = new ClerkAdapter(ChangeClerkActivity.this,R.layout.lst_profile_row,clerks);
 		ListView lstClerks = dlgChangeClerk.findViewById(R.id.lst_change_clerk);
@@ -148,16 +150,17 @@ public class ChangeClerkActivity extends AppCompatActivity
 			{
 				selectedClerkIndex = position;
 				selectedClerk = clerks.get(selectedClerkIndex);
-				checkIfHasClerk();
-//				changeClerk(customerClerk,clerk);
+				checkIfHasClerk(false);
+				changeClerk(customerClerk,selectedClerk);
 			}
 		});
 
 		dlgChangeClerk.show();
 	}
 
-	private void checkIfHasClerk()
+	private void checkIfHasClerk(boolean fl)
 	{
+		this.flag = fl;
 		FirebaseDatabase.getInstance().getReference("ClerkCustomers")
 			.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>()
 		{
@@ -172,12 +175,17 @@ public class ChangeClerkActivity extends AppCompatActivity
 							if(clerk.getId().equals(ds.getKey()))
 							{
 								customerClerk = clerk;
+								dlgChangeClerk = new Dialog(ChangeClerkActivity.this);
+								dlgChangeClerk.setContentView(R.layout.change_clerk_dialog);
+								txtClerkName = dlgChangeClerk.findViewById(R.id.txt_clerk_name);
 								txtClerkName.setText(customerClerk.getFullName());
-								changeClerk(customerClerk,selectedClerk);
+//								changeClerk(customerClerk,selectedClerk);
 							}
 						}
 						break;
 					}
+				if(flag)
+					showChangeClerkDialog();
 			}
 		})
 		.addOnFailureListener(new OnFailureListener()
@@ -214,8 +222,9 @@ public class ChangeClerkActivity extends AppCompatActivity
 						ds.child(customer.getId()).getRef().removeValue();
 						ds.getRef().getRoot().child("ClerkCustomers").child(newClerk.getId()).child(customer.getId()).setValue(customerHashMap);
 
-						Toast.makeText(ChangeClerkActivity.this,"Your clerk has been changed",Toast.LENGTH_SHORT).show();
 						dlgChangeClerk.dismiss();
+						Toast.makeText(ChangeClerkActivity.this,"Your clerk has been changed",Toast.LENGTH_SHORT).show();
+						startActivity(new Intent(ChangeClerkActivity.this,ChangeClerkActivity.class));
 					}
 				}
 			}

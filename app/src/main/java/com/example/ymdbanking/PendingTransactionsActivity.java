@@ -31,8 +31,6 @@ public class PendingTransactionsActivity extends AppCompatActivity
 {
 	private ListView lstPendingCashDeposits;
 	private ListView lstPendingLoans;
-	private TextView txtTitle;
-	private SessionManager sessionManager;
 	private Clerk clerk;
 	private int selectedTransactionIndex;
 	private ArrayList<Transaction> pendingLoans;
@@ -46,8 +44,6 @@ public class PendingTransactionsActivity extends AppCompatActivity
 	private TextView txtStatus;
 	private Button btnApproveLoan;
 	private Button btnDenyLoan;
-	private Button btnSelectLoans;
-	private Button btnSelectDeposits;
 
 	private View.OnClickListener btnSelectClickListener = new View.OnClickListener()
 	{
@@ -103,10 +99,10 @@ public class PendingTransactionsActivity extends AppCompatActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_pending_loans);
 
-		btnSelectDeposits = findViewById(R.id.btn_select_cash_deposits);
-		btnSelectLoans = findViewById(R.id.btn_select_loans);
+		Button btnSelectDeposits = findViewById(R.id.btn_select_cash_deposits);
+		Button btnSelectLoans = findViewById(R.id.btn_select_loans);
 
-		sessionManager = new SessionManager(PendingTransactionsActivity.this,SessionManager.USER_SESSION);
+		SessionManager sessionManager = new SessionManager(PendingTransactionsActivity.this,SessionManager.USER_SESSION);
 		clerk = sessionManager.getClerkObjFromSession();
 
 		btnSelectLoans.setOnClickListener(btnSelectClickListener);
@@ -128,7 +124,7 @@ public class PendingTransactionsActivity extends AppCompatActivity
 			}
 		});
 
-		txtTitle = pendingLoanDlg.findViewById(R.id.txt_title_pending_loans);
+//		txtTitle = pendingLoanDlg.findViewById(R.id.txt_title_pending_loans);
 //		lstPendingLoans = pendingLoanDlg.findViewById(R.id.lst_pending_loans);
 
 		//Setting click listener for list view
@@ -162,7 +158,7 @@ public class PendingTransactionsActivity extends AppCompatActivity
 			}
 		});
 
-		txtTitle = pendingCashDepositDlg.findViewById(R.id.txt_title_pending_cash_deposits);
+//		txtTitle = pendingCashDepositDlg.findViewById(R.id.txt_title_pending_cash_deposits);
 //		lstPendingCashDeposits = pendingCashDepositDlg.findViewById(R.id.lst_pending_cash_deposits);
 
 		//Setting click listener for list view
