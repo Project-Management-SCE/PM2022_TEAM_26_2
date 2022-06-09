@@ -1016,56 +1016,29 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 	{
 		int receivingProfIndex = spnReceivingCustomer.getSelectedItemPosition();
 		int receivingAccIndex = spnReceivingAccount.getSelectedItemPosition();
-		boolean isNum = false;
-		try
-		{
-			transferAmount = Double.parseDouble(transfer_amount.getText().toString());
-			isNum = true;
-		} catch(Exception e)
-		{
-			Toast.makeText(getApplicationContext(),"Please enter an amount to transfer",Toast.LENGTH_SHORT).show();
-		}
-		if(isNum)
-		{
-			if(transferAmount < DEPOSIT_MIN_LIMIT)
-			{
-				Toast.makeText(getApplicationContext(),"The minimum amount for a transfer is " +
-				                                       DEPOSIT_MIN_LIMIT,Toast.LENGTH_SHORT).show();
-			}
-			else if(transferAmount >
-			        customer.getAccounts().get(spnSendingAccount.getSelectedItemPosition()).getAccountBalance())
-			{
-				Account acc = (Account) spnSendingAccount.getSelectedItem();
-				Toast.makeText(getApplicationContext(),"The account," + " " + acc.toString() + " " +
-				                                       "does not have sufficient funds to make this transfer",Toast.LENGTH_LONG).show();
-			}
-			else
-			{
-				int sendingAccIndex = spnSendingAccount.getSelectedItemPosition();
+		int sendingAccIndex = spnSendingAccount.getSelectedItemPosition();
 
-				Account sendingAccount = (Account) spnSendingAccount.getItemAtPosition(sendingAccIndex);
-				Account receivingAccount = (Account) spnReceivingAccount.getItemAtPosition(receivingAccIndex);
-				Customer receivingCustomer = (Customer) spnReceivingCustomer.getItemAtPosition(receivingProfIndex);
+		Account sendingAccount = (Account) spnSendingAccount.getItemAtPosition(sendingAccIndex);
+		Account receivingAccount = (Account) spnReceivingAccount.getItemAtPosition(receivingAccIndex);
+		Customer receivingCustomer = (Customer) spnReceivingCustomer.getItemAtPosition(receivingProfIndex);
 
-				customer.addTransferTransaction(sendingAccount,receivingAccount,transferAmount);
-				spnSendingAccount.setAdapter(accountAdapter);
-				spnReceivingAccount.setAdapter(accountsToTransferAdapter);
+		customer.addTransferTransaction(sendingAccount,receivingAccount,transferAmount);
+		spnSendingAccount.setAdapter(accountAdapter);
+		spnReceivingAccount.setAdapter(accountsToTransferAdapter);
 
-				spnSendingAccount.setSelection(sendingAccIndex);
-				spnReceivingAccount.setSelection(receivingAccIndex);
+		spnSendingAccount.setSelection(sendingAccIndex);
+		spnReceivingAccount.setSelection(receivingAccIndex);
 
-				ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
+		ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
 
-				applicationDb.overwriteAccount(customer,sendingAccount);
-				applicationDb.overwriteAccount(receivingCustomer,receivingAccount);
+		applicationDb.overwriteAccount(customer,sendingAccount);
+		applicationDb.overwriteAccount(receivingCustomer,receivingAccount);
 
-				sessionManager.saveCustomerObjForSession(customer);
+		sessionManager.saveCustomerObjForSession(customer);
 
-				Toast.makeText(getApplicationContext(),"Transfer of $" +
-				                                       String.format(Locale.getDefault(),"%.2f",transferAmount) +
-				                                       " successfully made",Toast.LENGTH_SHORT).show();
-			}
-		}
+		Toast.makeText(getApplicationContext(),"Transfer of $" +
+		                                       String.format(Locale.getDefault(),"%.2f",transferAmount) +
+		                                       " successfully made",Toast.LENGTH_SHORT).show();
 		transferDialog.dismiss();
 		drawerLayout.closeDrawers();
 		startActivity(new Intent(DashboardActivity.this,DashboardActivity.class));
@@ -1163,8 +1136,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 			{
 				for(DataSnapshot ds : task.getResult().getChildren())
 				{
-//					accountHM.put(ds.getKey(),ds.getValue(Account.class));
-//					accounts.add(accountHM.get(ds.getKey()));
 					accountsToTransfer.add(new Account(
 							ds.child("accountName").getValue(String.class),
 							ds.child("accountNo").getValue(String.class),
@@ -1210,9 +1181,13 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 		String sendingCurrency = null;
 		if(customer.getCountry().equals(CurrencyConverter.CURRENCIES.USA.toString()))
 			sendingCurrency = CurrencyConverter.CURRENCIES.USA.getCurrency();
+		else if(customer.getCountry().equals(CurrencyConverter.CURRENCIES.ISRAEL.toString()))
+			sendingCurrency = CurrencyConverter.CURRENCIES.ISRAEL.getCurrency();
 
 		if(customersForTransfer.get(receivingProfIndex).getCountry().equals(CurrencyConverter.CURRENCIES.ISRAEL.toString()))
 			receivingCurrency = CurrencyConverter.CURRENCIES.ISRAEL.getCurrency();
+		else if(customersForTransfer.get(receivingProfIndex).getCountry().equals(CurrencyConverter.CURRENCIES.USA.toString()))
+			sendingCurrency = CurrencyConverter.CURRENCIES.USA.getCurrency();
 
 		try
 		{
