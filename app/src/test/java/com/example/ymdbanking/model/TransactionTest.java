@@ -38,7 +38,7 @@ public class TransactionTest
 		String accountName2 = "Mazal-1",accountNo2 = "A-1";
 		double initBalance2 = 2500;
 		Account receivingAccount = new Account(accountName2,accountNo2,initBalance2);
-		double transferAmount = 2000;
+		double transferAmount = 4000;
 		customer.addTransferTransaction(sendingAccount,receivingAccount,transferAmount);
 		double expectedAmount = 4500;
 		double actualAmount = receivingAccount.getAccountBalance();
